@@ -12,49 +12,49 @@ import java.util.Date;
  */
 public class Message {
 
-	private String username;
-	private String type;
-	private Date sendTime;
-	private String room;
-	private String text;
+    private String username;
+    private String type;
+    private Date sendTime;
+    private String room;
+    private String text;
 
-	public String getText() {
-		return text;
-	}
+    public String getText() {
+        return text;
+    }
 
-	public void setText(String text) {
-		this.text = text;
-	}
+    public void setText(String text) {
+        this.text = text;
+    }
 
-	public String getUsername() {
-		return username;
-	}
+    public String getUsername() {
+        return username;
+    }
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-	public Date getSendTime() {
-		return sendTime;
-	}
+    public Date getSendTime() {
+        return sendTime;
+    }
 
-	public void setSendTime(Date sendTime) {
-		this.sendTime = sendTime;
-	}
+    public void setSendTime(Date sendTime) {
+        this.sendTime = sendTime;
+    }
 
-	public String getRoom() {
-		return room;
-	}
+    public String getRoom() {
+        return room;
+    }
 
-	public void setRoom(String room) {
-		this.room = room;
-	}
+    public void setRoom(String room) {
+        this.room = room;
+    }
 
-	public String getType() {
-		return type;
-	}
+    public String getType() {
+        return type;
+    }
 
-	public void setType(String type) {
-		this.type = type;
-	}
+    public void setType(String type) {
+        this.type = type;
+    }
 }
