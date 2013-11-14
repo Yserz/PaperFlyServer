@@ -25,81 +25,68 @@ import javax.websocket.server.ServerEndpoint;
  * @author MacYser
  */
 @ServerEndpoint(
-        value = "/ws/chat/{room-name}",
-        encoders = {JsonEncoder.class},
-        decoders = {JsonDecoder.class})
+		value = "/ws/chat/{room-name}",
+		encoders = {JsonEncoder.class},
+		decoders = {JsonDecoder.class})
 public class PaperFlyChat {
 
-    private static final Logger LOG = Logger.getLogger(PaperFlyChat.class.getName());
+	private static final Logger LOG = Logger.getLogger(PaperFlyChat.class.getName());
 
-    @OnOpen
-    public void open(Session session, EndpointConfig conf, @PathParam("room-name") String roomName) {
-        System.out.println("Opening connection...");
-        try {
-            if (session.getUserPrincipal() != null) {
-                conf.getUserProperties().put("username", session.getUserPrincipal().getName());
-                session.getBasicRemote().sendText("Hello " + session.getUserPrincipal().getName() + ", you are in the chat-room \"" + roomName + "\"");
-            } else {
-                LOG.log(Level.SEVERE, "Closing Session...User is not Authorized!");
-//				session.close(new CloseReason(new CloseCode() {
-//					@Override
-//					public int getCode() {
-//						return 403;
-//					}
-//				}, "You are not Authorized!"));
+	@OnOpen
+	public void open(Session session, EndpointConfig conf, @PathParam("room-name") String roomName) {
+		session.getContainer().setDefaultMaxSessionIdleTimeout(60000l);
+		System.out.println("Opening connection...");
+		System.out.println("Opened sessions: ");
+		try {
+			if (session.getUserPrincipal() != null) {
+				conf.getUserProperties().put("username", session.getUserPrincipal().getName());
+				session.getBasicRemote().sendText("Hello " + session.getUserPrincipal().getName() + ", you are in the chat-room \"" + roomName + "\"");
+			} else {
+				LOG.log(Level.SEVERE, "User is not Authorized!");
+			}
+		} catch (IOException ex) {
+			LOG.log(Level.SEVERE, null, ex);
+		}
+	}
 
-                for (Map.Entry<String, List<String>> en : session.getRequestParameterMap().entrySet()) {
+	@OnMessage
+	public void onMessage(Session session, Message msg) {
+		try {
+			for (Session sess : session.getOpenSessions()) {
+				if (sess.isOpen()) {
+					sess.getBasicRemote().sendText(msg.getUsername() + ": " + msg.getText());
+				}
+			}
+		} catch (IOException ex) {
+			LOG.log(Level.SEVERE, null, ex);
+		}
+	}
 
-                    System.out.println("Key: " + en.getKey());
-                    for (String param : en.getValue()) {
-                        System.out.println("value: " + param);
-                    }
+	@OnMessage
+	public void binaryMessage(Session session, ByteBuffer msg) {
+		System.out.println("Binary message: " + msg.toString());
+	}
 
-                }
-            }
+	@OnMessage
+	public void pongMessage(Session session, PongMessage msg) {
+		System.out.println("Pong message: "
+				+ msg.getApplicationData().toString());
+	}
 
-        } catch (IOException ex) {
-            LOG.log(Level.SEVERE, null, ex);
-        }
-    }
+	@OnError
+	public void error(Session session, Throwable error) {
+		System.out.println("Catching Error...");
+		System.out.println("ERROR: " + error.getMessage());
+	}
 
-    @OnMessage
-    public void onMessage(Session session, Message msg) {
-        try {
-            for (Session sess : session.getOpenSessions()) {
-                if (sess.isOpen()) {
-                    sess.getBasicRemote().sendText(msg.getUsername() + ": " + msg.getText());
-                }
-            }
-        } catch (IOException ex) {
-            LOG.log(Level.SEVERE, null, ex);
-        }
-    }
-
-    @OnMessage
-    public void binaryMessage(Session session, ByteBuffer msg) {
-        System.out.println("Binary message: " + msg.toString());
-    }
-
-    @OnMessage
-    public void pongMessage(Session session, PongMessage msg) {
-        System.out.println("Pong message: "
-                + msg.getApplicationData().toString());
-    }
-
-    @OnError
-    public void error(Session session, Throwable error) {
-        System.out.println("Catching Error...");
-        System.out.println("ERROR: " + error.getMessage());
-    }
-
-    @OnClose
-    public void close(Session session, CloseReason reason) {
-        System.out.println("Closing connection...");
-        try {
-            session.getBasicRemote().sendText("Ciao");
-        } catch (IOException ex) {
-            LOG.log(Level.SEVERE, null, ex);
-        }
-    }
+	@OnClose
+	public void close(Session session, CloseReason reason) {
+		System.out.println("Closing connection...");
+		try {
+//			session.getBasicRemote().sendText("Ciao");
+			session.close(reason);
+		} catch (IOException ex) {
+			LOG.log(Level.SEVERE, null, ex);
+		}
+	}
 }

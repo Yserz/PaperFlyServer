@@ -1,7 +1,6 @@
 package de.fhb.paperfly.server.rest.v1.mapping;
 
 import de.fhb.paperfly.server.account.entity.Account;
-import de.fhb.paperfly.server.account.entity.Group;
 import de.fhb.paperfly.server.rest.v1.dto.AccountDTO;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,12 +22,13 @@ public class ToDTOMapper {
 		dept--;
 		AccountDTO dto = new AccountDTO();
 		dto.setEmail(e.getEmail());
+		dto.setFirstName(e.getFirstName());
+		dto.setLastName(e.getLastName());
+		dto.setUsername(e.getUsername());
+		dto.setCreated(e.getCreated());
+		dto.setLastModified(e.getLastModified());
+		dto.setEnabled(e.isEnabled());
 
-		List<String> temp = new ArrayList<String>();
-		for (Group lang : e.getGroups()) {
-			temp.add(lang.name());
-		}
-		dto.setGroups(temp);
 		return dto;
 	}
 

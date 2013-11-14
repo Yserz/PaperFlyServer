@@ -14,14 +14,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.welovecoding.base.entity;
+package de.fhb.paperfly.server.base.entity;
 
+import de.fhb.paperfly.server.logging.interceptor.EntityLoggerInterceptor;
 import java.io.Serializable;
 import java.util.Date;
+import javax.interceptor.Interceptors;
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * This is a MappedSuperclass for all Enitities in this system. Every Entity who
@@ -34,7 +42,13 @@ import javax.persistence.TemporalType;
  */
 @MappedSuperclass
 @EntityListeners(EntityListener.class)
-//@Interceptors(EntityLoggerInterceptor.class)
+@Interceptors(EntityLoggerInterceptor.class)
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode(callSuper = false)
+@NoArgsConstructor
+@AllArgsConstructor
 public class BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -43,62 +57,4 @@ public class BaseEntity implements Serializable {
 	@Temporal(value = TemporalType.TIMESTAMP)
 	private Date lastModified;
 	private boolean enabled;
-
-	public BaseEntity() {
-	}
-
-	public Date getCreated() {
-		return created;
-	}
-
-	public Date getLastModified() {
-		return lastModified;
-	}
-
-	public void setCreated(Date created) {
-		this.created = created;
-	}
-
-	public void setLastModified(Date lastModified) {
-		this.lastModified = lastModified;
-	}
-
-	public boolean isEnabled() {
-		return enabled;
-	}
-
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-	}
-
-	@Override
-	public int hashCode() {
-		int hash = 7;
-		hash = 37 * hash + (this.created != null ? this.created.hashCode() : 0);
-		hash = 37 * hash + (this.lastModified != null ? this.lastModified.hashCode() : 0);
-		return hash;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		final BaseEntity other = (BaseEntity) obj;
-		if (this.created != other.created && (this.created == null || !this.created.equals(other.created))) {
-			return false;
-		}
-		if (this.lastModified != other.lastModified && (this.lastModified == null || !this.lastModified.equals(other.lastModified))) {
-			return false;
-		}
-		return true;
-	}
-
-	@Override
-	public String toString() {
-		return "BaseEntity{" + "created=" + created + ", lastModified=" + lastModified + '}';
-	}
 }

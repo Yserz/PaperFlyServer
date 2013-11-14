@@ -18,8 +18,8 @@ package de.fhb.paperfly.server.account.entity;
 
 import de.fhb.paperfly.server.base.entity.BaseEntity;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -27,35 +27,37 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.eclipse.persistence.annotations.JoinFetch;
 
 /**
  *
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */
 @Entity
+@Cacheable(false)
 @Getter
 @Setter
-@ToString
+@ToString(exclude = {"password"})
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
-@NamedQueries({
-	@NamedQuery(name = "Account.findByUsername", query = "SELECT a FROM Account a WHERE a.username = :username")
-})
-public class Account extends BaseEntity {
+@NamedQueries({})
+public class Credential extends BaseEntity {
 
 	@Id
-	private String email;
-	@NotNull
-	@Size(min = 1, max = 255)
-	@Column(unique = true)
-	private String username;
-	@NotNull
-	@Size(min = 1, max = 255)
-	private String lastName;
-	@NotNull
-	@Size(min = 1, max = 255)
-	private String firstName;
-	@OneToMany
-	private List<Account> friendList;
+	@OneToOne(optional = false)
+	@JoinColumn(name = "EMAIL")
+	private Account account;
+	@Size(min = 6, max = 255)
+	private String password;
+	@ElementCollection(targetClass = Group.class)
+	@CollectionTable(name = "ACCOUNT_GROUP", joinColumns =
+			@JoinColumn(name = "ACCOUNT", nullable = false),
+			uniqueConstraints = {
+		@UniqueConstraint(columnNames = {"ACCOUNT", "GROUPS"})
+	})
+	@Enumerated(EnumType.STRING)
+	@Column(name = "GROUPS", nullable = false)
+	@JoinFetch
+	private List<Group> groups;
 }

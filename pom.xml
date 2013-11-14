@@ -25,7 +25,16 @@
 				<!--<updatePolicy>always</updatePolicy>-->
 			</snapshots>
 		</repository>
-
+		<repository>
+			<url>https://repository.jboss.org/nexus/content/repositories/glassfish</url>
+			<id>glassfish</id>
+			<name>Repository for libary Glassfish</name>
+		</repository>
+		<repository>
+			<url>http://download.eclipse.org/rt/eclipselink/maven.repo/</url>
+			<id>eclipselink</id>
+			<name>Repository for library EclipseLink (JPA 2.0)</name>
+		</repository>
 	</repositories>
 	<build>
 		<pluginManagement>

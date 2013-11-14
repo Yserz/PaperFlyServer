@@ -14,18 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.welovecoding.base.entity;
+package de.fhb.paperfly.server.base.entity;
 
 import java.util.Date;
 import javax.interceptor.ExcludeClassInterceptors;
-import javax.interceptor.Interceptors;
-import javax.persistence.PostLoad;
-import javax.persistence.PostPersist;
-import javax.persistence.PostRemove;
-import javax.persistence.PostUpdate;
-import javax.persistence.PrePersist;
-import javax.persistence.PreRemove;
-import javax.persistence.PreUpdate;
+import javax.persistence.*;
 
 /**
  *
@@ -36,79 +29,80 @@ import javax.persistence.PreUpdate;
  */
 public class EntityListener {
 
-  /**
-   * invoked before a new entity is persisted.
-   *
-   * @param be The Entity which will be persisted.
-   */
-  @PrePersist
-  private void onPrePersist(BaseEntity be) {
-    be.setCreated(new Date());
-    be.setLastModified(new Date());
-  }
-
-  /**
-   * invoked after storing a new entity in the database (during commit or
-   * flush).
-   *
-   * @param be The Entity which been persisted.
-   */
-  @PostPersist
-  @ExcludeClassInterceptors
-  private void onPostPersist(BaseEntity be) {
-  }
-
-  /**
-   * invoked after an entity has been retrieved from the database.
-   *
-   * @param be The Entity which been loaded.
-   */
-  @PostLoad
-  @ExcludeClassInterceptors
-  private void onPostLoad(BaseEntity be) {
-  }
-
-  /**
-   * invoked when an entity is identified as modified by the EntityManager.
-   *
-   * @param be The Entity which will be updated.
-   */
-  @PreUpdate
-  private void onPreUpdate(BaseEntity be) {
-    be.setLastModified(new Date());
-    if (be.getCreated() == null) {
-      be.setCreated(new Date());
+    /**
+     * invoked before a new entity is persisted.
+     *
+     * @param be The Entity which will be persisted.
+     */
+    @PrePersist
+    private void onPrePersist(BaseEntity be) {
+        be.setCreated(new Date());
+        be.setLastModified(new Date());
     }
-  }
 
-  /**
-   * invoked after updating an entity in the database (during commit or flush).
-   *
-   * @param be The Entity which been updated.
-   */
-  @PostUpdate
-  @ExcludeClassInterceptors
-  private void onPostUpdate(BaseEntity be) {
-  }
+    /**
+     * invoked after storing a new entity in the database (during commit or
+     * flush).
+     *
+     * @param be The Entity which been persisted.
+     */
+    @PostPersist
+    @ExcludeClassInterceptors
+    private void onPostPersist(BaseEntity be) {
+    }
 
-  /**
-   * invoked when an entity is marked for removal in the EntityManager.
-   *
-   * @param be The Entity which will be removed.
-   */
-  @PreRemove
-  @ExcludeClassInterceptors
-  void onPreRemove(BaseEntity be) {
-  }
+    /**
+     * invoked after an entity has been retrieved from the database.
+     *
+     * @param be The Entity which been loaded.
+     */
+    @PostLoad
+    @ExcludeClassInterceptors
+    private void onPostLoad(BaseEntity be) {
+    }
 
-  /**
-   * invoked after deleting an entity from the database (during commit or
-   * flush).
-   *
-   * @param be The Entity which been removed.
-   */
-  @PostRemove
-  @ExcludeClassInterceptors
-  private void onPostRemove(BaseEntity be) {
-  }
+    /**
+     * invoked when an entity is identified as modified by the EntityManager.
+     *
+     * @param be The Entity which will be updated.
+     */
+    @PreUpdate
+    private void onPreUpdate(BaseEntity be) {
+        be.setLastModified(new Date());
+        if (be.getCreated() == null) {
+            be.setCreated(new Date());
+        }
+    }
+
+    /**
+     * invoked after updating an entity in the database (during commit or
+     * flush).
+     *
+     * @param be The Entity which been updated.
+     */
+    @PostUpdate
+    @ExcludeClassInterceptors
+    private void onPostUpdate(BaseEntity be) {
+    }
+
+    /**
+     * invoked when an entity is marked for removal in the EntityManager.
+     *
+     * @param be The Entity which will be removed.
+     */
+    @PreRemove
+    @ExcludeClassInterceptors
+    void onPreRemove(BaseEntity be) {
+    }
+
+    /**
+     * invoked after deleting an entity from the database (during commit or
+     * flush).
+     *
+     * @param be The Entity which been removed.
+     */
+    @PostRemove
+    @ExcludeClassInterceptors
+    private void onPostRemove(BaseEntity be) {
+    }
 }

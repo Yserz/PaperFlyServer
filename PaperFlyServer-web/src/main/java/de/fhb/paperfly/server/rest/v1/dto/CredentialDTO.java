@@ -14,13 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.fhb.paperfly.server.account.entity;
+package de.fhb.paperfly.server.rest.v1.dto;
 
-import de.fhb.paperfly.server.base.entity.BaseEntity;
-import java.util.List;
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import de.fhb.paperfly.server.rest.v1.base.BaseDTO;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -32,30 +28,14 @@ import lombok.ToString;
  *
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */
-@Entity
 @Getter
 @Setter
 @ToString
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
-@NamedQueries({
-	@NamedQuery(name = "Account.findByUsername", query = "SELECT a FROM Account a WHERE a.username = :username")
-})
-public class Account extends BaseEntity {
+public class CredentialDTO extends BaseDTO {
 
-	@Id
 	private String email;
-	@NotNull
-	@Size(min = 1, max = 255)
-	@Column(unique = true)
-	private String username;
-	@NotNull
-	@Size(min = 1, max = 255)
-	private String lastName;
-	@NotNull
-	@Size(min = 1, max = 255)
-	private String firstName;
-	@OneToMany
-	private List<Account> friendList;
+	private String password;
 }

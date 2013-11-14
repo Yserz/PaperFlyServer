@@ -16,22 +16,22 @@
  */
 package de.fhb.paperfly.server.account.service;
 
+import com.sun.appserv.security.ProgrammaticLogin;
 import de.fhb.paperfly.server.account.entity.Account;
+import de.fhb.paperfly.server.account.entity.Credential;
 import de.fhb.paperfly.server.account.entity.Group;
 import de.fhb.paperfly.server.account.repository.AccountRepository;
+import de.fhb.paperfly.server.account.repository.CredentialRepository;
+
 import de.fhb.paperfly.server.logging.service.LoggingServiceLocal;
 import de.fhb.paperfly.server.util.HashHelper;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.ejb.TransactionManagement;
-import javax.ejb.TransactionManagementType;
+import javax.ejb.*;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -43,6 +43,7 @@ import javax.validation.ValidatorFactory;
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */
 @Stateless
+@Startup
 @TransactionManagement(TransactionManagementType.CONTAINER)
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
 public class AccountService implements AccountServiceLocal, AccountServiceLocalAdmin {
@@ -51,6 +52,8 @@ public class AccountService implements AccountServiceLocal, AccountServiceLocalA
 	private LoggingServiceLocal LOG;
 	@EJB
 	private AccountRepository accountRepository;
+	@EJB
+	private CredentialRepository credentialRepository;
 
 	public AccountService() {
 	}
@@ -60,11 +63,9 @@ public class AccountService implements AccountServiceLocal, AccountServiceLocalA
 	}
 
 	@Override
-	public Account registerNewUser(String firstName, String name, String accountName, String mail, String password, String passwordRepeat)
+	public Account registerNewUser(String firstname, String lastname, String username, String mail, String password, String passwordRepeat)
 			throws Exception {
-		Account account;
-		Account checkAccount;
-		String hash = "";
+
 
 		if (password.equals("") || passwordRepeat.equals("")) {
 			LOG.log(this.getClass().getName(), Level.SEVERE, "Incomplete password fields!");
@@ -81,42 +82,22 @@ public class AccountService implements AccountServiceLocal, AccountServiceLocalA
 			throw new Exception("Password too short!");
 		}
 
-		account = new Account();
-		account.setFirstName(firstName);
-		account.setLastName(name);
-		account.setUsername(accountName);
-		account.setEmail(mail);
+		Account acc = new Account(mail, username, lastname, firstname, null);
+		validateAccount(acc);
+		accountRepository.create(acc);
 
-		validateAccount(account);
-
-		checkAccount = accountRepository.findAccountByUsername(accountName);
-
-		if (checkAccount != null) {
-			LOG.log(this.getClass().getName(), Level.SEVERE, "UserName does already exists!");
-			throw new Exception("UserName does already exists!");
-		}
-
-		hash = HashHelper.calcSHA256(password);
-		account.setPassword(hash);
-
-
-		ArrayList<Group> groups = new ArrayList<Group>();
+		List<Group> groups = new ArrayList<>();
 		groups.add(Group.USER);
-		account.setGroups(groups);
+		Credential cred = new Credential(acc, HashHelper.calcSHA256(password), groups);
+		credentialRepository.create(cred);
 
-
-		accountRepository.create(account);
-		return account;
+		return acc;
 	}
 
-	@RolesAllowed({"ADMINISTRATOR"})
+//	@RolesAllowed({"ADMINISTRATOR"})
 	@Override
-	public Account registerNewAdmin(String firstName, String name, String accountName, String mail, String password, String passwordRepeat)
+	public Account registerNewAdmin(String firstname, String lastname, String username, String mail, String password, String passwordRepeat)
 			throws Exception {
-		Account account;
-		Account checkAccount;
-		String hash = "";
-
 		if (password.equals("") || passwordRepeat.equals("")) {
 			LOG.log(this.getClass().getName(), Level.SEVERE, "Incomplete password fields!");
 			throw new Exception("Incomplete password fields!");
@@ -132,84 +113,78 @@ public class AccountService implements AccountServiceLocal, AccountServiceLocalA
 			throw new Exception("Password too short!");
 		}
 
-		account = new Account();
-		account.setFirstName(firstName);
-		account.setLastName(name);
-		account.setUsername(accountName);
-		account.setEmail(mail);
+		Account acc = new Account(mail, username, lastname, firstname, null);
+		validateAccount(acc);
+		accountRepository.create(acc);
 
-		validateAccount(account);
-
-		checkAccount = accountRepository.findAccountByUsername(accountName);
-
-		if (checkAccount != null) {
-			LOG.log(this.getClass().getName(), Level.SEVERE, "UserName does already exists!");
-			throw new Exception("UserName does already exists!");
-		}
-
-		hash = HashHelper.calcSHA256(password);
-		account.setPassword(hash);
-
-
-		ArrayList<Group> groups = new ArrayList<Group>();
+		List<Group> groups = new ArrayList<>();
+		groups.add(Group.USER);
 		groups.add(Group.ADMINISTRATOR);
-		account.setGroups(groups);
+		Credential cred = new Credential(acc, HashHelper.calcSHA256(password), groups);
+		credentialRepository.create(cred);
 
-
-		accountRepository.create(account);
-		return account;
+		return acc;
 	}
 
-	@RolesAllowed({"ADMINISTRATOR", "USER"})
+//	@RolesAllowed({"ADMINISTRATOR", "USER"})
+//	@Override
+//	public void changePassword(String mail, String oldPassword, String password, String passwordRepeat)
+//			throws Exception {
+//
+//		Account account;
+//		String hash = "";
+//
+//		if (oldPassword.equals("") || password.equals("") || passwordRepeat.equals("")) {
+//			LOG.log(this.getClass().getName(), Level.SEVERE, "Incomplete passwordsfields!");
+//			throw new Exception("Incomplete passwordsfields!");
+//		}
+//		if (!password.equals(passwordRepeat)) {
+//			LOG.log(this.getClass().getName(), Level.SEVERE, "Password not similar to the repetition!");
+//			throw new Exception("Password not similar to the repetition!");
+//		}
+//
+//		if (password.length() < 5) {
+//			LOG.log(this.getClass().getName(), Level.SEVERE, "Password too short!");
+//			throw new Exception("Password too short!");
+//		}
+//
+//		account = getAccount(mail);
+//		if (account == null) {
+//			LOG.log(this.getClass().getName(), Level.SEVERE, "User not found!");
+//			throw new Exception("User not found!");
+//		}
+//
+//		hash = HashHelper.calcSHA256(oldPassword);
+//
+//		if (!account.getPassword().equals(hash)) {
+//			LOG.log(this.getClass().getName(), Level.SEVERE, "Invalid password!");
+//			throw new Exception("Invalid password!");
+//		}
+//
+//
+//		hash = HashHelper.calcSHA256(password);
+//
+//		account.setPassword(hash);
+//		accountRepository.edit(account);
+//	}
 	@Override
-	public void changePassword(String mail, String oldPassword, String password, String passwordRepeat)
-			throws Exception {
-
-		Account account;
-		String hash = "";
-
-		if (oldPassword.equals("") || password.equals("") || passwordRepeat.equals("")) {
-			LOG.log(this.getClass().getName(), Level.SEVERE, "Incomplete passwordsfields!");
-			throw new Exception("Incomplete passwordsfields!");
+	public void login(String email, String password) {
+		ProgrammaticLogin login = new ProgrammaticLogin();
+		try {
+			login.login(email, password.toCharArray(), "PaperFlyRealm", true);
+		} catch (Exception ex) {
+			LOG.log(this.getClass().getName(), Level.SEVERE, ex.getMessage());
 		}
-		if (!password.equals(passwordRepeat)) {
-			LOG.log(this.getClass().getName(), Level.SEVERE, "Password not similar to the repetition!");
-			throw new Exception("Password not similar to the repetition!");
-		}
-
-		if (password.length() < 5) {
-			LOG.log(this.getClass().getName(), Level.SEVERE, "Password too short!");
-			throw new Exception("Password too short!");
-		}
-
-		account = getAccount(mail);
-		if (account == null) {
-			LOG.log(this.getClass().getName(), Level.SEVERE, "User not found!");
-			throw new Exception("User not found!");
-		}
-
-		hash = HashHelper.calcSHA256(oldPassword);
-
-		if (!account.getPassword().equals(hash)) {
-			LOG.log(this.getClass().getName(), Level.SEVERE, "Invalid password!");
-			throw new Exception("Invalid password!");
-		}
-
-
-		hash = HashHelper.calcSHA256(password);
-
-		account.setPassword(hash);
-		accountRepository.edit(account);
 	}
 
 	@Override
-	@RolesAllowed({"ADMINISTRATOR", "USER"})
+//	@RolesAllowed({"ADMINISTRATOR", "USER"})
 	public Account getAccount(String mail) {
 		return accountRepository.find(mail);
 	}
 
 	@Override
-	@RolesAllowed({"ADMINISTRATOR", "USER"})
+//	@RolesAllowed({"ADMINISTRATOR", "USER"})
 	public Account getAccountByUsername(String username) {
 		return accountRepository.findAccountByUsername(username);
 	}

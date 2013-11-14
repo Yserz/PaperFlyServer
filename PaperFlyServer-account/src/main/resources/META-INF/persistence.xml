@@ -8,7 +8,7 @@
 		<shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
 		<properties>
 			<!-- ###############
-[ START IF GLASSFISH _3_ ]
+[ START IF GLASSFISH _4_ ]
 			-->
 
 			<!--
@@ -17,7 +17,12 @@
 			<!--
 		table-generation-mode
 			-->
-			<property name="eclipselink.ddl-generation" value="create-tables"/>
+			<!--<property name="eclipselink.ddl-generation" value="create-tables"/>-->
+			<property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
+			<property name="javax.persistence.schema-generation.create-source" value="metadata-then-script"/>
+			<property name="javax.persistence.schema-generation.create-script-source" value="META-INF/insert.sql"/>
+			<property name="javax.persistence.schema-generation.drop-source" value="metadata"/>
+			<property name="javax.persistence.schema-generation-target" value="database"/>
 			<!--
 		eager create-process otherwise it will create the schema after the first access of the EntityManager
 			-->
@@ -30,7 +35,7 @@
 			<!--
 		JPA Listener
 			-->
-			<!--<property name="eclipselink.session-event-listener" value="com.welovecoding.logging.JPALogger"/>-->
+			<!--<property name="eclipselink.session-event-listener" value="de.fhb.logging.JPALogger"/>-->
 			<!--
 		Log JPA Statements
 			-->
@@ -39,40 +44,6 @@
 		Log values of parameters in query
 			-->
 			<property name="eclipselink.logging.parameters" value="true"/>
-
-			<!-- ###############
-[ END IF GLASSFISH _3_ ]
-			-->
-			<!-- ###############
-[ START IF GLASSFISH _4_ ]
-			-->
-
-			<!--
-	SCHEMA GENERATION
-			-->
-			<!--
-		table-generation-mode
-			-->
-			<!--<property name="javax.persistence.schema-generation.database.action" value="create"/>-->
-			<!--<property name="javax.persistence.schema-generation.create-source" value="metadata-then-script"/>-->
-			<!--<property name="javax.persistence.schema-generation.drop-source" value="metadata"/>-->
-			<!--<property name="javax.persistence.schema-generation-target" value="database"/>-->
-
-			<!--
-	LOGGING
-			-->
-			<!--
-		JPA Listener
-			-->
-			<!--<property name="eclipselink.session-event-listener" value="com.welovecoding.logging.JPALogger"/>-->
-			<!--
-		Log JPA Statements
-			-->
-			<!--<property name="eclipselink.logging.level" value="FINE"/>-->
-			<!--
-		Log values of parameters in query
-			-->
-			<!--<property name="eclipselink.logging.parameters" value="true"/>-->
 
 			<!-- ###############
 [ END IF GLASSFISH _4_ ]
