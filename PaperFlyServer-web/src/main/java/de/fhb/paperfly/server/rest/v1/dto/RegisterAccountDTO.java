@@ -14,11 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.fhb.paperfly.server.rest.v1.base;
+package de.fhb.paperfly.server.rest.v1.dto;
 
-import java.io.Serializable;
-import java.util.Date;
-import javax.xml.bind.annotation.XmlTransient;
+import de.fhb.paperfly.server.rest.v1.base.BaseDTO;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -26,16 +26,28 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ *
+ * @author Michael Koppen <michael.koppen@googlemail.com>
+ */
 @Getter
 @Setter
 @ToString
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
-public class BaseDTO implements Serializable {
+public class RegisterAccountDTO extends BaseDTO {
 
-	private static final long serialVersionUID = 1L;
-	private Date created;
-	private Date lastModified;
-//	private boolean enabled;
+	private String email;
+	@NotNull
+	@Size(min = 1, max = 255)
+	private String username;
+	private String password;
+	private String passwordRpt;
+	@NotNull
+	@Size(min = 1, max = 255)
+	private String lastName;
+	@NotNull
+	@Size(min = 1, max = 255)
+	private String firstName;
 }

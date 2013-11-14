@@ -28,7 +28,7 @@ public class ToEntityMapper {
 		e.setUsername(dto.getUsername());
 		e.setCreated(dto.getCreated());
 		e.setLastModified(dto.getLastModified());
-		e.setEnabled(dto.isEnabled());
+//		e.setEnabled(dto.isEnabled());
 
 		return e;
 	}

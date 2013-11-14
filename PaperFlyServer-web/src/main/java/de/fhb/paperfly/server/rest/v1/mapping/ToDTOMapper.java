@@ -27,7 +27,7 @@ public class ToDTOMapper {
 		dto.setUsername(e.getUsername());
 		dto.setCreated(e.getCreated());
 		dto.setLastModified(e.getLastModified());
-		dto.setEnabled(e.isEnabled());
+//		dto.setEnabled(e.isEnabled());
 
 		return dto;
 	}

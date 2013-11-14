@@ -42,7 +42,6 @@ public class AccountDTO extends BaseDTO {
 	@NotNull
 	@Size(min = 1, max = 255)
 	private String username;
-	private String password;
 	@NotNull
 	@Size(min = 1, max = 255)
 	private String lastName;

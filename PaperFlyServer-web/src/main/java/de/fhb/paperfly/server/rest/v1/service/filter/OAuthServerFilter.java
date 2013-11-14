@@ -35,7 +35,7 @@ public class OAuthServerFilter implements ContainerRequestFilter {
 	/**
 	 * OAuth realm. Default is set to "default".
 	 */
-	public static final String PROPERTY_REALM = "PaperFlyRealm";//com.sun.jersey.config.property.oauth.realm";
+	public static final String PROPERTY_REALM = "com.sun.jersey.config.property.oauth.realm";
 	/**
 	 * Property that can be set to a regular expression used to match the path
 	 * (relative to the base URI) this filter should not be applied to.
@@ -117,33 +117,33 @@ public class OAuthServerFilter implements ContainerRequestFilter {
 	@Override
 	public ContainerRequest filter(ContainerRequest request) {
 		System.out.println("Calling OAuthFilter");
-//		// do not filter requests that do not use OAuth authentication
-//		String authHeader = request.getHeaderValue(OAuthParameters.AUTHORIZATION_HEADER);
-//		if (authHeader == null || !authHeader.toUpperCase().startsWith(OAuthParameters.SCHEME.toUpperCase())) {
-//			System.out.println("...No OAuth Header found");
-//			return request;
-//		}
-//
-//		// do not filter if the request path matches pattern to ignore
-//		if (match(ignorePathPattern, request.getPath())) {
-//			System.out.println("...Requested path is irgnored because of configured ignorePattern");
-//			return request;
-//		}
-//
-//		OAuthSecurityContext sc = null;
-//
-//		try {
-//			sc = getSecurityContext(request);
-//		} catch (OAuthException e) {
-//			if (optional) {
-//				return request;
-//			} else {
-//				System.out.println("...OAuth failed");
-//				throw new WebApplicationException(e.toResponse());
-//			}
-//		}
-//		System.out.println("...setting OAuth securityContext");
-//		request.setSecurityContext(sc);
+		// do not filter requests that do not use OAuth authentication
+		String authHeader = request.getHeaderValue(OAuthParameters.AUTHORIZATION_HEADER);
+		if (authHeader == null || !authHeader.toUpperCase().startsWith(OAuthParameters.SCHEME.toUpperCase())) {
+			System.out.println("...No OAuth Header found");
+			return request;
+		}
+
+		// do not filter if the request path matches pattern to ignore
+		if (match(ignorePathPattern, request.getPath())) {
+			System.out.println("...Requested path is irgnored because of configured ignorePattern");
+			return request;
+		}
+
+		OAuthSecurityContext sc = null;
+
+		try {
+			sc = getSecurityContext(request);
+		} catch (OAuthException e) {
+			if (optional) {
+				return request;
+			} else {
+				System.out.println("...OAuth failed");
+				throw new WebApplicationException(e.toResponse());
+			}
+		}
+		System.out.println("...setting OAuth securityContext");
+		request.setSecurityContext(sc);
 
 		return request;
 	}
