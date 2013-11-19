@@ -2,7 +2,7 @@ package de.fhb.paperfly.server.rest.v1.mapping;
 
 import de.fhb.paperfly.server.account.entity.Account;
 import de.fhb.paperfly.server.rest.v1.dto.AccountDTO;
-import de.fhb.paperfly.server.rest.v1.dto.CredentialDTO;
+import de.fhb.paperfly.server.rest.v1.dto.output.CredentialDTO;
 import java.util.ArrayList;
 import java.util.List;
 

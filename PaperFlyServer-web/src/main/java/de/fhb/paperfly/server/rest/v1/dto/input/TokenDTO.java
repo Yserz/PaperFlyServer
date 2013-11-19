@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.fhb.paperfly.server.rest.v1.dto;
+package de.fhb.paperfly.server.rest.v1.dto.input;
 
+import de.fhb.paperfly.server.rest.v1.base.BaseDTO;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -20,6 +21,9 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
-//@AllArgsConstructor
-public class RoomDTO {
+@AllArgsConstructor
+public class TokenDTO extends BaseDTO {
+
+	private String consumerKey;
+	private String consumerSecret;
 }
