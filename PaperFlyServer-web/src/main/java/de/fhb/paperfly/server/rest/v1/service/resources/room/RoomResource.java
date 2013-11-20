@@ -4,6 +4,7 @@
  */
 package de.fhb.paperfly.server.rest.v1.service.resources.room;
 
+import com.qmino.miredot.annotations.ReturnType;
 import de.fhb.paperfly.server.logging.service.LoggingServiceLocal;
 import de.fhb.paperfly.server.rest.v1.dto.AccountDTO;
 import de.fhb.paperfly.server.rest.v1.dto.output.ErrorDTO;
@@ -36,6 +37,7 @@ public class RoomResource {
 	@GET
 	@Path("locateAccount/{username}")
 	@Produces(PaperFlyRestService.JSON_MEDIA_TYPE)
+	@ReturnType("de.fhb.paperfly.server.rest.v1.dto.output.RoomDTO")
 	public Response locateAccount(@PathParam("username") String query, @Context HttpServletRequest request) {
 
 		Response resp;
@@ -52,6 +54,7 @@ public class RoomResource {
 	@GET
 	@Path("/")
 	@Produces(PaperFlyRestService.JSON_MEDIA_TYPE)
+	@ReturnType("java.util.List<de.fhb.paperfly.server.rest.v1.dto.output.RoomDTO>>")
 	public Response getRoomList(@Context HttpServletRequest request) {
 
 		Response resp;
@@ -75,6 +78,7 @@ public class RoomResource {
 	@GET
 	@Path("accounts/{roomID}")
 	@Produces(PaperFlyRestService.JSON_MEDIA_TYPE)
+	@ReturnType("java.util.List<de.fhb.paperfly.server.rest.v1.dto.AccountDTO>>")
 	public Response getAccountsInRoom(@PathParam("roomID") String roomID, @Context HttpServletRequest request) {
 
 		Response resp;

@@ -4,6 +4,7 @@
  */
 package de.fhb.paperfly.server.rest.v1.service.resources.account;
 
+import com.qmino.miredot.annotations.ReturnType;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 import com.sun.jersey.oauth.server.spi.OAuthProvider;
 import de.fhb.paperfly.server.account.entity.Account;
@@ -50,7 +51,7 @@ public class AccountResource {
 	@Path("register")
 	@Produces(PaperFlyRestService.JSON_MEDIA_TYPE)
 	@Consumes(PaperFlyRestService.JSON_MEDIA_TYPE)
-//	@ReturnType("java.util.List<de.fhb.paperfly.server.rest.v1.dto.input.TokenDTO>>")
+	@ReturnType("de.fhb.paperfly.server.rest.v1.dto.input.TokenDTO")
 	public Response register(RegisterAccountDTO account, @Context HttpServletRequest request, @Context OAuthProvider provider) {
 
 		Response resp;
@@ -84,6 +85,7 @@ public class AccountResource {
 	@GET
 	@Path("{username}")
 	@Produces(PaperFlyRestService.JSON_MEDIA_TYPE)
+	@ReturnType("de.fhb.paperfly.server.rest.v1.dto.AccountDTO")
 	public Response getAccount(@PathParam("username") String username, @Context HttpServletRequest request, @Context SecurityContext sc) {
 
 //		System.out.println("Username: " + sc.getUserPrincipal().getName());
@@ -110,6 +112,7 @@ public class AccountResource {
 	@Path("edit/{accountID}")
 	@Produces(PaperFlyRestService.JSON_MEDIA_TYPE)
 	@Consumes(PaperFlyRestService.JSON_MEDIA_TYPE)
+	@ReturnType("de.fhb.paperfly.server.rest.v1.dto.AccountDTO")
 	public Response editAccount(AccountDTO acc, @Context HttpServletRequest request) {
 
 		Response resp;
@@ -132,6 +135,7 @@ public class AccountResource {
 	@GET
 	@Path("search/{query}")
 	@Produces(PaperFlyRestService.JSON_MEDIA_TYPE)
+	@ReturnType("java.util.List<de.fhb.paperfly.server.rest.v1.dto.AccountDTO>>")
 	public Response searchAccountByUsername(@PathParam("query") String query, @Context HttpServletRequest request) {
 
 		Response resp;
@@ -151,6 +155,7 @@ public class AccountResource {
 	@POST
 	@Path("friend/{friendsUsername}")
 	@Produces(PaperFlyRestService.JSON_MEDIA_TYPE)
+	@ReturnType("de.fhb.paperfly.server.rest.v1.dto.AccountDTO")
 	public Response addFriend(@PathParam("friendsUsername") String friendsUsername, @Context HttpServletRequest request, @Context SecurityContext sc) {
 
 		Response resp;
@@ -173,6 +178,7 @@ public class AccountResource {
 	@DELETE
 	@Path("friend/{friendsUsername}")
 	@Produces(PaperFlyRestService.JSON_MEDIA_TYPE)
+	@ReturnType("de.fhb.paperfly.server.rest.v1.dto.AccountDTO")
 	public Response removeFriend(@PathParam("friendsUsername") String friendsUsername, @Context HttpServletRequest request, @Context SecurityContext sc) {
 
 		Response resp;

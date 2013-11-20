@@ -82,7 +82,7 @@ public class AccountService implements AccountServiceLocal, AccountServiceLocalA
 			throw new Exception("Password too short!");
 		}
 
-		Account acc = new Account(null, mail, username, lastname, firstname, null);
+		Account acc = new Account(mail, username, lastname, firstname, null);
 		validateAccount(acc);
 		accountRepository.create(acc);
 
@@ -113,7 +113,7 @@ public class AccountService implements AccountServiceLocal, AccountServiceLocalA
 			throw new Exception("Password too short!");
 		}
 
-		Account acc = new Account(null, mail, username, lastname, firstname, null);
+		Account acc = new Account(mail, username, lastname, firstname, null);
 		validateAccount(acc);
 		accountRepository.create(acc);
 

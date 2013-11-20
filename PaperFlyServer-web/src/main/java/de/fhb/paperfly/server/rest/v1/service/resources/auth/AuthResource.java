@@ -4,6 +4,7 @@
  */
 package de.fhb.paperfly.server.rest.v1.service.resources.auth;
 
+import com.qmino.miredot.annotations.ReturnType;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 import com.sun.jersey.oauth.server.spi.OAuthProvider;
 import de.fhb.paperfly.server.logging.service.LoggingServiceLocal;
@@ -38,6 +39,7 @@ public class AuthResource {
 	@GET
 	@Path("login")
 	@Produces(PaperFlyRestService.JSON_MEDIA_TYPE)
+	@ReturnType("de.fhb.paperfly.server.rest.v1.dto.input.TokenDTO")
 	public Response login(@Context HttpServletRequest request, @Context OAuthProvider provider) {
 		System.out.println("Calling login");
 		/**
