@@ -16,7 +16,6 @@
  */
 package de.fhb.paperfly.server.rest.v1.dto.output;
 
-import de.fhb.paperfly.server.rest.v1.dto.base.BaseDTO;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -34,8 +33,9 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
-public class CredentialDTO extends BaseDTO {
+public class CoordinateDTO {
 
-	private String email;
-	private String password;
+	private Long id;
+	private double longlitutde;
+	private double latitude;
 }

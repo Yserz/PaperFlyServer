@@ -14,12 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.fhb.paperfly.server.rest.v1.dto;
+package de.fhb.paperfly.server.rest.v1.dto.input;
 
 import de.fhb.paperfly.server.rest.v1.dto.base.BaseDTO;
-import java.util.List;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -37,20 +34,8 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
-public class AccountDTO extends BaseDTO {
+public class CredentialDTO extends BaseDTO {
 
-	private Long id;
-	@NotNull
-	@Size(min = 1, max = 255)
 	private String email;
-	@NotNull
-	@Size(min = 1, max = 255)
-	private String username;
-	@NotNull
-	@Size(min = 1, max = 255)
-	private String lastName;
-	@NotNull
-	@Size(min = 1, max = 255)
-	private String firstName;
-	private List<AccountDTO> friendList;
+	private String password;
 }

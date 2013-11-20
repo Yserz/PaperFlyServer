@@ -44,23 +44,30 @@ public class PaperFlyRestService {
 	private void init() {
 	}
 
+	/**
+	 * [LARGE]
+	 *
+	 * @title Ping the Service
+	 * @summary Pings the Service to test if it is online.
+	 * @return Returns an alive-message.
+	 */
 	@GET
 	@Path("ping")
 	public String ping() {
 		return "alive";
 	}
 
-	@Path("auth/")
+	@Path("/")
 	public AuthResource getAuthResource() {
 		return authResource;
 	}
 
-	@Path("account/")
+	@Path("/")
 	public AccountResource getAccountResource() {
 		return accountResource;
 	}
 
-	@Path("room/")
+	@Path("/")
 	public RoomResource getRoomResource() {
 		return roomResource;
 	}

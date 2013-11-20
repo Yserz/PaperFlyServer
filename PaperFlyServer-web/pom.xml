@@ -136,7 +136,31 @@
 					</execution>
 				</executions>
 				<configuration>
-					<!--insert configuration here-->
+					<title>
+						<strategy>tag: title</strategy>
+					</title>
+					<statusCodes>
+						<statusCode>
+							<httpCode>200</httpCode>
+							<document>always</document>
+							<defaultMessage>The service call has completed successfully.</defaultMessage>
+						</statusCode>
+						<statusCode>
+							<httpCode>401</httpCode>
+							<document>explicit: com.qmino.miredot.petstore.exceptions.AuthorizationException</document>
+							<defaultMessage>The user is logged in, but is not authorized to use this service.</defaultMessage>
+						</statusCode>
+						<statusCode>
+							<httpCode>412</httpCode>
+							<document>put,post</document>
+							<defaultMessage>Invalid JSON/XML input.</defaultMessage>
+						</statusCode>
+						<statusCode>
+							<httpCode>500</httpCode>
+							<document>always</document>
+							<defaultMessage>Internal server exception. The service call did not succeed.</defaultMessage>
+						</statusCode>
+					</statusCodes>
 				</configuration>
 			</plugin>
 		</plugins>

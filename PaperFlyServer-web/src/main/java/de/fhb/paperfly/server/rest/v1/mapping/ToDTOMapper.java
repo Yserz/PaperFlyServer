@@ -27,6 +27,8 @@ public class ToDTOMapper {
 		dto.setUsername(e.getUsername());
 		dto.setCreated(e.getCreated());
 		dto.setLastModified(e.getLastModified());
+		dto.setFriendList(mapAccountListDept(e.getFriendList(), dept));
+
 //		dto.setEnabled(e.isEnabled());
 
 		return dto;

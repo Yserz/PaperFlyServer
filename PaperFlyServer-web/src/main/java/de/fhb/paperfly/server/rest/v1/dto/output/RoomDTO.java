@@ -20,6 +20,10 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
-//@AllArgsConstructor
+@AllArgsConstructor
 public class RoomDTO {
+
+	private Long id;
+	private String name;
+	private CoordinateDTO coordinate;
 }

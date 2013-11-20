@@ -12,7 +12,7 @@ import de.fhb.paperfly.server.account.service.AccountServiceLocal;
 import de.fhb.paperfly.server.logging.service.LoggingServiceLocal;
 import de.fhb.paperfly.server.rest.v1.dto.AccountDTO;
 import de.fhb.paperfly.server.rest.v1.dto.input.RegisterAccountDTO;
-import de.fhb.paperfly.server.rest.v1.dto.input.TokenDTO;
+import de.fhb.paperfly.server.rest.v1.dto.output.TokenDTO;
 import de.fhb.paperfly.server.rest.v1.dto.output.ErrorDTO;
 import de.fhb.paperfly.server.rest.v1.service.PaperFlyRestService;
 import de.fhb.paperfly.server.rest.v1.service.provider.DefaultOAuthProvider;
@@ -40,6 +40,7 @@ import javax.ws.rs.core.SecurityContext;
  */
 // Path: account/
 @Stateless
+@Path("account/")
 public class AccountResource {
 
 	@EJB
@@ -47,6 +48,19 @@ public class AccountResource {
 	@EJB
 	private AccountServiceLocal accountService;
 
+	/**
+	 *
+	 * [LARGE] Registers an account in the service.
+	 *
+	 * @title Register a new Account
+	 *
+	 * @summary Registers an account in the service.
+	 *
+	 * @param account The account which will be registered.
+	 * @param request
+	 * @param provider
+	 * @return The OAuth-Token for the newly registered account.
+	 */
 	@PUT
 	@Path("register")
 	@Produces(PaperFlyRestService.JSON_MEDIA_TYPE)
@@ -82,6 +96,16 @@ public class AccountResource {
 		return resp;
 	}
 
+	/**
+	 * [LARGE]
+	 *
+	 * @title Get an Account
+	 * @summary Get's an account which is registered with the given username.
+	 * @param username The username of the account to search for.
+	 * @param request
+	 * @param sc
+	 * @return The found account with the given username.
+	 */
 	@GET
 	@Path("{username}")
 	@Produces(PaperFlyRestService.JSON_MEDIA_TYPE)
@@ -108,19 +132,29 @@ public class AccountResource {
 		return resp;
 	}
 
+	/**
+	 * [LARGE]
+	 *
+	 * @title Edit an Account
+	 * @summary Modifies an existing account.
+	 * @param account The account with the new data. </br>(ATM only firstname
+	 * and lastname will be edited)
+	 * @param request
+	 * @return The edited account.
+	 */
 	@POST
-	@Path("edit/{accountID}")
+	@Path("edit/{accountUsername}")
 	@Produces(PaperFlyRestService.JSON_MEDIA_TYPE)
 	@Consumes(PaperFlyRestService.JSON_MEDIA_TYPE)
 	@ReturnType("de.fhb.paperfly.server.rest.v1.dto.AccountDTO")
-	public Response editAccount(AccountDTO acc, @Context HttpServletRequest request) {
+	public Response editAccount(AccountDTO account, @Context HttpServletRequest request) {
 
 		Response resp;
 		try {
-			Account myAccount = accountService.getAccount(acc.getEmail());
+			Account myAccount = accountService.getAccount(account.getEmail());
 
-			myAccount.setFirstName(acc.getFirstName());
-			myAccount.setLastName(acc.getLastName());
+			myAccount.setFirstName(account.getFirstName());
+			myAccount.setLastName(account.getLastName());
 
 
 			AccountDTO editedAccount = PaperFlyRestService.toDTOMapper.mapAccount(accountService.editAccount(myAccount));
@@ -132,6 +166,17 @@ public class AccountResource {
 		return resp;
 	}
 
+	/**
+	 * [LARGE]
+	 *
+	 * @title Search Accounts by the Username
+	 * @summary Searches an account by the given username. This function will
+	 * perform kind of 'LIKE'-Operation.
+	 * @param query The query to search for.
+	 * @param request
+	 * @return The list of accounts with a username which contains the
+	 * query-string.
+	 */
 	@GET
 	@Path("search/{query}")
 	@Produces(PaperFlyRestService.JSON_MEDIA_TYPE)
@@ -152,6 +197,17 @@ public class AccountResource {
 		return resp;
 	}
 
+	/**
+	 * [LARGE]
+	 *
+	 * @title Add a Friend
+	 * @summary This operation will add another account to the friendlist of the
+	 * actual account.
+	 * @param friendsUsername The exact username of the account to add.
+	 * @param request
+	 * @param sc
+	 * @return The account with the modified friendlist.
+	 */
 	@POST
 	@Path("friend/{friendsUsername}")
 	@Produces(PaperFlyRestService.JSON_MEDIA_TYPE)
@@ -175,6 +231,17 @@ public class AccountResource {
 		return resp;
 	}
 
+	/**
+	 * [LARGE]
+	 *
+	 * @title Remove a Friend
+	 * @summary This operation will remove another account from the friendlist
+	 * of the actual account.
+	 * @param friendsUsername
+	 * @param request
+	 * @param sc
+	 * @return The account with the modified friendlist.
+	 */
 	@DELETE
 	@Path("friend/{friendsUsername}")
 	@Produces(PaperFlyRestService.JSON_MEDIA_TYPE)

@@ -8,7 +8,7 @@ import com.qmino.miredot.annotations.ReturnType;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 import com.sun.jersey.oauth.server.spi.OAuthProvider;
 import de.fhb.paperfly.server.logging.service.LoggingServiceLocal;
-import de.fhb.paperfly.server.rest.v1.dto.input.TokenDTO;
+import de.fhb.paperfly.server.rest.v1.dto.output.TokenDTO;
 import de.fhb.paperfly.server.rest.v1.dto.output.ErrorDTO;
 import de.fhb.paperfly.server.rest.v1.service.PaperFlyRestService;
 import de.fhb.paperfly.server.rest.v1.service.provider.DefaultOAuthProvider;
@@ -31,11 +31,21 @@ import javax.ws.rs.core.Response;
  */
 // Path: auth/
 @Stateless
+@Path("auth/")
 public class AuthResource {
 
 	@EJB
 	public LoggingServiceLocal LOG;
 
+	/**
+	 * [LARGE]
+	 *
+	 * @title Login
+	 * @summary Log into the service an retrieve your OAuth-Token.
+	 * @param request
+	 * @param provider
+	 * @return Returns the OAuth-Token of the logged in user.
+	 */
 	@GET
 	@Path("login")
 	@Produces(PaperFlyRestService.JSON_MEDIA_TYPE)
@@ -84,6 +94,14 @@ public class AuthResource {
 		return resp;
 	}
 
+	/**
+	 * [LARGE]
+	 *
+	 * @title Logout
+	 * @summary Log's out the actual user.
+	 * @param request
+	 * @return Nothing to return.
+	 */
 	@GET
 	@Path("logout")
 	@Produces(PaperFlyRestService.JSON_MEDIA_TYPE)
