@@ -35,6 +35,7 @@
 			<id>eclipselink</id>
 			<name>Repository for library EclipseLink (JPA 2.0)</name>
 		</repository>
+		
 	</repositories>
 	<build>
 		<pluginManagement>

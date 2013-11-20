@@ -8,15 +8,13 @@ import com.sun.jersey.core.util.MultivaluedMapImpl;
 import com.sun.jersey.oauth.server.spi.OAuthProvider;
 import de.fhb.paperfly.server.account.entity.Account;
 import de.fhb.paperfly.server.account.service.AccountServiceLocal;
+import de.fhb.paperfly.server.logging.service.LoggingServiceLocal;
 import de.fhb.paperfly.server.rest.v1.dto.AccountDTO;
 import de.fhb.paperfly.server.rest.v1.dto.input.RegisterAccountDTO;
 import de.fhb.paperfly.server.rest.v1.dto.input.TokenDTO;
 import de.fhb.paperfly.server.rest.v1.dto.output.ErrorDTO;
 import de.fhb.paperfly.server.rest.v1.service.PaperFlyRestService;
-import static de.fhb.paperfly.server.rest.v1.service.PaperFlyRestService.JSON_MEDIA_TYPE;
-import static de.fhb.paperfly.server.rest.v1.service.PaperFlyRestService.LOG;
 import de.fhb.paperfly.server.rest.v1.service.provider.DefaultOAuthProvider;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import javax.ejb.EJB;
@@ -44,12 +42,15 @@ import javax.ws.rs.core.SecurityContext;
 public class AccountResource {
 
 	@EJB
+	public LoggingServiceLocal LOG;
+	@EJB
 	private AccountServiceLocal accountService;
 
 	@PUT
 	@Path("register")
 	@Produces(PaperFlyRestService.JSON_MEDIA_TYPE)
 	@Consumes(PaperFlyRestService.JSON_MEDIA_TYPE)
+//	@ReturnType("java.util.List<de.fhb.paperfly.server.rest.v1.dto.input.TokenDTO>>")
 	public Response register(RegisterAccountDTO account, @Context HttpServletRequest request, @Context OAuthProvider provider) {
 
 		Response resp;

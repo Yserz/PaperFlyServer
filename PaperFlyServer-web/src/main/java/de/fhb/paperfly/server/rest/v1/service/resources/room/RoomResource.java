@@ -4,14 +4,15 @@
  */
 package de.fhb.paperfly.server.rest.v1.service.resources.room;
 
+import de.fhb.paperfly.server.logging.service.LoggingServiceLocal;
 import de.fhb.paperfly.server.rest.v1.dto.AccountDTO;
 import de.fhb.paperfly.server.rest.v1.dto.output.ErrorDTO;
 import de.fhb.paperfly.server.rest.v1.dto.output.RoomDTO;
 import de.fhb.paperfly.server.rest.v1.service.PaperFlyRestService;
-import static de.fhb.paperfly.server.rest.v1.service.PaperFlyRestService.LOG;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
@@ -28,6 +29,9 @@ import javax.ws.rs.core.Response;
 // Path: room/
 @Stateless
 public class RoomResource {
+
+	@EJB
+	public LoggingServiceLocal LOG;
 
 	@GET
 	@Path("locateAccount/{username}")

@@ -13,7 +13,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
 /**
- * Address: http://localhost:8080/PaperFlyServer-web/rest/service/v1
+ * Address: http://localhost:8080/PaperFlyServer-web/rest/v1
  *
  * @author MacYser
  */
@@ -23,7 +23,7 @@ import javax.ws.rs.Path;
 public class PaperFlyRestService {
 
 	@EJB
-	public static LoggingServiceLocal LOG;
+	public LoggingServiceLocal LOG;
 	public static final String JSON_MEDIA_TYPE = "application/json;charset=utf-8";
 	public static ToDTOMapper toDTOMapper;
 	public static ToEntityMapper toEntityMapper;
@@ -63,5 +63,9 @@ public class PaperFlyRestService {
 	@Path("room/")
 	public RoomResource getRoomResource() {
 		return roomResource;
+	}
+
+	public LoggingServiceLocal getLOG() {
+		return LOG;
 	}
 }

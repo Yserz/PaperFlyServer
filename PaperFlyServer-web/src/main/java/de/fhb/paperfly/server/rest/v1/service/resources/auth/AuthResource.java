@@ -6,6 +6,7 @@ package de.fhb.paperfly.server.rest.v1.service.resources.auth;
 
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 import com.sun.jersey.oauth.server.spi.OAuthProvider;
+import de.fhb.paperfly.server.logging.service.LoggingServiceLocal;
 import de.fhb.paperfly.server.rest.v1.dto.input.TokenDTO;
 import de.fhb.paperfly.server.rest.v1.dto.output.ErrorDTO;
 import de.fhb.paperfly.server.rest.v1.service.PaperFlyRestService;
@@ -13,6 +14,7 @@ import de.fhb.paperfly.server.rest.v1.service.provider.DefaultOAuthProvider;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
@@ -29,6 +31,9 @@ import javax.ws.rs.core.Response;
 // Path: auth/
 @Stateless
 public class AuthResource {
+
+	@EJB
+	public LoggingServiceLocal LOG;
 
 	@GET
 	@Path("login")
@@ -71,7 +76,7 @@ public class AuthResource {
 			System.out.println("User: " + request.getUserPrincipal());
 			resp = Response.ok(new TokenDTO(c.getKey(), c.getSecret())).build();
 		} catch (Exception e) {
-			PaperFlyRestService.LOG.log(this.getClass().getName(), Level.SEVERE, "Exception: {0}", e.getMessage());
+			LOG.log(this.getClass().getName(), Level.SEVERE, "Exception: {0}", e.getMessage());
 			resp = Response.status(500).entity(new ErrorDTO(20, "Fehler")).build();
 		}
 		return resp;
