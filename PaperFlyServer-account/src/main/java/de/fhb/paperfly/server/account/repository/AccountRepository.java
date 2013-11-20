@@ -20,6 +20,7 @@ import de.fhb.paperfly.server.account.entity.Account;
 import de.fhb.paperfly.server.base.repository.AbstractRepository;
 import de.fhb.paperfly.server.logging.service.LoggingServiceLocal;
 import de.fhb.paperfly.server.util.Settings;
+import java.util.List;
 import java.util.logging.Level;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -69,7 +70,7 @@ public class AccountRepository extends AbstractRepository<Account> {
 	 * @param username the username the user belongs to
 	 * @return the account with the given username
 	 */
-	public Account findAccountByUsername(String username) {
+	public Account findByUsername(String username) {
 		Account acc = null;
 
 		//TODO may handle exceptions in the next higher layer.
@@ -79,5 +80,9 @@ public class AccountRepository extends AbstractRepository<Account> {
 			LOG.log(this.getClass().getName(), Level.INFO, "Exception: " + e.getMessage(), e);
 		}
 		return acc;
+	}
+
+	public List<Account> search(String query) {
+		return null;
 	}
 }

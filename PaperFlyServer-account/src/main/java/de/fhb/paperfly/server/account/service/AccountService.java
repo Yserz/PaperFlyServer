@@ -82,7 +82,7 @@ public class AccountService implements AccountServiceLocal, AccountServiceLocalA
 			throw new Exception("Password too short!");
 		}
 
-		Account acc = new Account(mail, username, lastname, firstname, null);
+		Account acc = new Account(null, mail, username, lastname, firstname, null);
 		validateAccount(acc);
 		accountRepository.create(acc);
 
@@ -113,7 +113,7 @@ public class AccountService implements AccountServiceLocal, AccountServiceLocalA
 			throw new Exception("Password too short!");
 		}
 
-		Account acc = new Account(mail, username, lastname, firstname, null);
+		Account acc = new Account(null, mail, username, lastname, firstname, null);
 		validateAccount(acc);
 		accountRepository.create(acc);
 
@@ -184,9 +184,19 @@ public class AccountService implements AccountServiceLocal, AccountServiceLocalA
 	}
 
 	@Override
+	public Account editAccount(Account account) {
+		return accountRepository.edit(account);
+	}
+
+	@Override
+	public List<Account> searchAccount(String query) {
+		return accountRepository.search(query);
+	}
+
+	@Override
 //	@RolesAllowed({"ADMINISTRATOR", "USER"})
 	public Account getAccountByUsername(String username) {
-		return accountRepository.findAccountByUsername(username);
+		return accountRepository.findByUsername(username);
 	}
 
 	private void validateAccount(Account account) throws Exception {

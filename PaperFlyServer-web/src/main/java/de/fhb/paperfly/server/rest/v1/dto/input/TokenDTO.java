@@ -4,7 +4,7 @@
  */
 package de.fhb.paperfly.server.rest.v1.dto.input;
 
-import de.fhb.paperfly.server.rest.v1.base.BaseDTO;
+import de.fhb.paperfly.server.rest.v1.dto.base.BaseDTO;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

@@ -16,7 +16,7 @@
  */
 package de.fhb.paperfly.server.rest.v1.dto;
 
-import de.fhb.paperfly.server.rest.v1.base.BaseDTO;
+import de.fhb.paperfly.server.rest.v1.dto.base.BaseDTO;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -38,6 +38,9 @@ import lombok.ToString;
 @AllArgsConstructor
 public class AccountDTO extends BaseDTO {
 
+	private Long id;
+	@NotNull
+	@Size(min = 1, max = 255)
 	private String email;
 	@NotNull
 	@Size(min = 1, max = 255)
