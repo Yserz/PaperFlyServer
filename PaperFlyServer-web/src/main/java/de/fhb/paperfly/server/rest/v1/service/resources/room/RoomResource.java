@@ -29,14 +29,14 @@ import javax.ws.rs.core.Response;
  */
 // Path: room/
 @Stateless
-@Path("room/")
+//@Path("room/")
 public class RoomResource {
 
 	@EJB
 	public LoggingServiceLocal LOG;
 
 	/**
-	 * [LARGE]
+	 * [TODO LARGE DESC]
 	 *
 	 * @title Locate an Account
 	 * @summary Locates an Account if it's in any.
@@ -62,7 +62,7 @@ public class RoomResource {
 	}
 
 	/**
-	 * [LARGE]
+	 * [TODO LARGE DESC]
 	 *
 	 * @title List all active Rooms
 	 * @summary Lists all active chat-rooms.
@@ -93,7 +93,7 @@ public class RoomResource {
 //		return resp;
 //	}
 	/**
-	 * [LARGE]
+	 * [TODO LARGE DESC]
 	 *
 	 * @title Get all Accounts in a Room
 	 * @summary Gets all account located in the given room.

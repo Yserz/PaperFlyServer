@@ -57,17 +57,17 @@ public class PaperFlyRestService {
 		return "alive";
 	}
 
-	@Path("/")
+	@Path("auth/")
 	public AuthResource getAuthResource() {
 		return authResource;
 	}
 
-	@Path("/")
+	@Path("account/")
 	public AccountResource getAccountResource() {
 		return accountResource;
 	}
 
-	@Path("/")
+	@Path("room/")
 	public RoomResource getRoomResource() {
 		return roomResource;
 	}

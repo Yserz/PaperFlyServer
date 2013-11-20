@@ -31,14 +31,14 @@ import javax.ws.rs.core.Response;
  */
 // Path: auth/
 @Stateless
-@Path("auth/")
+//@Path("auth/")
 public class AuthResource {
 
 	@EJB
 	public LoggingServiceLocal LOG;
 
 	/**
-	 * [LARGE]
+	 * [TODO LARGE DESC]
 	 *
 	 * @title Login
 	 * @summary Log into the service an retrieve your OAuth-Token.
@@ -49,7 +49,7 @@ public class AuthResource {
 	@GET
 	@Path("login")
 	@Produces(PaperFlyRestService.JSON_MEDIA_TYPE)
-	@ReturnType("de.fhb.paperfly.server.rest.v1.dto.input.TokenDTO")
+	@ReturnType("de.fhb.paperfly.server.rest.v1.dto.output.TokenDTO")
 	public Response login(@Context HttpServletRequest request, @Context OAuthProvider provider) {
 		System.out.println("Calling login");
 		/**
@@ -95,7 +95,7 @@ public class AuthResource {
 	}
 
 	/**
-	 * [LARGE]
+	 * [TODO LARGE DESC]
 	 *
 	 * @title Logout
 	 * @summary Log's out the actual user.

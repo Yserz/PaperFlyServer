@@ -29,6 +29,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 /**
  * This class provides specialized methods for database operations related to
@@ -75,14 +76,16 @@ public class AccountRepository extends AbstractRepository<Account> {
 
 		//TODO may handle exceptions in the next higher layer.
 		try {
-			acc = (Account) em.createNamedQuery("Account.findByUsername").setParameter("username", username).getSingleResult();
+			acc = em.createNamedQuery("Account.findByUsername", Account.class).setParameter("username", username).getSingleResult();
 		} catch (NonUniqueResultException | NoResultException e) {
 			LOG.log(this.getClass().getName(), Level.INFO, "Exception: " + e.getMessage(), e);
 		}
 		return acc;
 	}
 
-	public List<Account> search(String query) {
-		return null;
+	public List<Account> search(String keyword) {
+		return em.createNamedQuery("Account.searchByUsername", Account.class)
+				.setParameter("keyword", "%" + keyword + "%").getResultList();
+
 	}
 }

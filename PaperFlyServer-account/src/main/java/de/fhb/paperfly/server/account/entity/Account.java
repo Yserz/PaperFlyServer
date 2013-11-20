@@ -40,7 +40,8 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @NamedQueries({
-	@NamedQuery(name = "Account.findByUsername", query = "SELECT a FROM Account a WHERE a.username = :username")
+	@NamedQuery(name = "Account.findByUsername", query = "SELECT a FROM Account a WHERE a.username = :username"),
+	@NamedQuery(name = "Account.searchByUsername", query = "SELECT a FROM Account a WHERE UPPER(a.username) LIKE UPPER(:keyword)")
 })
 public class Account extends BaseEntity {
 

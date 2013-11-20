@@ -40,7 +40,7 @@ import javax.ws.rs.core.SecurityContext;
  */
 // Path: account/
 @Stateless
-@Path("account/")
+//@Path("account/")
 public class AccountResource {
 
 	@EJB
@@ -50,7 +50,7 @@ public class AccountResource {
 
 	/**
 	 *
-	 * [LARGE] Registers an account in the service.
+	 * [TODO LARGE DESC]
 	 *
 	 * @title Register a new Account
 	 *
@@ -65,7 +65,7 @@ public class AccountResource {
 	@Path("register")
 	@Produces(PaperFlyRestService.JSON_MEDIA_TYPE)
 	@Consumes(PaperFlyRestService.JSON_MEDIA_TYPE)
-	@ReturnType("de.fhb.paperfly.server.rest.v1.dto.input.TokenDTO")
+	@ReturnType("de.fhb.paperfly.server.rest.v1.dto.output.TokenDTO")
 	public Response register(RegisterAccountDTO account, @Context HttpServletRequest request, @Context OAuthProvider provider) {
 
 		Response resp;
@@ -97,7 +97,7 @@ public class AccountResource {
 	}
 
 	/**
-	 * [LARGE]
+	 * [TODO LARGE DESC]
 	 *
 	 * @title Get an Account
 	 * @summary Get's an account which is registered with the given username.
@@ -133,7 +133,7 @@ public class AccountResource {
 	}
 
 	/**
-	 * [LARGE]
+	 * [TODO LARGE DESC]
 	 *
 	 * @title Edit an Account
 	 * @summary Modifies an existing account.
@@ -167,7 +167,7 @@ public class AccountResource {
 	}
 
 	/**
-	 * [LARGE]
+	 * [TODO LARGE DESC]
 	 *
 	 * @title Search Accounts by the Username
 	 * @summary Searches an account by the given username. This function will
@@ -198,7 +198,7 @@ public class AccountResource {
 	}
 
 	/**
-	 * [LARGE]
+	 * [TODO LARGE DESC]
 	 *
 	 * @title Add a Friend
 	 * @summary This operation will add another account to the friendlist of the
@@ -232,7 +232,7 @@ public class AccountResource {
 	}
 
 	/**
-	 * [LARGE]
+	 * [TODO LARGE DESC]
 	 *
 	 * @title Remove a Friend
 	 * @summary This operation will remove another account from the friendlist
