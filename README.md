@@ -22,5 +22,5 @@ PaperFlyServer
 
 6. Teste login
   - localhost:8080/PaperFlyServer-web/secure
-  - stndarduser: mail@mail.de
+  - standarduser: mail@mail.de
   - pw: 123456
