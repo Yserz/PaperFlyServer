@@ -29,9 +29,8 @@ import javax.ws.rs.core.Response;
  *
  * @author MacYser
  */
-// Path: auth/
 @Stateless
-//@Path("auth/")
+@Path("auth/")
 public class AuthResource {
 
 	@EJB
@@ -51,10 +50,6 @@ public class AuthResource {
 	@Produces(PaperFlyRestService.JSON_MEDIA_TYPE)
 	@ReturnType("de.fhb.paperfly.server.rest.v1.dto.output.TokenDTO")
 	public Response login(@Context HttpServletRequest request, @Context OAuthProvider provider) {
-		System.out.println("Calling login");
-		/**
-		 * //Server-Side-Login accountService.login(email, password);
-		 */
 		Response resp;
 		try {
 			request.login(request.getHeader("user"), request.getHeader("pw"));
@@ -89,7 +84,7 @@ public class AuthResource {
 			resp = Response.ok(new TokenDTO(c.getKey(), c.getSecret())).build();
 		} catch (Exception e) {
 			LOG.log(this.getClass().getName(), Level.SEVERE, "Exception: {0}", e.getMessage());
-			resp = Response.status(500).entity(new ErrorDTO(20, "Fehler")).build();
+			resp = Response.status(500).build();
 		}
 		return resp;
 	}
@@ -106,7 +101,6 @@ public class AuthResource {
 	@Path("logout")
 	@Produces(PaperFlyRestService.JSON_MEDIA_TYPE)
 	public Response logout(@Context HttpServletRequest request) {
-
 		Response resp;
 		resp = Response.ok().build();
 		return resp;

@@ -26,4 +26,5 @@ public class RoomDTO {
 	private Long id;
 	private String name;
 	private CoordinateDTO coordinate;
+	private String building;
 }

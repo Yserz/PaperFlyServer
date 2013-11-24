@@ -14,40 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.fhb.paperfly.server.room.entity;
-
-import de.fhb.paperfly.server.base.entity.BaseEntity;
-import java.util.List;
-import java.util.Objects;
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+package de.fhb.paperfly.server.account.entity;
 
 /**
  *
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */
-@Entity
-@Getter
-@Setter
-@ToString
-@EqualsAndHashCode(callSuper = false)
-@NoArgsConstructor
-@AllArgsConstructor
-@NamedQueries({})
-public class Room extends BaseEntity {
+public enum Status {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	private String name;
-	@OneToOne
-	@JoinColumn(nullable = false)
-	private Coordinate coordinate;
-	private String building;
+	ONLINE, OFFLINE, AWAY;
 }

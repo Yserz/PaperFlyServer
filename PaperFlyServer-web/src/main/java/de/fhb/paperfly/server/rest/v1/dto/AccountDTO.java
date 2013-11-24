@@ -16,6 +16,7 @@
  */
 package de.fhb.paperfly.server.rest.v1.dto;
 
+import de.fhb.paperfly.server.account.entity.Status;
 import de.fhb.paperfly.server.rest.v1.dto.base.BaseDTO;
 import java.util.List;
 import javax.validation.constraints.NotNull;
@@ -52,5 +53,6 @@ public class AccountDTO extends BaseDTO {
 	@NotNull
 	@Size(min = 1, max = 255)
 	private String firstName;
+	private Status status;
 	private List<AccountDTO> friendList;
 }

@@ -11,18 +11,11 @@ import javax.ejb.Local;
 @Local
 public interface AccountServiceLocal {
 
-//    void changePassword(String mail, String oldPassword, String password, String passwordRepeat) throws Exception;
-	Account getAccount(String mail);
-
 	Account editAccount(Account account);
 
-	List<Account> searchAccount(String query);
-
-	void login(String email, String password);
+	List<Account> searchAccountByUsername(String query);
 
 	Account getAccountByUsername(String username);
 
-	Account registerNewAdmin(String firstname, String lastname, String username, String mail, String password, String passwordRepeat) throws Exception;
-
-	Account registerNewUser(String firstname, String lastname, String username, String mail, String password, String passwordRepeat) throws Exception;
+	Account register(String firstname, String lastname, String username, String mail, String password, String passwordRepeat) throws Exception;
 }

@@ -45,13 +45,7 @@ import lombok.ToString;
 })
 public class Account extends BaseEntity {
 
-//	@Id
-//	@GeneratedValue(strategy = GenerationType.IDENTITY)
-//	private Long id;
 	@Id
-//	@NotNull
-//	@Size(min = 1, max = 255)
-//	@Column(unique = true)
 	private String email;
 	@NotNull
 	@Size(min = 1, max = 255)
@@ -65,4 +59,5 @@ public class Account extends BaseEntity {
 	private String firstName;
 	@OneToMany
 	private List<Account> friendList;
+	private Status status;
 }

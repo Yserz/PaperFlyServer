@@ -5,56 +5,31 @@
 package de.fhb.paperfly.server.chat;
 
 import java.util.Date;
+import javax.persistence.Transient;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  *
  * @author MacYser
  */
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode(callSuper = false)
+@NoArgsConstructor
+@AllArgsConstructor
 public class Message {
 
-    private String username;
-    private String type;
-    private Date sendTime;
-    private String room;
-    private String text;
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public Date getSendTime() {
-        return sendTime;
-    }
-
-    public void setSendTime(Date sendTime) {
-        this.sendTime = sendTime;
-    }
-
-    public String getRoom() {
-        return room;
-    }
-
-    public void setRoom(String room) {
-        this.room = room;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
+	@Transient
+	private String username;
+	private MessageType type;
+	private Date sendTime;
+	@Transient
+	private String room;
+	private String body;
 }

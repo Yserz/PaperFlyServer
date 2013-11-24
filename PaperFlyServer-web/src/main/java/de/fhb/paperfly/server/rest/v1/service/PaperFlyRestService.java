@@ -4,6 +4,7 @@ import de.fhb.paperfly.server.logging.service.LoggingServiceLocal;
 import de.fhb.paperfly.server.rest.v1.mapping.ToDTOMapper;
 import de.fhb.paperfly.server.rest.v1.mapping.ToEntityMapper;
 import de.fhb.paperfly.server.rest.v1.service.resources.account.AccountResource;
+import de.fhb.paperfly.server.rest.v1.service.resources.account.MyAccountResource;
 import de.fhb.paperfly.server.rest.v1.service.resources.auth.AuthResource;
 import de.fhb.paperfly.server.rest.v1.service.resources.room.RoomResource;
 import javax.annotation.PostConstruct;
@@ -11,6 +12,8 @@ import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.SecurityContext;
 
 /**
  * Address: http://localhost:8080/PaperFlyServer-web/rest/v1
@@ -19,7 +22,6 @@ import javax.ws.rs.Path;
  */
 @Path("/v1")
 @Singleton
-//@Interceptors({ServiceLoggerInterceptor.class})
 public class PaperFlyRestService {
 
 	@EJB
@@ -30,6 +32,8 @@ public class PaperFlyRestService {
 	// Resources
 	@EJB
 	private AccountResource accountResource;
+	@EJB
+	private MyAccountResource myAccountResource;
 	@EJB
 	private AuthResource authResource;
 	@EJB
@@ -45,7 +49,7 @@ public class PaperFlyRestService {
 	}
 
 	/**
-	 * [LARGE]
+	 * [TODO LARGE DESC]
 	 *
 	 * @title Ping the Service
 	 * @summary Pings the Service to test if it is online.
@@ -53,21 +57,27 @@ public class PaperFlyRestService {
 	 */
 	@GET
 	@Path("ping")
-	public String ping() {
+	public String ping(@Context SecurityContext sc) {
+		System.out.println("AuthenticationScheme: " + sc.getAuthenticationScheme());
 		return "alive";
 	}
 
-	@Path("auth/")
+//	@Path("auth/")
 	public AuthResource getAuthResource() {
 		return authResource;
 	}
 
-	@Path("account/")
+//	@Path("account/")
 	public AccountResource getAccountResource() {
 		return accountResource;
 	}
 
-	@Path("room/")
+//	@Path("myaccount/")
+	public MyAccountResource getMyAccountResource() {
+		return myAccountResource;
+	}
+
+//	@Path("room/")
 	public RoomResource getRoomResource() {
 		return roomResource;
 	}

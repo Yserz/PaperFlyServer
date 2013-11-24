@@ -38,9 +38,8 @@ import javax.ws.rs.core.SecurityContext;
  *
  * @author MacYser
  */
-// Path: account/
 @Stateless
-//@Path("account/")
+@Path("account/")
 public class AccountResource {
 
 	@EJB
@@ -67,10 +66,9 @@ public class AccountResource {
 	@Consumes(PaperFlyRestService.JSON_MEDIA_TYPE)
 	@ReturnType("de.fhb.paperfly.server.rest.v1.dto.output.TokenDTO")
 	public Response register(RegisterAccountDTO account, @Context HttpServletRequest request, @Context OAuthProvider provider) {
-
 		Response resp;
 		try {
-			AccountDTO acc = PaperFlyRestService.toDTOMapper.mapAccount(accountService.registerNewUser(account.getFirstName(), account.getLastName(), account.getUsername(), account.getEmail(), account.getPassword(), account.getPasswordRpt()));
+			AccountDTO acc = PaperFlyRestService.toDTOMapper.mapAccount(accountService.register(account.getFirstName(), account.getLastName(), account.getUsername(), account.getEmail(), account.getPassword(), account.getPasswordRpt()));
 			request.login(account.getEmail(), account.getPassword());
 			MultivaluedMap<String, String> roles = new MultivaluedMapImpl();
 
@@ -91,7 +89,7 @@ public class AccountResource {
 			resp = Response.ok(new TokenDTO(c.getKey(), c.getSecret())).build();
 		} catch (Exception e) {
 			LOG.log(this.getClass().getName(), Level.SEVERE, "Exception: {0}", e.getMessage());
-			resp = Response.status(500).entity(new ErrorDTO(20, "Fehler")).build();
+			resp = Response.status(500).build();
 		}
 		return resp;
 	}
@@ -111,57 +109,13 @@ public class AccountResource {
 	@Produces(PaperFlyRestService.JSON_MEDIA_TYPE)
 	@ReturnType("de.fhb.paperfly.server.rest.v1.dto.AccountDTO")
 	public Response getAccount(@PathParam("username") String username, @Context HttpServletRequest request, @Context SecurityContext sc) {
-
-//		System.out.println("Username: " + sc.getUserPrincipal().getName());
-//		System.out.println("AuthenticationScheme: " + sc.getAuthenticationScheme());
-//		System.out.println("isSecure: " + sc.isSecure());
-//		System.out.println("isUserInRole(ADMIN): " + sc.isUserInRole("ADMINISTRATOR"));
-//		System.out.println("isUserInRole(USER): " + sc.isUserInRole("USER"));
-//		System.out.println("isUserInRole(ANONYMOUS): " + sc.isUserInRole("ANONYMOUS"));
 		Response resp;
 		try {
-//			request.login(request.getHeader("user"), request.getHeader("pw"));
-//			System.out.println("Successfully logged in!");
-//			System.out.println("User: " + request.getUserPrincipal());
 			AccountDTO acc = PaperFlyRestService.toDTOMapper.mapAccount(accountService.getAccountByUsername(username));
 			resp = Response.ok(acc).build();
 		} catch (Exception e) {
 			LOG.log(this.getClass().getName(), Level.SEVERE, "Exception: {0}", e.getMessage());
-			resp = Response.status(500).entity(new ErrorDTO(20, "Fehler")).build();
-		}
-		return resp;
-	}
-
-	/**
-	 * [TODO LARGE DESC]
-	 *
-	 * @title Edit an Account
-	 * @summary Modifies an existing account.
-	 * @param account The account with the new data. </br>(ATM only firstname
-	 * and lastname will be edited)
-	 * @param request
-	 * @return The edited account.
-	 */
-	@POST
-	@Path("edit/{accountUsername}")
-	@Produces(PaperFlyRestService.JSON_MEDIA_TYPE)
-	@Consumes(PaperFlyRestService.JSON_MEDIA_TYPE)
-	@ReturnType("de.fhb.paperfly.server.rest.v1.dto.AccountDTO")
-	public Response editAccount(AccountDTO account, @Context HttpServletRequest request) {
-
-		Response resp;
-		try {
-			Account myAccount = accountService.getAccount(account.getEmail());
-
-			myAccount.setFirstName(account.getFirstName());
-			myAccount.setLastName(account.getLastName());
-
-
-			AccountDTO editedAccount = PaperFlyRestService.toDTOMapper.mapAccount(accountService.editAccount(myAccount));
-			resp = Response.ok(editedAccount).build();
-		} catch (Exception e) {
-			LOG.log(this.getClass().getName(), Level.SEVERE, "Exception: {0}", e.getMessage());
-			resp = Response.status(500).entity(new ErrorDTO(20, "Fehler")).build();
+			resp = Response.status(500).build();
 		}
 		return resp;
 	}
@@ -182,85 +136,13 @@ public class AccountResource {
 	@Produces(PaperFlyRestService.JSON_MEDIA_TYPE)
 	@ReturnType("java.util.List<de.fhb.paperfly.server.rest.v1.dto.AccountDTO>>")
 	public Response searchAccountByUsername(@PathParam("query") String query, @Context HttpServletRequest request) {
-
 		Response resp;
 		try {
-
-			List<AccountDTO> accList = PaperFlyRestService.toDTOMapper.mapAccountList(accountService.searchAccount(query));
-
-
+			List<AccountDTO> accList = PaperFlyRestService.toDTOMapper.mapAccountList(accountService.searchAccountByUsername(query));
 			resp = Response.ok(accList).build();
 		} catch (Exception e) {
 			LOG.log(this.getClass().getName(), Level.SEVERE, "Exception: {0}", e.getMessage());
-			resp = Response.status(500).entity(new ErrorDTO(20, "Fehler")).build();
-		}
-		return resp;
-	}
-
-	/**
-	 * [TODO LARGE DESC]
-	 *
-	 * @title Add a Friend
-	 * @summary This operation will add another account to the friendlist of the
-	 * actual account.
-	 * @param friendsUsername The exact username of the account to add.
-	 * @param request
-	 * @param sc
-	 * @return The account with the modified friendlist.
-	 */
-	@POST
-	@Path("friend/{friendsUsername}")
-	@Produces(PaperFlyRestService.JSON_MEDIA_TYPE)
-	@ReturnType("de.fhb.paperfly.server.rest.v1.dto.AccountDTO")
-	public Response addFriend(@PathParam("friendsUsername") String friendsUsername, @Context HttpServletRequest request, @Context SecurityContext sc) {
-
-		Response resp;
-		try {
-			Account myAccount = accountService.getAccountByUsername(sc.getUserPrincipal().getName());
-			Account friendsAccount = accountService.getAccountByUsername(friendsUsername);
-
-			myAccount.getFriendList().add(friendsAccount);
-
-			AccountDTO editedAccount = PaperFlyRestService.toDTOMapper.mapAccount(accountService.editAccount(myAccount));
-
-			resp = Response.ok(editedAccount).build();
-		} catch (Exception e) {
-			LOG.log(this.getClass().getName(), Level.SEVERE, "Exception: {0}", e.getMessage());
-			resp = Response.status(500).entity(new ErrorDTO(20, "Fehler")).build();
-		}
-		return resp;
-	}
-
-	/**
-	 * [TODO LARGE DESC]
-	 *
-	 * @title Remove a Friend
-	 * @summary This operation will remove another account from the friendlist
-	 * of the actual account.
-	 * @param friendsUsername
-	 * @param request
-	 * @param sc
-	 * @return The account with the modified friendlist.
-	 */
-	@DELETE
-	@Path("friend/{friendsUsername}")
-	@Produces(PaperFlyRestService.JSON_MEDIA_TYPE)
-	@ReturnType("de.fhb.paperfly.server.rest.v1.dto.AccountDTO")
-	public Response removeFriend(@PathParam("friendsUsername") String friendsUsername, @Context HttpServletRequest request, @Context SecurityContext sc) {
-
-		Response resp;
-		try {
-			Account myAccount = accountService.getAccountByUsername(sc.getUserPrincipal().getName());
-			Account friendsAccount = accountService.getAccountByUsername(friendsUsername);
-
-			myAccount.getFriendList().remove(friendsAccount);
-
-			AccountDTO editedAccount = PaperFlyRestService.toDTOMapper.mapAccount(accountService.editAccount(myAccount));
-
-			resp = Response.ok(editedAccount).build();
-		} catch (Exception e) {
-			LOG.log(this.getClass().getName(), Level.SEVERE, "Exception: {0}", e.getMessage());
-			resp = Response.status(500).entity(new ErrorDTO(20, "Fehler")).build();
+			resp = Response.status(500).build();
 		}
 		return resp;
 	}

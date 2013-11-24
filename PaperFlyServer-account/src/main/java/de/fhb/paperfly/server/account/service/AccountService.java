@@ -20,6 +20,7 @@ import com.sun.appserv.security.ProgrammaticLogin;
 import de.fhb.paperfly.server.account.entity.Account;
 import de.fhb.paperfly.server.account.entity.Credential;
 import de.fhb.paperfly.server.account.entity.Group;
+import de.fhb.paperfly.server.account.entity.Status;
 import de.fhb.paperfly.server.account.repository.AccountRepository;
 import de.fhb.paperfly.server.account.repository.CredentialRepository;
 
@@ -63,7 +64,7 @@ public class AccountService implements AccountServiceLocal, AccountServiceLocalA
 	}
 
 	@Override
-	public Account registerNewUser(String firstname, String lastname, String username, String mail, String password, String passwordRepeat)
+	public Account register(String firstname, String lastname, String username, String mail, String password, String passwordRepeat)
 			throws Exception {
 
 
@@ -82,7 +83,7 @@ public class AccountService implements AccountServiceLocal, AccountServiceLocalA
 			throw new Exception("Password too short!");
 		}
 
-		Account acc = new Account(mail, username, lastname, firstname, null);
+		Account acc = new Account(mail, username, lastname, firstname, null, Status.OFFLINE);
 		validateAccount(acc);
 		accountRepository.create(acc);
 
@@ -92,95 +93,6 @@ public class AccountService implements AccountServiceLocal, AccountServiceLocalA
 		credentialRepository.create(cred);
 
 		return acc;
-	}
-
-//	@RolesAllowed({"ADMINISTRATOR"})
-	@Override
-	public Account registerNewAdmin(String firstname, String lastname, String username, String mail, String password, String passwordRepeat)
-			throws Exception {
-		if (password.equals("") || passwordRepeat.equals("")) {
-			LOG.log(this.getClass().getName(), Level.SEVERE, "Incomplete password fields!");
-			throw new Exception("Incomplete password fields!");
-		}
-
-		if (!password.equals(passwordRepeat)) {
-			LOG.log(this.getClass().getName(), Level.SEVERE, "Password not similar to the repetition!");
-			throw new Exception("Password not similar to the repetition!");
-		}
-
-		if (password.length() < 5) {
-			LOG.log(this.getClass().getName(), Level.SEVERE, "Password too short!");
-			throw new Exception("Password too short!");
-		}
-
-		Account acc = new Account(mail, username, lastname, firstname, null);
-		validateAccount(acc);
-		accountRepository.create(acc);
-
-		List<Group> groups = new ArrayList<>();
-		groups.add(Group.USER);
-		groups.add(Group.ADMINISTRATOR);
-		Credential cred = new Credential(acc, HashHelper.calcSHA256(password), groups);
-		credentialRepository.create(cred);
-
-		return acc;
-	}
-
-//	@RolesAllowed({"ADMINISTRATOR", "USER"})
-//	@Override
-//	public void changePassword(String mail, String oldPassword, String password, String passwordRepeat)
-//			throws Exception {
-//
-//		Account account;
-//		String hash = "";
-//
-//		if (oldPassword.equals("") || password.equals("") || passwordRepeat.equals("")) {
-//			LOG.log(this.getClass().getName(), Level.SEVERE, "Incomplete passwordsfields!");
-//			throw new Exception("Incomplete passwordsfields!");
-//		}
-//		if (!password.equals(passwordRepeat)) {
-//			LOG.log(this.getClass().getName(), Level.SEVERE, "Password not similar to the repetition!");
-//			throw new Exception("Password not similar to the repetition!");
-//		}
-//
-//		if (password.length() < 5) {
-//			LOG.log(this.getClass().getName(), Level.SEVERE, "Password too short!");
-//			throw new Exception("Password too short!");
-//		}
-//
-//		account = getAccount(mail);
-//		if (account == null) {
-//			LOG.log(this.getClass().getName(), Level.SEVERE, "User not found!");
-//			throw new Exception("User not found!");
-//		}
-//
-//		hash = HashHelper.calcSHA256(oldPassword);
-//
-//		if (!account.getPassword().equals(hash)) {
-//			LOG.log(this.getClass().getName(), Level.SEVERE, "Invalid password!");
-//			throw new Exception("Invalid password!");
-//		}
-//
-//
-//		hash = HashHelper.calcSHA256(password);
-//
-//		account.setPassword(hash);
-//		accountRepository.edit(account);
-//	}
-	@Override
-	public void login(String email, String password) {
-		ProgrammaticLogin login = new ProgrammaticLogin();
-		try {
-			login.login(email, password.toCharArray(), "PaperFlyRealm", true);
-		} catch (Exception ex) {
-			LOG.log(this.getClass().getName(), Level.SEVERE, ex.getMessage());
-		}
-	}
-
-	@Override
-//	@RolesAllowed({"ADMINISTRATOR", "USER"})
-	public Account getAccount(String mail) {
-		return accountRepository.find(mail);
 	}
 
 	@Override
@@ -189,12 +101,11 @@ public class AccountService implements AccountServiceLocal, AccountServiceLocalA
 	}
 
 	@Override
-	public List<Account> searchAccount(String query) {
-		return accountRepository.search(query);
+	public List<Account> searchAccountByUsername(String query) {
+		return accountRepository.searchByUsername(query);
 	}
 
 	@Override
-//	@RolesAllowed({"ADMINISTRATOR", "USER"})
 	public Account getAccountByUsername(String username) {
 		return accountRepository.findByUsername(username);
 	}

@@ -1,6 +1,7 @@
 package de.fhb.paperfly.server.rest.v1.mapping;
 
 import de.fhb.paperfly.server.account.entity.Account;
+import de.fhb.paperfly.server.account.entity.Status;
 import de.fhb.paperfly.server.rest.v1.dto.AccountDTO;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,7 @@ public class ToDTOMapper {
 		dto.setUsername(e.getUsername());
 		dto.setCreated(e.getCreated());
 		dto.setLastModified(e.getLastModified());
+		dto.setStatus(Status.valueOf(e.getStatus().name()));
 		dto.setFriendList(mapAccountListDept(e.getFriendList(), dept));
 
 //		dto.setEnabled(e.isEnabled());

@@ -54,7 +54,7 @@ public class PaperFlyChat {
 		try {
 			for (Session sess : session.getOpenSessions()) {
 				if (sess.isOpen()) {
-					sess.getBasicRemote().sendText(msg.getUsername() + ": " + msg.getText());
+					sess.getBasicRemote().sendText(msg.getUsername() + ": " + msg.getBody());
 				}
 			}
 		} catch (IOException ex) {

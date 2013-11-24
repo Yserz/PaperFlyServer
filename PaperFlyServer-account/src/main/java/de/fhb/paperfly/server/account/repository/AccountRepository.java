@@ -83,7 +83,7 @@ public class AccountRepository extends AbstractRepository<Account> {
 		return acc;
 	}
 
-	public List<Account> search(String keyword) {
+	public List<Account> searchByUsername(String keyword) {
 		return em.createNamedQuery("Account.searchByUsername", Account.class)
 				.setParameter("keyword", "%" + keyword + "%").getResultList();
 

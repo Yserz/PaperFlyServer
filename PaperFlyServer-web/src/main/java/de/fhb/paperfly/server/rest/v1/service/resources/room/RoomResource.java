@@ -27,9 +27,8 @@ import javax.ws.rs.core.Response;
  *
  * @author MacYser
  */
-// Path: room/
 @Stateless
-//@Path("room/")
+@Path("room/")
 public class RoomResource {
 
 	@EJB
@@ -49,49 +48,17 @@ public class RoomResource {
 	@Produces(PaperFlyRestService.JSON_MEDIA_TYPE)
 	@ReturnType("de.fhb.paperfly.server.rest.v1.dto.output.RoomDTO")
 	public Response locateAccount(@PathParam("username") String username, @Context HttpServletRequest request) {
-
 		Response resp;
 		try {
 			RoomDTO room = new RoomDTO();/*toDTOMapper.mapAccount(accountService.getAccountByUsername(username));*/
 			resp = Response.ok(room).build();
 		} catch (Exception e) {
 			LOG.log(this.getClass().getName(), Level.SEVERE, "Exception: {0}", e.getMessage());
-			resp = Response.status(500).entity(new ErrorDTO(20, "Fehler")).build();
+			resp = Response.status(500).build();
 		}
 		return resp;
 	}
 
-	/**
-	 * [TODO LARGE DESC]
-	 *
-	 * @title List all active Rooms
-	 * @summary Lists all active chat-rooms.
-	 * @param request
-	 * @return Returns a list of all active rooms.
-	 */
-//	@GET
-//	@Path("/")
-//	@Produces(PaperFlyRestService.JSON_MEDIA_TYPE)
-//	@ReturnType("java.util.List<de.fhb.paperfly.server.rest.v1.dto.output.RoomDTO>>")
-//	public Response getRoomList(@Context HttpServletRequest request) {
-//
-//		Response resp;
-//		try {
-//			List<RoomDTO> roomList = new ArrayList<RoomDTO>();
-//
-//
-//			roomList.add(new RoomDTO());
-//			roomList.add(new RoomDTO());
-//			/*toDTOMapper.mapAccount(accountService.getAccountByUsername(username));*/
-//
-//
-//			resp = Response.ok(roomList).build();
-//		} catch (Exception e) {
-//			LOG.log(this.getClass().getName(), Level.SEVERE, "Exception: {0}", e.getMessage());
-//			resp = Response.status(500).entity(new ErrorDTO(20, "Fehler")).build();
-//		}
-//		return resp;
-//	}
 	/**
 	 * [TODO LARGE DESC]
 	 *
@@ -106,21 +73,18 @@ public class RoomResource {
 	@Produces(PaperFlyRestService.JSON_MEDIA_TYPE)
 	@ReturnType("java.util.List<de.fhb.paperfly.server.rest.v1.dto.AccountDTO>>")
 	public Response getAccountsInRoom(@PathParam("roomID") String roomID, @Context HttpServletRequest request) {
-
 		Response resp;
 		try {
 			List<AccountDTO> accList = new ArrayList<AccountDTO>();
-
 
 			accList.add(new AccountDTO());
 			accList.add(new AccountDTO());
 			/*toDTOMapper.mapAccount(accountService.getAccountByUsername(username));*/
 
-
 			resp = Response.ok(accList).build();
 		} catch (Exception e) {
 			LOG.log(this.getClass().getName(), Level.SEVERE, "Exception: {0}", e.getMessage());
-			resp = Response.status(500).entity(new ErrorDTO(20, "Fehler")).build();
+			resp = Response.status(500).build();
 		}
 		return resp;
 	}
