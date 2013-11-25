@@ -62,22 +62,22 @@ public class PaperFlyRestService {
 		return "alive";
 	}
 
-//	@Path("auth/")
+	@Path("auth/")
 	public AuthResource getAuthResource() {
 		return authResource;
 	}
 
-//	@Path("account/")
+	@Path("account/")
 	public AccountResource getAccountResource() {
 		return accountResource;
 	}
 
-//	@Path("myaccount/")
+	@Path("myaccount/")
 	public MyAccountResource getMyAccountResource() {
 		return myAccountResource;
 	}
 
-//	@Path("room/")
+	@Path("room/")
 	public RoomResource getRoomResource() {
 		return roomResource;
 	}

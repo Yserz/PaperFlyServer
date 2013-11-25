@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
 	<!-- Jersey -->
-	<filter>
+	<!--	<filter>
 		<filter-name>OAuthFilter</filter-name>
 		<filter-class>de.fhb.paperfly.server.OAuthFilter</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>OAuthFilter</filter-name>
 		<url-pattern>/secure/*</url-pattern>
-	</filter-mapping>
+	</filter-mapping>-->
 	<servlet>
 		<servlet-name>Jersey Web Application</servlet-name>
 		<servlet-class>
@@ -28,7 +28,7 @@
 		</init-param>
 		<init-param>
 			<param-name>com.sun.jersey.config.property.oauth.ignorePathPattern</param-name>
-			<param-value>login|ping</param-value>
+			<param-value>v1/auth/login|ping</param-value>
 		</init-param>
 		<init-param>
 			<param-name>com.sun.jersey.config.property.oauth.realm</param-name>

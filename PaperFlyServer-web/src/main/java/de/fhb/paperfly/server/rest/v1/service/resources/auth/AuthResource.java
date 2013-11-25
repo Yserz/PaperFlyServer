@@ -30,7 +30,7 @@ import javax.ws.rs.core.Response;
  * @author MacYser
  */
 @Stateless
-@Path("auth/")
+//@Path("auth/")
 public class AuthResource {
 
 	@EJB
@@ -50,6 +50,7 @@ public class AuthResource {
 	@Produces(PaperFlyRestService.JSON_MEDIA_TYPE)
 	@ReturnType("de.fhb.paperfly.server.rest.v1.dto.output.TokenDTO")
 	public Response login(@Context HttpServletRequest request, @Context OAuthProvider provider) {
+		System.out.println("LOGIN...");
 		Response resp;
 		try {
 			request.login(request.getHeader("user"), request.getHeader("pw"));

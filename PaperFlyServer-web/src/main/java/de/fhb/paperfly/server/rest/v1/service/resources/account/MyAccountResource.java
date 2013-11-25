@@ -40,7 +40,7 @@ import javax.ws.rs.core.SecurityContext;
  * @author MacYser
  */
 @Stateless
-@Path("myaccount/")
+//@Path("myaccount/")
 public class MyAccountResource {
 
 	@EJB

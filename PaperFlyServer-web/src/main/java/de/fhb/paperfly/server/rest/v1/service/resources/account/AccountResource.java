@@ -39,7 +39,7 @@ import javax.ws.rs.core.SecurityContext;
  * @author MacYser
  */
 @Stateless
-@Path("account/")
+//@Path("account/")
 public class AccountResource {
 
 	@EJB

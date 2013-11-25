@@ -28,7 +28,7 @@ import javax.ws.rs.core.Response;
  * @author MacYser
  */
 @Stateless
-@Path("room/")
+//@Path("room/")
 public class RoomResource {
 
 	@EJB
