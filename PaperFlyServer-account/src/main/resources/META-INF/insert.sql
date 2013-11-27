@@ -6,10 +6,10 @@
 LOCK TABLES `ACCOUNT` WRITE;
 /*!40000 ALTER TABLE `ACCOUNT` DISABLE KEYS */;
 INSERT INTO `ACCOUNT` VALUES ('mail@mail.de','2013-10-30 11:09:26',1,'firstName','2013-10-30 11:09:26','lastName',1,'username');
-INSERT INTO `ACCOUNT` VALUES ('friend2db@mail.de','2013-10-30 11:09:26',1,'firstName2','2013-10-30 11:09:26','lastName2',1,'username2');
-INSERT INTO `ACCOUNT` VALUES ('friend3db@mail.de','2013-10-30 11:09:26',1,'firstName3','2013-10-30 11:09:26','lastName3',1,'username3');
-INSERT INTO `ACCOUNT` VALUES ('friend4db@mail.de','2013-10-30 11:09:26',1,'firstName4','2013-10-30 11:09:26','lastName4',1,'username4');
-INSERT INTO `ACCOUNT` VALUES ('friend5db@mail.de','2013-10-30 11:09:26',1,'firstName5','2013-10-30 11:09:26','lastName5',1,'username5');
+INSERT INTO `ACCOUNT` VALUES ('friend2db@mail.de','2013-10-30 11:09:26',1,'Andy','2013-10-30 11:09:26','Klay',1,'salaxy');
+INSERT INTO `ACCOUNT` VALUES ('friend3db@mail.de','2013-10-30 11:09:26',1,'Christoph','2013-10-30 11:09:26','Ott',1,'kaain');
+INSERT INTO `ACCOUNT` VALUES ('friend4db@mail.de','2013-10-30 11:09:26',1,'Michael','2013-10-30 11:09:26','Koppen',1,'yserz');
+INSERT INTO `ACCOUNT` VALUES ('friend5db@mail.de','2013-10-30 11:09:26',1,'John','2013-10-30 11:09:26','Wayne',1,'wayne');
 /*!40000 ALTER TABLE `ACCOUNT` ENABLE KEYS */;
 UNLOCK TABLES;
 
