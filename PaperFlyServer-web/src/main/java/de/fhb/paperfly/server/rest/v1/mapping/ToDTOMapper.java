@@ -11,6 +11,8 @@ import java.util.List;
  * @author MacYser
  */
 public class ToDTOMapper {
+	
+	private final int MAPPING_DEPT=2;
 
 	private boolean checkDept(int dept) {
 		return dept <= 0;
@@ -50,7 +52,7 @@ public class ToDTOMapper {
 
 	// PUBLISHED METHODS
 	public AccountDTO mapAccount(Account e) {
-		return mapAccountDept(e, 1);
+		return mapAccountDept(e, MAPPING_DEPT);
 	}
 
 	public List<AccountDTO> mapAccountList(List<Account> eList) {
