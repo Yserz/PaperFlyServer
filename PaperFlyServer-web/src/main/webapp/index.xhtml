@@ -21,9 +21,10 @@
 			</div>
 			<div id="messages"></div>
 			<script type="text/javascript">
-					adress = '77.186.136.122';
-					//adress = 46.137.173.175:8080;
-
+					//adress = '77.186.136.122';
+//					adress = '46.137.173.175:8080';
+					adress = location.host;
+					console.log(adress);
 					$.ajax({
 						type: "GET",
 						dataType: "json",

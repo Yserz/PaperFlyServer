@@ -45,13 +45,6 @@ public class RoomService implements RoomServiceLocal {
 
 	@PostConstruct
 	private void init() {
-		//TODO create some rooms
-		createRoom(new Room(null, "23" + "-" + "WWZ", new Coordinate(0./*longlitutde*/, 0./*latitude*/), "WWZ"));
-		createRoom(new Room(null, "027" + "-" + "INFZ", new Coordinate(0./*longlitutde*/, 0./*latitude*/), "INFZ"));
-		createRoom(new Room(null, "202" + "-" + "IWZ", new Coordinate(0./*longlitutde*/, 0./*latitude*/), "IWZ"));
-		createRoom(new Room(null, "Mensa", new Coordinate(0./*longlitutde*/, 0./*latitude*/), "MENSA"));
-		createRoom(new Room(null, "Audimax", new Coordinate(0./*longlitutde*/, 0./*latitude*/), "AUDIMAX"));
-		createRoom(new Room(null, "Bibliothek", new Coordinate(0./*longlitutde*/, 0./*latitude*/), "BIBLIOTHEK"));
 	}
 
 	@Override
