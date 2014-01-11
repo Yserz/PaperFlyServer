@@ -13,6 +13,8 @@ import java.util.List;
  * @author MacYser
  */
 public class ToDTOMapper {
+	
+	private final int MAPPING_DEPT=2;
 
 	private boolean checkDept(int dept) {
 		return dept <= 0;
