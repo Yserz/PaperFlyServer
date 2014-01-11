@@ -16,13 +16,13 @@
  */
 package de.fhb.paperfly.server.account.service;
 
-import com.sun.appserv.security.ProgrammaticLogin;
 import de.fhb.paperfly.server.account.entity.Account;
 import de.fhb.paperfly.server.account.entity.Credential;
 import de.fhb.paperfly.server.account.entity.Group;
 import de.fhb.paperfly.server.account.entity.Status;
 import de.fhb.paperfly.server.account.repository.AccountRepository;
 import de.fhb.paperfly.server.account.repository.CredentialRepository;
+import de.fhb.paperfly.server.logging.interceptor.ServiceLoggerInterceptor;
 
 import de.fhb.paperfly.server.logging.service.LoggingServiceLocal;
 import de.fhb.paperfly.server.util.HashHelper;
@@ -31,8 +31,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import javax.annotation.PostConstruct;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.*;
+import javax.interceptor.Interceptors;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -47,6 +47,7 @@ import javax.validation.ValidatorFactory;
 @Startup
 @TransactionManagement(TransactionManagementType.CONTAINER)
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
+@Interceptors({ServiceLoggerInterceptor.class})
 public class AccountService implements AccountServiceLocal, AccountServiceLocalAdmin {
 
 	@EJB
@@ -115,6 +116,12 @@ public class AccountService implements AccountServiceLocal, AccountServiceLocalA
 		return accountRepository.find(mail);
 	}
 
+	/**
+	 * Private method to validate a new account.
+	 *
+	 * @param account The account to validate.
+	 * @throws Exception
+	 */
 	private void validateAccount(Account account) throws Exception {
 		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
 		Validator validator = factory.getValidator();

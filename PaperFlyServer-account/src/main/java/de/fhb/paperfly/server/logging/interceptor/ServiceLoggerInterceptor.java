@@ -23,7 +23,7 @@ import javax.interceptor.AroundInvoke;
 import javax.interceptor.InvocationContext;
 
 /**
- * This Interceptor is invoked in every session-bean-service-class and is
+ * This Interceptor should be invoked in every session-bean-service-class and is
  * responsible for logging genaral information about actual classname methodname
  * and params.
  *
@@ -48,7 +48,7 @@ public class ServiceLoggerInterceptor {
 	@AroundInvoke
 	public Object logCall(InvocationContext context) throws Exception {
 		int count = 0;
-		// EJB will not be accessable if the Interceptor is called from outside of the welovecoding-backend-module
+		// EJB will not be accessable if the Interceptor is called from outside of the backend-module
 
 		LOG.log(context.getMethod().getDeclaringClass().getName(), Level.INFO, "---------------------------------------------------------");
 		LOG.log(context.getMethod().getDeclaringClass().getName(), Level.INFO, " + Class: {0}", getPureClassName(context.getMethod().getDeclaringClass()));

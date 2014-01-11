@@ -18,17 +18,19 @@ package de.fhb.paperfly.server.account.repository;
 
 import de.fhb.paperfly.server.account.entity.Credential;
 import de.fhb.paperfly.server.base.repository.AbstractRepository;
+import de.fhb.paperfly.server.logging.interceptor.RepositoryLoggerInterceptor;
 import de.fhb.paperfly.server.logging.service.LoggingServiceLocal;
 import de.fhb.paperfly.server.util.Settings;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 /**
  * This class provides specialized methods for database operations related to
- * Accounts.
+ * credentials of an account.
  *
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */

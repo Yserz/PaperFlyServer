@@ -24,6 +24,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
+ * This is an embeddable entity for room coordinates.
  *
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */

@@ -28,7 +28,7 @@ import javax.websocket.server.ServerEndpoint;
 /**
  * Address: http://localhost:8080/PaperFlyServer-web/ws/chat/global
  *
- * @author MacYser
+ * @author Michael Koppen <michael.koppen@googlemail.com>
  */
 @Stateless
 @ServerEndpoint(

@@ -11,7 +11,7 @@ import javax.persistence.criteria.Root;
 /**
  * This class is a Facade-pattern and provides methods for standard database
  * operations like create, read, update and delete for all types of
- * domainobjects.
+ * domainobjects/entities.
  *
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */

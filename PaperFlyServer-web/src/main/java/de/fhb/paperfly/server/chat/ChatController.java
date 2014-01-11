@@ -19,7 +19,7 @@ import javax.websocket.Session;
 
 /**
  *
- * @author MacYser
+ * @author Michael Koppen <michael.koppen@googlemail.com>
  */
 @Stateless
 public class ChatController {

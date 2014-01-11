@@ -1,7 +1,7 @@
 package de.fhb.paperfly.server.util;
 
 /**
- * @author Benny Neugebauer (bn@bennyn.de)
+ * @author Michael Koppen <michael.koppen@googlemail.com>
  */
 public class Settings {
 

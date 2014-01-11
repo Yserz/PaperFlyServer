@@ -26,6 +26,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ *
+ * @author Michael Koppen <michael.koppen@googlemail.com>
+ */
 @Getter
 @Setter
 @ToString

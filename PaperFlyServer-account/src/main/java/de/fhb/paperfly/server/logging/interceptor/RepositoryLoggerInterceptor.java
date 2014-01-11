@@ -23,8 +23,10 @@ import javax.interceptor.AroundInvoke;
 import javax.interceptor.InvocationContext;
 
 /**
- * This Interceptor is invoked in every repository-class and is responsible for
- * logging genaral information about actual classname methodname and params.
+ * This Interceptor should be invoked in every repository-class and is
+ * responsible for logging genaral information about actual classname methodname
+ * and params. Actually this interceptor is automatically invoked if the
+ * {@link de.fhb.paperfly.server.base.repository.AbstractRepository} is used.
  *
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */

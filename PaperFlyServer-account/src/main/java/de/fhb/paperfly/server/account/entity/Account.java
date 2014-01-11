@@ -29,6 +29,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
+ * This is an entity for an account.
  *
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */

@@ -29,6 +29,8 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
+ * This is an entity for a presence. The presence is a timestamp when a account
+ * joined a room.
  *
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */

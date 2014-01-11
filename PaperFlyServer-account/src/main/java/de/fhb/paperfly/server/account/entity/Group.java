@@ -17,6 +17,7 @@
 package de.fhb.paperfly.server.account.entity;
 
 /**
+ * This is an enum for the group of an account.
  *
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */

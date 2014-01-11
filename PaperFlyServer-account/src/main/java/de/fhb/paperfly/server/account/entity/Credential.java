@@ -30,6 +30,7 @@ import lombok.ToString;
 import org.eclipse.persistence.annotations.JoinFetch;
 
 /**
+ * This is an entity for creadentials.
  *
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */

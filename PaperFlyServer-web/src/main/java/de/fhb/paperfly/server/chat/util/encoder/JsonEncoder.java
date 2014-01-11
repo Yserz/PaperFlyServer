@@ -10,7 +10,7 @@ import javax.websocket.EndpointConfig;
 
 /**
  *
- * @author MacYser
+ * @author Michael Koppen <michael.koppen@googlemail.com>
  */
 public class JsonEncoder implements Encoder.Text<Message> {
 

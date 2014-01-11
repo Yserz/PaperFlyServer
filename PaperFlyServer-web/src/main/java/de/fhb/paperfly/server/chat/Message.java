@@ -15,7 +15,7 @@ import lombok.ToString;
 
 /**
  *
- * @author MacYser
+ * @author Michael Koppen <michael.koppen@googlemail.com>
  */
 @Getter
 @Setter

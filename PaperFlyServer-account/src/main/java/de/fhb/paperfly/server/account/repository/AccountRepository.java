@@ -18,6 +18,7 @@ package de.fhb.paperfly.server.account.repository;
 
 import de.fhb.paperfly.server.account.entity.Account;
 import de.fhb.paperfly.server.base.repository.AbstractRepository;
+import de.fhb.paperfly.server.logging.interceptor.RepositoryLoggerInterceptor;
 import de.fhb.paperfly.server.logging.service.LoggingServiceLocal;
 import de.fhb.paperfly.server.util.Settings;
 import java.util.List;
@@ -25,6 +26,7 @@ import java.util.logging.Level;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
@@ -33,7 +35,7 @@ import javax.persistence.TypedQuery;
 
 /**
  * This class provides specialized methods for database operations related to
- * Accounts.
+ * accounts.
  *
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */
@@ -65,11 +67,10 @@ public class AccountRepository extends AbstractRepository<Account> {
 
 	/**
 	 * This method offers the ability to find accounts with thier username
-	 * attribute. This method can provoke a {@link NonUniqueResultException} or
-	 * a {@link NoResultException} which are for now handled in this method.
+	 * attribute.
 	 *
-	 * @param username the username the user belongs to
-	 * @return the account with the given username
+	 * @param username The username the account belongs to
+	 * @return The account or null if the account doesnt exists
 	 */
 	public Account findByUsername(String username) {
 		Account acc = null;
@@ -83,13 +84,15 @@ public class AccountRepository extends AbstractRepository<Account> {
 		return acc;
 	}
 
+	/**
+	 * This method searches for an accounts username by a query.
+	 *
+	 * @param keyword The string to search in all usernames of all accounts
+	 * @return A list of accounts
+	 */
 	public List<Account> searchByUsername(String keyword) {
 		return em.createNamedQuery("Account.searchByUsername", Account.class)
 				.setParameter("keyword", "%" + keyword + "%").getResultList();
 
-	}
-
-	public Account findByMail(String mail) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 }

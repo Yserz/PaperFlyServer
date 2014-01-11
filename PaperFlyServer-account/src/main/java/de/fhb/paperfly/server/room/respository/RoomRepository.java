@@ -16,8 +16,8 @@
  */
 package de.fhb.paperfly.server.room.respository;
 
-import de.fhb.paperfly.server.account.entity.Account;
 import de.fhb.paperfly.server.base.repository.AbstractRepository;
+import de.fhb.paperfly.server.logging.interceptor.RepositoryLoggerInterceptor;
 import de.fhb.paperfly.server.logging.service.LoggingServiceLocal;
 import de.fhb.paperfly.server.room.entity.Room;
 import de.fhb.paperfly.server.util.Settings;
@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
@@ -62,6 +63,12 @@ public class RoomRepository extends AbstractRepository<Room> {
 		this.em = em;
 	}
 
+	/**
+	 * finds a room by the given room name.
+	 *
+	 * @param roomName The name of the room to search for
+	 * @return The room or null if the room does not exists
+	 */
 	public Room findByRoomName(String roomName) {
 		Room room = null;
 

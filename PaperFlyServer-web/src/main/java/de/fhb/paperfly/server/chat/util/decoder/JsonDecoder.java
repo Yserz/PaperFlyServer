@@ -18,7 +18,7 @@ import javax.websocket.EndpointConfig;
 
 /**
  *
- * @author MacYser
+ * @author Michael Koppen <michael.koppen@googlemail.com>
  */
 public class JsonDecoder implements Decoder.Text<Message> {
 

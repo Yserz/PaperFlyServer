@@ -15,8 +15,9 @@ import javax.ejb.TransactionManagement;
 import javax.ejb.TransactionManagementType;
 
 /**
+ * This class is for the global logging.
  *
- * @author MacYser
+ * @author Michael Koppen <michael.koppen@googlemail.com>
  */
 @Singleton
 @TransactionManagement(TransactionManagementType.CONTAINER)
@@ -25,7 +26,7 @@ public class LoggingService implements LoggingServiceLocal, LoggingServiceLocalA
 
 	private static Logger LOG;
 	private Set<String> loggerNames;
-	private Level globalLoggingLevel = Level.WARNING;
+	private Level globalLoggingLevel = Level.ALL;
 
 	public LoggingService() {
 		loggerNames = new HashSet<String>();
