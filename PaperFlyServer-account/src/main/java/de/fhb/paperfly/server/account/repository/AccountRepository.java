@@ -88,4 +88,8 @@ public class AccountRepository extends AbstractRepository<Account> {
 				.setParameter("keyword", "%" + keyword + "%").getResultList();
 
 	}
+
+	public Account findByMail(String mail) {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
 }

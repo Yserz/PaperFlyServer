@@ -18,4 +18,6 @@ public interface AccountServiceLocal {
 	Account getAccountByUsername(String username);
 
 	Account register(String firstname, String lastname, String username, String mail, String password, String passwordRepeat) throws Exception;
+
+	Account getAccountByMail(String mail);
 }

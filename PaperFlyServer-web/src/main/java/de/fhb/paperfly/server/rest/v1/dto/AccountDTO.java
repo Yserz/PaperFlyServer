@@ -40,7 +40,7 @@ import lombok.ToString;
 @AllArgsConstructor
 public class AccountDTO extends BaseDTO {
 
-	private Long id;
+//	private Long id;
 	@NotNull
 	@Size(min = 1, max = 255)
 	private String email;

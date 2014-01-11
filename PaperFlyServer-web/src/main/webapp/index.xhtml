@@ -25,6 +25,8 @@
 //					adress = '46.137.173.175:8080';
 					adress = location.host;
 					console.log(adress);
+
+					console.log(":::LOGIN");
 					$.ajax({
 						type: "GET",
 						dataType: "json",
@@ -45,6 +47,7 @@
 							}
 						}
 					});
+					console.log(":::GET_ACCOUNT");
 					$.ajax({
 						type: "GET",
 						dataType: "json",
@@ -81,6 +84,23 @@
 					function onOpen(event) {
 						document.getElementById('messages').innerHTML
 								= 'Connection established';
+						console.log(":::GET_ALL_ROOMS");
+						$.ajax({
+							type: "GET",
+							dataType: "json",
+							url: "http://" + adress + "/PaperFlyServer-web/rest/v1/room/all",
+							async: false,
+							complete: function(jqXHR, textStatus) {
+								switch (jqXHR.status) {
+									case 404:
+										console.log(jqXHR);
+									case 500:
+										console.log(jqXHR);
+									default:
+										console.log(jqXHR.responseText);
+								}
+							}
+						});
 					}
 
 					function onError(event) {
@@ -98,6 +118,41 @@
 								}
 						));
 						document.getElementById('msg').value = '';
+						console.log(":::LOCATE_ACCOUNT");
+						$.ajax({
+							type: "GET",
+							dataType: "json",
+							url: "http://" + adress + "/PaperFlyServer-web/rest/v1/room/locateAccount/username",
+							async: false,
+							complete: function(jqXHR, textStatus) {
+								switch (jqXHR.status) {
+									case 404:
+										console.log(jqXHR);
+									case 500:
+										console.log(jqXHR);
+									default:
+										console.log(jqXHR.responseText);
+								}
+							}
+						});
+						console.log(":::GET_ALL_ACCOUNTS_IN_ROOM");
+						$.ajax({
+							type: "GET",
+							dataType: "json",
+							url: "http://" + adress + "/PaperFlyServer-web/rest/v1/room/accounts/7",
+							async: false,
+							complete: function(jqXHR, textStatus) {
+								switch (jqXHR.status) {
+									case 404:
+										console.log(jqXHR);
+									case 500:
+										console.log(jqXHR);
+									default:
+										console.log(jqXHR.responseText);
+								}
+							}
+						});
+
 						return false;
 					}
 					document.getElementById('msg').onkeypress = function(e) {
@@ -110,6 +165,7 @@
 						}
 					};
 					function logout() {
+						console.log(":::LOGOUT");
 						$.ajax({
 							type: "GET",
 							dataType: "json",

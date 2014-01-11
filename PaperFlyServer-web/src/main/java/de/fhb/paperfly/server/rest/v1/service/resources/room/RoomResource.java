@@ -5,6 +5,8 @@
 package de.fhb.paperfly.server.rest.v1.service.resources.room;
 
 import com.qmino.miredot.annotations.ReturnType;
+import de.fhb.paperfly.server.account.entity.Account;
+import de.fhb.paperfly.server.account.service.AccountServiceLocal;
 import de.fhb.paperfly.server.chat.ChatController;
 import de.fhb.paperfly.server.logging.service.LoggingServiceLocal;
 import de.fhb.paperfly.server.rest.v1.dto.AccountDTO;
@@ -37,6 +39,8 @@ public class RoomResource {
 	@EJB
 	private RoomServiceLocal roomService;
 	@EJB
+	private AccountServiceLocal accountService;
+	@EJB
 	public LoggingServiceLocal LOG;
 
 	/**
@@ -55,8 +59,14 @@ public class RoomResource {
 	public Response locateAccount(@PathParam("username") String username, @Context HttpServletRequest request) {
 		Response resp;
 		try {
-			RoomDTO room = PaperFlyRestService.toDTOMapper.mapRoom(chatController.locateAccount(username));
-			resp = Response.ok(room).build();
+			String mail = accountService.getAccountByUsername(username).getEmail();
+			Room room = chatController.locateAccount(mail);
+			RoomDTO roomDTO = null;
+			if (room != null) {
+				roomDTO = PaperFlyRestService.toDTOMapper.mapRoom(room);
+			}
+
+			resp = Response.ok(roomDTO).build();
 		} catch (Exception e) {
 			LOG.log(this.getClass().getName(), Level.SEVERE, "Exception: {0}", e.getMessage());
 			resp = Response.status(500).build();
@@ -81,9 +91,12 @@ public class RoomResource {
 		Response resp;
 		try {
 			Room room = roomService.getRoom(roomID);
-			List<AccountDTO> accList = PaperFlyRestService.toDTOMapper.mapAccountList(chatController.getUsersInRoom(room));
-
-			resp = Response.ok(accList).build();
+			List<Account> accList = chatController.getUsersInRoom(room);
+			List<AccountDTO> accDTOList = null;
+			if (!accList.isEmpty()) {
+				accDTOList = PaperFlyRestService.toDTOMapper.mapAccountListWithDepth(accList, 1);
+			}
+			resp = Response.ok(accDTOList).build();
 		} catch (Exception e) {
 			LOG.log(this.getClass().getName(), Level.SEVERE, "Exception: {0}", e.getMessage());
 			resp = Response.status(500).build();

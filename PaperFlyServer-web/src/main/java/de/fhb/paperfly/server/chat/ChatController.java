@@ -44,19 +44,18 @@ public class ChatController {
 
 	public List<Account> getUsersInRoom(Room room) {
 		List<Account> accountList = new ArrayList<>();
-
 		for (Session session : chats.get(room.getName()).getSessions()) {
 			if (session.getUserPrincipal() != null) {
-				accountList.add(accountService.getAccountByUsername(session.getUserPrincipal().getName()));
+				accountList.add(accountService.getAccountByMail(session.getUserPrincipal().getName()));
 			}
 		}
 		return accountList;
 	}
 
-	public Room locateAccount(String username) {
+	public Room locateAccount(String mail) {
 		for (Map.Entry<String, PaperFlyChat> chatEntry : chats.entrySet()) {
 			for (Session session : chatEntry.getValue().getSessions()) {
-				if (session.getUserPrincipal() != null && session.getUserPrincipal().getName().equals(username)) {
+				if (session.getUserPrincipal() != null && session.getUserPrincipal().getName().equals(mail)) {
 					return roomService.getRoomByRoomName(chatEntry.getKey());
 				}
 			}

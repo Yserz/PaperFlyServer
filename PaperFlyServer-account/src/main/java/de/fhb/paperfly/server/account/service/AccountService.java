@@ -110,6 +110,11 @@ public class AccountService implements AccountServiceLocal, AccountServiceLocalA
 		return accountRepository.findByUsername(username);
 	}
 
+	@Override
+	public Account getAccountByMail(String mail) {
+		return accountRepository.find(mail);
+	}
+
 	private void validateAccount(Account account) throws Exception {
 		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
 		Validator validator = factory.getValidator();

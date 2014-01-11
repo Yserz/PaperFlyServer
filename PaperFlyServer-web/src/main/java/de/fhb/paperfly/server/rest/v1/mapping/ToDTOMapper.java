@@ -13,8 +13,6 @@ import java.util.List;
  * @author MacYser
  */
 public class ToDTOMapper {
-	
-	private final int MAPPING_DEPT=2;
 
 	private boolean checkDept(int dept) {
 		return dept <= 0;
@@ -26,6 +24,7 @@ public class ToDTOMapper {
 		}
 		dept--;
 		AccountDTO dto = new AccountDTO();
+
 		dto.setEmail(e.getEmail());
 		dto.setFirstName(e.getFirstName());
 		dto.setLastName(e.getLastName());
@@ -61,9 +60,8 @@ public class ToDTOMapper {
 		RoomDTO dto = new RoomDTO();
 		dto.setId(e.getId());
 		dto.setName(e.getName());
-		//TODO
-//		dto.setBuilding(null);
-//		dto.setCoordinate(null);
+		dto.setCoordinate(e.getCoordinate());
+		dto.setBuilding(e.getBuilding());
 
 		return dto;
 	}
@@ -73,11 +71,25 @@ public class ToDTOMapper {
 		return mapAccountDept(e, 2);
 	}
 
+	public AccountDTO mapAccountWithDepth(Account e, int depth) {
+		return mapAccountDept(e, depth);
+	}
+
 	public List<AccountDTO> mapAccountList(List<Account> eList) {
 
 		List<AccountDTO> dtoList = new ArrayList<AccountDTO>();
 		for (Account e : eList) {
 			dtoList.add(mapAccount(e));
+		}
+
+		return dtoList;
+	}
+
+	public List<AccountDTO> mapAccountListWithDepth(List<Account> eList, int depth) {
+
+		List<AccountDTO> dtoList = new ArrayList<AccountDTO>();
+		for (Account e : eList) {
+			dtoList.add(mapAccountWithDepth(e, depth));
 		}
 
 		return dtoList;

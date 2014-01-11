@@ -4,6 +4,7 @@
  */
 package de.fhb.paperfly.server.rest.v1.dto.output;
 
+import de.fhb.paperfly.server.room.entity.Coordinate;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -25,6 +26,6 @@ public class RoomDTO {
 
 	private Long id;
 	private String name;
-	private CoordinateDTO coordinate;
+	private Coordinate coordinate;
 	private String building;
 }
