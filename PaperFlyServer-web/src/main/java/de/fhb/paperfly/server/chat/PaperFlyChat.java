@@ -12,10 +12,12 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
+import javax.ejb.Startup;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.websocket.CloseReason;
+import javax.websocket.EncodeException;
 import javax.websocket.EndpointConfig;
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
@@ -32,6 +34,7 @@ import javax.websocket.server.ServerEndpoint;
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */
 @Stateless
+@Startup
 @ServerEndpoint(
 		value = "/ws/chat/{room-name}",
 		encoders = {JsonEncoder.class},
@@ -53,7 +56,7 @@ public class PaperFlyChat {
 	}
 
 	@OnOpen
-	public void open(Session session, EndpointConfig conf, @PathParam("room-name") String roomName) {
+	public void open(Session session, EndpointConfig conf, @PathParam("room-name") String roomName) throws EncodeException {
 
 
 		session.getContainer().setDefaultMaxSessionIdleTimeout(5000l);/*5m*/
@@ -65,11 +68,12 @@ public class PaperFlyChat {
 
 			if (session.getUserPrincipal() != null) {
 				conf.getUserProperties().put("email", session.getUserPrincipal().getName());
-				session.getBasicRemote().sendText("Hello " + accountService.getAccountByMail(session.getUserPrincipal().getName()).getUsername() + ", you are in the chat-room \"" + roomName + "\"");
+				session.getBasicRemote().sendObject(new Message("Hello " + accountService.getAccountByMail(session.getUserPrincipal().getName()).getUsername() + ", you are in the chat-room \"" + roomName + "\""));
 				// May implement a fallback with client sended username
 			} else {
 				LOG.log(Level.SEVERE, "User is not Authorized!");
-				session.getBasicRemote().sendText("You are not Authorized!");
+				session.getBasicRemote().sendObject(new Message("You are not Authorized!"));
+				session.close();
 			}
 
 
@@ -89,11 +93,11 @@ public class PaperFlyChat {
 	}
 
 	@OnMessage
-	public void onMessage(Session session, Message msg) {
+	public void onMessage(Session session, Message msg) throws EncodeException {
 		try {
 			for (Session sess : session.getOpenSessions()) {
 				if (sess.isOpen()) {
-					sess.getBasicRemote().sendText(accountService.getAccountByMail(msg.getEmail()).getUsername() + ": " + msg.getBody());
+					sess.getBasicRemote().sendObject(new Message(accountService.getAccountByMail(msg.getEmail()).getUsername() + ": " + msg.getBody()));
 				}
 			}
 		} catch (IOException ex) {
@@ -113,10 +117,10 @@ public class PaperFlyChat {
 	}
 
 	@OnError
-	public void error(Session session, Throwable error) throws IOException {
+	public void error(Session session, Throwable error) throws IOException, EncodeException {
 		System.out.println("Catching Error...");
 		LOG.log(Level.SEVERE, error.getLocalizedMessage());
-		session.getBasicRemote().sendText(error.getLocalizedMessage());
+		session.getBasicRemote().sendObject(new Message(error.getLocalizedMessage()));
 
 	}
 

@@ -28,7 +28,7 @@
 		</init-param>
 		<init-param>
 			<param-name>com.sun.jersey.config.property.oauth.ignorePathPattern</param-name>
-			<param-value>login|ping</param-value>
+			<param-value>v1/auth/login|v1/ping</param-value>
 		</init-param>
 		<init-param>
 			<param-name>com.sun.jersey.config.property.oauth.realm</param-name>
@@ -60,7 +60,7 @@
 	</servlet-mapping>
 	<session-config>
 		<session-timeout>
-			5
+			1
 		</session-timeout>
 	</session-config>
 	<!-- Homepage -->

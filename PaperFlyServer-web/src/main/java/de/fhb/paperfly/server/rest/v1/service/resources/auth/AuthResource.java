@@ -66,6 +66,7 @@ public class AuthResource {
 		System.out.println("LOGIN...");
 		Response resp;
 		try {
+			request.logout();
 			request.login(request.getHeader("user"), request.getHeader("pw"));
 			MultivaluedMap<String, String> roles = new MultivaluedMapImpl();
 

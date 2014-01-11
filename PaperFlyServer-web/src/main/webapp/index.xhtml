@@ -23,7 +23,11 @@
 			<script type="text/javascript">
 					//adress = '77.186.136.122';
 //					adress = '46.137.173.175:8080';
-					adress = location.host;
+					var adress = location.host;
+					var consumerKey = "";
+					var consumerSecret = "";
+
+
 					console.log(adress);
 
 					console.log(":::LOGIN");
@@ -43,16 +47,49 @@
 								case 500:
 									console.log(jqXHR);
 								default:
-									console.log(jqXHR.responseText);
+
+									try {
+										var o = $.parseJSON(jqXHR.responseText);
+										console.log(jqXHR.responseText);
+										console.log(o.consumerKey);
+										console.log(o.consumerSecret);
+										consumerKey = o.consumerKey;
+										consumerSecret = o.consumerSecret;
+									} catch (e) {
+										console.log(jqXHR.responseText);
+										console.log(e);
+									}
+
 							}
 						}
 					});
+					function s4() {
+						return Math.floor((1 + Math.random()) * 0x10000)
+								.toString(16)
+								.substring(1);
+					}
+
+
+					function guid() {
+						return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+								s4() + '-' + s4() + s4() + s4();
+					}
+					var nonce = guid();
+					var timestamp = Math.round(new Date().getTime() / 1000);
+
+					console.log("nonce: " + nonce);
+					console.log("timestamp: " + timestamp);
+
+
 					console.log(":::GET_ACCOUNT");
 					$.ajax({
 						type: "GET",
 						dataType: "json",
 						url: "http://" + adress + "/PaperFlyServer-web/rest/v1/account/username",
 						async: false,
+						headers: {
+							'Authorization': 'OAuth oauth_signature="' + consumerSecret + '", oauth_version="1.0", oauth_nonce="' + nonce + '", oauth_signature_method="HMAC-SHA1", oauth_consumer_key="' + consumerKey + '", oauth_timestamp="' + timestamp + '"'
+						},
 						complete: function(jqXHR, textStatus) {
 							switch (jqXHR.status) {
 								case 404:
@@ -78,29 +115,32 @@
 					};
 					function onMessage(event) {
 						document.getElementById('messages').innerHTML
-								+= '<br />' + event.data;
+								+= '<br />' + $.parseJSON(event.data).body;
 					}
 
 					function onOpen(event) {
 						document.getElementById('messages').innerHTML
 								= 'Connection established';
 						console.log(":::GET_ALL_ROOMS");
-						$.ajax({
-							type: "GET",
-							dataType: "json",
-							url: "http://" + adress + "/PaperFlyServer-web/rest/v1/room/all",
-							async: false,
-							complete: function(jqXHR, textStatus) {
-								switch (jqXHR.status) {
-									case 404:
-										console.log(jqXHR);
-									case 500:
-										console.log(jqXHR);
-									default:
-										console.log(jqXHR.responseText);
-								}
-							}
-						});
+//						$.ajax({
+//							type: "GET",
+//							dataType: "json",
+//							url: "http://" + adress + "/PaperFlyServer-web/rest/v1/room/all",
+//							async: false,
+//							headers: {
+//								"Authorization": "OAuth"
+//							},
+//							complete: function(jqXHR, textStatus) {
+//								switch (jqXHR.status) {
+//									case 404:
+//										console.log(jqXHR);
+//									case 500:
+//										console.log(jqXHR);
+//									default:
+//										console.log(jqXHR.responseText);
+//								}
+//							}
+//						});
 					}
 
 					function onError(event) {
@@ -124,6 +164,9 @@
 							dataType: "json",
 							url: "http://" + adress + "/PaperFlyServer-web/rest/v1/room/locateAccount/username",
 							async: false,
+							headers: {
+								'Authorization': 'OAuth oauth_signature="' + consumerSecret + '", oauth_version="1.0", oauth_nonce="' + nonce + '", oauth_signature_method="HMAC-SHA1", oauth_consumer_key="' + consumerKey + '", oauth_timestamp="' + timestamp + '"'
+							},
 							complete: function(jqXHR, textStatus) {
 								switch (jqXHR.status) {
 									case 404:
@@ -141,6 +184,9 @@
 							dataType: "json",
 							url: "http://" + adress + "/PaperFlyServer-web/rest/v1/room/accounts/7",
 							async: false,
+							headers: {
+								"Authorization": "OAuth"
+							},
 							complete: function(jqXHR, textStatus) {
 								switch (jqXHR.status) {
 									case 404:
@@ -171,6 +217,9 @@
 							dataType: "json",
 							url: "http://" + adress + "/PaperFlyServer-web/rest/v1/auth/logout",
 							async: false,
+							headers: {
+								"Authorization": "OAuth"
+							},
 							complete: function(jqXHR, textStatus) {
 								switch (jqXHR.status) {
 									case 404:

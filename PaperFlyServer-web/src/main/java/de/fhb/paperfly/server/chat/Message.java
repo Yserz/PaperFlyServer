@@ -21,8 +21,8 @@ import lombok.ToString;
 @Setter
 @ToString
 @EqualsAndHashCode(callSuper = false)
-@NoArgsConstructor
-@AllArgsConstructor
+//@NoArgsConstructor
+//@AllArgsConstructor
 public class Message {
 
 	@Transient
@@ -32,4 +32,11 @@ public class Message {
 	@Transient
 	private String room;
 	private String body;
+
+	public Message() {
+	}
+
+	public Message(String body) {
+		this.body = body;
+	}
 }

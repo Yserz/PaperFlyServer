@@ -121,8 +121,8 @@ public class OAuthServerFilter implements ContainerRequestFilter {
 		maxAge = intValue(defaultInitParam(rc, PROPERTY_MAX_AGE, "300000")); // 5 minutes
 		gcPeriod = intValue(defaultInitParam(rc, PROPERTY_GC_PERIOD, "100")); // every 100 on average
 		ignorePathPattern = pattern(defaultInitParam(rc, PROPERTY_IGNORE_PATH_PATTERN, null)); // no pattern
-		optional = rc.getFeature(FEATURE_NO_FAIL);
-//		optional = true;
+//		optional = rc.getFeature(FEATURE_NO_FAIL);
+		optional = false;
 
 		nonces = new NonceManager(maxAge, gcPeriod);
 
@@ -134,17 +134,22 @@ public class OAuthServerFilter implements ContainerRequestFilter {
 	public ContainerRequest filter(ContainerRequest request) {
 		System.out.println("Calling OAuthFilter");
 
-		String authHeader = request.getHeaderValue(OAuthParameters.AUTHORIZATION_HEADER);
-		if (authHeader == null || !authHeader.toUpperCase().startsWith(OAuthParameters.SCHEME.toUpperCase())) {
-			System.out.println("...No OAuth Header found");
-			return request;
-		}
 
+		System.out.println("path: " + request.getPath());
 		// do not filter if the request path matches pattern to ignore
 		if (match(ignorePathPattern, request.getPath())) {
 			System.out.println("...Requested path is irgnored because of configured ignorePattern");
 			return request;
 		}
+
+		String authHeader = request.getHeaderValue(OAuthParameters.AUTHORIZATION_HEADER);
+		if (authHeader == null || !authHeader.toUpperCase().startsWith(OAuthParameters.SCHEME.toUpperCase())) {
+			System.out.println("...No OAuth Header found");
+			throw new WebApplicationException(newUnauthorizedException().toResponse());
+//			return request;
+		}
+
+
 
 		OAuthSecurityContext sc = null;
 
@@ -197,12 +202,15 @@ public class OAuthServerFilter implements ContainerRequestFilter {
 		String nonceKey;
 
 		if (token == null) {
+
 			if (consumer.getPrincipal() == null) {
 				throw newUnauthorizedException();
 			}
 			nonceKey = "c:" + consumerKey;
 			sc = new OAuthSecurityContext(consumer, request.isSecure());
+
 		} else {
+
 			OAuthToken accessToken = provider.getAccessToken(token);
 			if (accessToken == null) {
 				throw newUnauthorizedException();
@@ -217,11 +225,11 @@ public class OAuthServerFilter implements ContainerRequestFilter {
 			secrets.tokenSecret(accessToken.getSecret());
 			sc = new OAuthSecurityContext(accessToken, request.isSecure());
 		}
-
+		System.out.println("WEST:::::::::::::::::::::::::::::::::::::::::::::::::::::");
 		if (!verifySignature(osr, params, secrets)) {
 			throw newUnauthorizedException();
 		}
-
+		System.out.println("TEST:::::::::::::::::::::::::::::::::::::::::::::::::::::");
 		if (!nonces.verify(nonceKey, timestamp, nonce)) {
 			throw newUnauthorizedException();
 		}
@@ -273,8 +281,11 @@ public class OAuthServerFilter implements ContainerRequestFilter {
 	private static boolean verifySignature(OAuthServerRequest osr,
 			OAuthParameters params, OAuthSecrets secrets) {
 		try {
+			System.out.println("BLI:::::::::::::::::::::::::::::::::::::::::::::::::::::");
 			return OAuthSignature.verify(osr, params, secrets);
 		} catch (OAuthSignatureException ose) {
+			System.out.println("BLAAAA:::::::::::::::::::::::::::::::::::::::::::::::::::::");
+			ose.printStackTrace();
 			throw newBadRequestException();
 		}
 	}
