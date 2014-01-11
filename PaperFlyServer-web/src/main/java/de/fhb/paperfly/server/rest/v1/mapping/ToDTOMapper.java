@@ -3,6 +3,8 @@ package de.fhb.paperfly.server.rest.v1.mapping;
 import de.fhb.paperfly.server.account.entity.Account;
 import de.fhb.paperfly.server.account.entity.Status;
 import de.fhb.paperfly.server.rest.v1.dto.AccountDTO;
+import de.fhb.paperfly.server.rest.v1.dto.output.RoomDTO;
+import de.fhb.paperfly.server.room.entity.Room;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,9 +50,25 @@ public class ToDTOMapper {
 		return dtoList;
 	}
 
+	private RoomDTO mapRoomDept(Room e, int dept) {
+		if (checkDept(dept)) {
+			return null;
+		}
+		dept--;
+
+		RoomDTO dto = new RoomDTO();
+		dto.setId(e.getId());
+		dto.setName(e.getName());
+		//TODO
+//		dto.setBuilding(null);
+//		dto.setCoordinate(null);
+
+		return dto;
+	}
+
 	// PUBLISHED METHODS
 	public AccountDTO mapAccount(Account e) {
-		return mapAccountDept(e, 1);
+		return mapAccountDept(e, 2);
 	}
 
 	public List<AccountDTO> mapAccountList(List<Account> eList) {
@@ -58,6 +76,20 @@ public class ToDTOMapper {
 		List<AccountDTO> dtoList = new ArrayList<AccountDTO>();
 		for (Account e : eList) {
 			dtoList.add(mapAccount(e));
+		}
+
+		return dtoList;
+	}
+
+	public RoomDTO mapRoom(Room e) {
+		return mapRoomDept(e, 1);
+	}
+
+	public List<RoomDTO> mapRoomList(List<Room> eList) {
+
+		List<RoomDTO> dtoList = new ArrayList<RoomDTO>();
+		for (Room e : eList) {
+			dtoList.add(mapRoom(e));
 		}
 
 		return dtoList;

@@ -39,15 +39,17 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
-@NamedQueries({})
+@NamedQueries({
+	@NamedQuery(name = "Room.findByRoomName", query = "SELECT r FROM Room r WHERE r.name = :name")})
 public class Room extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	@NotNull
+	@Column(unique = true)
 	private String name;
-	@OneToOne
-	@JoinColumn(nullable = false)
+	@Embedded
 	private Coordinate coordinate;
 	private String building;
 }

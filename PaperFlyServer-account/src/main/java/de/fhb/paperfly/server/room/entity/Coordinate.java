@@ -16,32 +16,27 @@
  */
 package de.fhb.paperfly.server.room.entity;
 
-import de.fhb.paperfly.server.base.entity.BaseEntity;
+import java.io.Serializable;
 import javax.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 /**
  *
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */
-@Entity
 @Getter
 @Setter
-@ToString
-@EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
-@NamedQueries({})
-public class Coordinate extends BaseEntity {
+@Embeddable
+public class Coordinate implements Serializable {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+//	@Id
+//	@GeneratedValue(strategy = GenerationType.IDENTITY)
+//	private Long id;
 	private double longlitutde;
 	private double latitude;
 }

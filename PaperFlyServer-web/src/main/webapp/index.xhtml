@@ -11,30 +11,67 @@
 		<h:head>
 			<title>Start Page</title>
 			<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+			<script type="text/javascript" src="//code.jquery.com/jquery-1.10.2.min.js"></script>
 		</h:head>
 		<h:body>
 			<div>
 				<input id="msg" type="text"></input>
-				<input type="submit" value="Send" onclick="send();" />
+				<input id="send" type="submit" value="Send" onclick="send();" />
 				<input type="submit" value="Logout" onclick="logout();" />
 			</div>
 			<div id="messages"></div>
 			<script type="text/javascript">
-					var webSocket =
-							new WebSocket('ws://46.137.173.175:8080/PaperFlyServer-web/ws/chat/global');
+					adress = '77.186.136.122';
+					//adress = 46.137.173.175:8080;
 
+					$.ajax({
+						type: "GET",
+						dataType: "json",
+						url: "http://" + adress + "/PaperFlyServer-web/rest/v1/auth/login",
+						async: false,
+						headers: {
+							"user": "mail@mail.de",
+							"pw": "123456"
+						},
+						complete: function(jqXHR, textStatus) {
+							switch (jqXHR.status) {
+								case 404:
+									console.log(jqXHR);
+								case 500:
+									console.log(jqXHR);
+								default:
+									console.log(jqXHR.responseText);
+							}
+						}
+					});
+					$.ajax({
+						type: "GET",
+						dataType: "json",
+						url: "http://" + adress + "/PaperFlyServer-web/rest/v1/account/username",
+						async: false,
+						complete: function(jqXHR, textStatus) {
+							switch (jqXHR.status) {
+								case 404:
+									console.log(jqXHR);
+								case 500:
+									console.log(jqXHR);
+								default:
+									console.log(jqXHR.responseText);
+							}
+						}
+					});
+
+					var webSocket =
+							new WebSocket("ws://" + adress + "/PaperFlyServer-web/ws/chat/global");
 					webSocket.onerror = function(event) {
 						onError(event);
 					};
-
 					webSocket.onopen = function(event) {
 						onOpen(event);
 					};
-
 					webSocket.onmessage = function(event) {
 						onMessage(event);
 					};
-
 					function onMessage(event) {
 						document.getElementById('messages').innerHTML
 								+= '<br />' + event.data;
@@ -56,7 +93,7 @@
 //						alert(JSON.stringify({text: msg}));
 						webSocket.send(JSON.stringify(
 								{
-									text: msg
+									body: msg
 								}
 						));
 						document.getElementById('msg').value = '';
@@ -72,32 +109,26 @@
 						}
 					};
 					function logout() {
-						var xmlhttp;
-						if (window.XMLHttpRequest) {
-							xmlhttp = new XMLHttpRequest();
-						}
-						// code for IE
-						else if (window.ActiveXObject) {
-							xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-						}
-						if (window.ActiveXObject) {
-							// IE clear HTTP Authentication
-							document.execCommand("ClearAuthenticationCache");
-							window.location.href = 'http://46.137.173.175:8080/PaperFlyServer-web';
-						} else {
-							xmlhttp.open("GET", 'http://46.137.173.175:8080/PaperFlyServer-web/rest/service/v1/ping', true, "logout", "logout");
-							xmlhttp.send("");
-							xmlhttp.onreadystatechange = function() {
-								if (xmlhttp.readyState == 4) {
-									window.location.href = 'http://46.137.173.175:8080/PaperFlyServer-web';
+						$.ajax({
+							type: "GET",
+							dataType: "json",
+							url: "http://" + adress + "/PaperFlyServer-web/rest/v1/auth/logout",
+							async: false,
+							complete: function(jqXHR, textStatus) {
+								switch (jqXHR.status) {
+									case 404:
+										console.log(jqXHR);
+									case 500:
+										console.log(jqXHR);
+									default:
+										console.log(jqXHR.responseText);
 								}
 							}
-
-
-						}
-
-
-						return false;
+						});
+						document.getElementById('messages').innerHTML
+								= 'Successfully logged out!';
+						document.getElementById('msg').disabled = true;
+						document.getElementById('send').disabled = true;
 					}
 			</script>
 		</h:body>
