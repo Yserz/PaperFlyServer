@@ -26,7 +26,7 @@ import lombok.ToString;
 public class Message {
 
 	@Transient
-	private String username;
+	private String email;
 	private MessageType type;
 	private Date sendTime;
 	@Transient

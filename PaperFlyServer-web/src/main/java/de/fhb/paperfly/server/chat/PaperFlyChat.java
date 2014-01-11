@@ -1,5 +1,6 @@
 package de.fhb.paperfly.server.chat;
 
+import de.fhb.paperfly.server.account.service.AccountServiceLocal;
 import de.fhb.paperfly.server.chat.util.decoder.JsonDecoder;
 import de.fhb.paperfly.server.chat.util.encoder.JsonEncoder;
 import de.fhb.paperfly.server.room.entity.Room;
@@ -40,6 +41,8 @@ public class PaperFlyChat {
 	@EJB
 	private RoomServiceLocal roomService;
 	@EJB
+	private AccountServiceLocal accountService;
+	@EJB
 	private ChatController controller;
 	private Room room;
 	private Set<Session> sessions;
@@ -61,8 +64,8 @@ public class PaperFlyChat {
 			setSessions(session.getOpenSessions());
 
 			if (session.getUserPrincipal() != null) {
-				conf.getUserProperties().put("username", session.getUserPrincipal().getName());
-				session.getBasicRemote().sendText("Hello " + session.getUserPrincipal().getName() + ", you are in the chat-room \"" + roomName + "\"");
+				conf.getUserProperties().put("email", session.getUserPrincipal().getName());
+				session.getBasicRemote().sendText("Hello " + accountService.getAccountByMail(session.getUserPrincipal().getName()).getUsername() + ", you are in the chat-room \"" + roomName + "\"");
 				// May implement a fallback with client sended username
 			} else {
 				LOG.log(Level.SEVERE, "User is not Authorized!");
@@ -90,7 +93,7 @@ public class PaperFlyChat {
 		try {
 			for (Session sess : session.getOpenSessions()) {
 				if (sess.isOpen()) {
-					sess.getBasicRemote().sendText(msg.getUsername() + ": " + msg.getBody());
+					sess.getBasicRemote().sendText(accountService.getAccountByMail(msg.getEmail()).getUsername() + ": " + msg.getBody());
 				}
 			}
 		} catch (IOException ex) {

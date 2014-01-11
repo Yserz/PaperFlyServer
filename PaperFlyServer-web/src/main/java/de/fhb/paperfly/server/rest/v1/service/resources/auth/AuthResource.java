@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -113,8 +114,9 @@ public class AuthResource {
 	@GET
 	@Path("logout")
 	@Produces(PaperFlyRestService.JSON_MEDIA_TYPE)
-	public Response logout(@Context HttpServletRequest request) {
+	public Response logout(@Context HttpServletRequest request) throws ServletException {
 		Response resp;
+		request.logout();
 		resp = Response.ok().build();
 		return resp;
 	}

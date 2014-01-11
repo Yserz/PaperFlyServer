@@ -33,7 +33,7 @@
 						url: "http://" + adress + "/PaperFlyServer-web/rest/v1/auth/login",
 						async: false,
 						headers: {
-							"user": "mail@mail.de",
+							"user": "yser@mail.de",
 							"pw": "123456"
 						},
 						complete: function(jqXHR, textStatus) {
@@ -182,6 +182,7 @@
 								}
 							}
 						});
+						webSocket.close();
 						document.getElementById('messages').innerHTML
 								= 'Successfully logged out!';
 						document.getElementById('msg').disabled = true;

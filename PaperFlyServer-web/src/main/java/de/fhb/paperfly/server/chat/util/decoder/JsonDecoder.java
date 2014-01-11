@@ -31,7 +31,7 @@ public class JsonDecoder implements Decoder.Text<Message> {
 		try {
 			LOG.log(Level.INFO, "JsonDecoder decode");
 			Message msg = gson.fromJson(s, Message.class);
-			msg.setUsername((String) userProperties.get("username"));
+			msg.setEmail((String) userProperties.get("email"));
 			return msg;
 		} catch (Exception ex) {
 			Logger.getLogger(JsonDecoder.class.getName()).log(Level.SEVERE, null, ex);
