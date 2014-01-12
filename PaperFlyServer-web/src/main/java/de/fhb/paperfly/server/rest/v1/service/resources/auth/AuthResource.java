@@ -30,6 +30,7 @@ import java.util.logging.Level;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.servlet.ServletException;
+import javax.servlet.SessionTrackingMode;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.GET;
@@ -67,8 +68,14 @@ public class AuthResource {
 		System.out.println("LOGIN...");
 		Response resp;
 		try {
-			request.logout();
+//			request.logout();
 			HttpSession session = request.getSession(true);
+			System.out.println("isSession new?: " + session.isNew());
+			System.out.println("trackingmodes");
+			for (SessionTrackingMode object : session.getServletContext().getEffectiveSessionTrackingModes()) {
+				System.out.println("trackingmode: " + object);
+			}
+
 			request.login(request.getHeader("user"), request.getHeader("pw"));
 
 //			String sessionID = request.changeSessionId();
@@ -122,6 +129,7 @@ public class AuthResource {
 	@Path("logout")
 	@Produces(PaperFlyRestService.JSON_MEDIA_TYPE)
 	public Response logout(@Context HttpServletRequest request) throws ServletException {
+		System.out.println("LOGOUT...");
 		Response resp;
 		request.logout();
 		resp = Response.ok().build();

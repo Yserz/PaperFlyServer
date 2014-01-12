@@ -21,87 +21,54 @@
 			</div>
 			<div id="messages"></div>
 			<script type="text/javascript">
-					//adress = '77.186.136.122';
-//					adress = '46.137.173.175:8080';
 					var adress = location.host;
 					var consumerKey = "";
 					var consumerSecret = "";
 
-
 					console.log(adress);
+					console.log(getCookie("paperfly"));
 
-					console.log(":::LOGIN");
-					$.ajax({
-						type: "GET",
-						dataType: "json",
-						url: "http://" + adress + "/PaperFlyServer-web/rest/v1/auth/login",
-						async: false,
-						headers: {
-							"user": "yser@mail.de",
-							"pw": "123456"
-						},
-						complete: function(jqXHR, textStatus) {
-							switch (jqXHR.status) {
-								case 404:
-									console.log(jqXHR);
-								case 500:
-									console.log(jqXHR);
-								default:
-
-									try {
-										var o = $.parseJSON(jqXHR.responseText);
-										console.log(jqXHR.responseText);
-										console.log(o.consumerKey);
-										console.log(o.consumerSecret);
-										consumerKey = o.consumerKey;
-										consumerSecret = o.consumerSecret;
-									} catch (e) {
-										console.log(jqXHR.responseText);
-										console.log(e);
-									}
-
-							}
+					document.getElementById('msg').onkeypress = function(e) {
+						if (!e)
+							e = window.event;
+						var keyCode = e.keyCode || e.which;
+						if (keyCode == '13') {
+							send();
+							return false;
 						}
-					});
-					function s4() {
-						return Math.floor((1 + Math.random()) * 0x10000)
-								.toString(16)
-								.substring(1);
+					};
+					if (getCookie("paperfly") == '' || !$.parseJSON(getCookie("paperfly")).loggedIn) {
+						login();
 					}
+//
+//					var nonce = guid();
+//					var timestamp = Math.round(new Date().getTime() / 1000);
+//
+//					console.log("nonce: " + nonce);
+//					console.log("timestamp: " + timestamp);
 
 
-					function guid() {
-						return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-								s4() + '-' + s4() + s4() + s4();
-					}
-					var nonce = guid();
-					var timestamp = Math.round(new Date().getTime() / 1000);
-
-					console.log("nonce: " + nonce);
-					console.log("timestamp: " + timestamp);
-
-
-					console.log(":::GET_ACCOUNT");
-					$.ajax({
-						type: "GET",
-						dataType: "json",
-						url: "http://" + adress + "/PaperFlyServer-web/rest/v1/account/username",
-						async: false,
-						headers: {
-							'Authorization': 'OAuth oauth_signature="' + consumerSecret + '", oauth_version="1.0", oauth_nonce="' + nonce + '", oauth_signature_method="HMAC-SHA1", oauth_consumer_key="' + consumerKey + '", oauth_timestamp="' + timestamp + '"'
-						},
-						complete: function(jqXHR, textStatus) {
-							switch (jqXHR.status) {
-								case 404:
-									console.log(jqXHR);
-								case 500:
-									console.log(jqXHR);
-								default:
-									console.log(jqXHR.responseText);
-							}
-						}
-					});
-
+//					console.log(":::GET_ACCOUNT");
+//					$.ajax({
+//						type: "GET",
+//						dataType: "json",
+//						url: "http://" + adress + "/PaperFlyServer-web/rest/v1/account/username",
+//						async: false,
+//						headers: {
+//							'Authorization': 'OAuth oauth_signature="' + consumerSecret + '", oauth_version="1.0", oauth_nonce="' + nonce + '", oauth_signature_method="HMAC-SHA1", oauth_consumer_key="' + consumerKey + '", oauth_timestamp="' + timestamp + '"'
+//						},
+//						complete: function(jqXHR, textStatus) {
+//							switch (jqXHR.status) {
+//								case 404:
+//									console.log(jqXHR);
+//								case 500:
+//									console.log(jqXHR);
+//								default:
+//									console.log(jqXHR.responseText);
+//							}
+//						}
+//					});
+					console.log(":::WEBSOCKET")
 					var webSocket =
 							new WebSocket("ws://" + adress + "/PaperFlyServer-web/ws/chat/global");
 					webSocket.onerror = function(event) {
@@ -113,6 +80,13 @@
 					webSocket.onmessage = function(event) {
 						onMessage(event);
 					};
+//					webSocket.onclose = function(event) {
+//						onClose(event);
+//					};
+//					function onClose(event) {
+//						logout();
+//
+//					}
 					function onMessage(event) {
 						document.getElementById('messages').innerHTML
 								+= '<br />' + $.parseJSON(event.data).body;
@@ -121,7 +95,7 @@
 					function onOpen(event) {
 						document.getElementById('messages').innerHTML
 								= 'Connection established';
-						console.log(":::GET_ALL_ROOMS");
+//						console.log(":::GET_ALL_ROOMS");
 //						$.ajax({
 //							type: "GET",
 //							dataType: "json",
@@ -158,58 +132,50 @@
 								}
 						));
 						document.getElementById('msg').value = '';
-						console.log(":::LOCATE_ACCOUNT");
-						$.ajax({
-							type: "GET",
-							dataType: "json",
-							url: "http://" + adress + "/PaperFlyServer-web/rest/v1/room/locateAccount/username",
-							async: false,
-							headers: {
-								'Authorization': 'OAuth oauth_signature="' + consumerSecret + '", oauth_version="1.0", oauth_nonce="' + nonce + '", oauth_signature_method="HMAC-SHA1", oauth_consumer_key="' + consumerKey + '", oauth_timestamp="' + timestamp + '"'
-							},
-							complete: function(jqXHR, textStatus) {
-								switch (jqXHR.status) {
-									case 404:
-										console.log(jqXHR);
-									case 500:
-										console.log(jqXHR);
-									default:
-										console.log(jqXHR.responseText);
-								}
-							}
-						});
-						console.log(":::GET_ALL_ACCOUNTS_IN_ROOM");
-						$.ajax({
-							type: "GET",
-							dataType: "json",
-							url: "http://" + adress + "/PaperFlyServer-web/rest/v1/room/accounts/7",
-							async: false,
-							headers: {
-								"Authorization": "OAuth"
-							},
-							complete: function(jqXHR, textStatus) {
-								switch (jqXHR.status) {
-									case 404:
-										console.log(jqXHR);
-									case 500:
-										console.log(jqXHR);
-									default:
-										console.log(jqXHR.responseText);
-								}
-							}
-						});
+//						console.log(":::LOCATE_ACCOUNT");
+//						$.ajax({
+//							type: "GET",
+//							dataType: "json",
+//							url: "http://" + adress + "/PaperFlyServer-web/rest/v1/room/locateAccount/username",
+//							async: false,
+//							headers: {
+//								'Authorization': 'OAuth oauth_signature="' + consumerSecret + '", oauth_version="1.0", oauth_nonce="' + nonce + '", oauth_signature_method="HMAC-SHA1", oauth_consumer_key="' + consumerKey + '", oauth_timestamp="' + timestamp + '"'
+//							},
+//							complete: function(jqXHR, textStatus) {
+//								switch (jqXHR.status) {
+//									case 404:
+//										console.log(jqXHR);
+//									case 500:
+//										console.log(jqXHR);
+//									default:
+//										console.log(jqXHR.responseText);
+//								}
+//							}
+//						});
+//						console.log(":::GET_ALL_ACCOUNTS_IN_ROOM");
+//						$.ajax({
+//							type: "GET",
+//							dataType: "json",
+//							url: "http://" + adress + "/PaperFlyServer-web/rest/v1/room/accounts/7",
+//							async: false,
+//							headers: {
+//								"Authorization": "OAuth"
+//							},
+//							complete: function(jqXHR, textStatus) {
+//								switch (jqXHR.status) {
+//									case 404:
+//										console.log(jqXHR);
+//									case 500:
+//										console.log(jqXHR);
+//									default:
+//										console.log(jqXHR.responseText);
+//								}
+//							}
+//						});
 
 						return false;
 					}
-					document.getElementById('msg').onkeypress = function(e) {
-						if (!e)
-							e = window.event;
-						var keyCode = e.keyCode || e.which;
-						if (keyCode == '13') {
-							send();
-							return false;
-						}
-					};
+
 					function logout() {
 						console.log(":::LOGOUT");
 						$.ajax({
@@ -217,9 +183,9 @@
 							dataType: "json",
 							url: "http://" + adress + "/PaperFlyServer-web/rest/v1/auth/logout",
 							async: false,
-							headers: {
-								"Authorization": "OAuth"
-							},
+//							headers: {
+//								"Authorization": "OAuth"
+//							},
 							complete: function(jqXHR, textStatus) {
 								switch (jqXHR.status) {
 									case 404:
@@ -231,11 +197,80 @@
 								}
 							}
 						});
-						webSocket.close();
+						document.cookie = "paperfly=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
 						document.getElementById('messages').innerHTML
 								= 'Successfully logged out!';
 						document.getElementById('msg').disabled = true;
 						document.getElementById('send').disabled = true;
+
+					}
+					function login() {
+						console.log(":::LOGIN");
+						$.ajax({
+							type: "GET",
+							dataType: "json",
+							url: "http://" + adress + "/PaperFlyServer-web/rest/v1/auth/login",
+							async: false,
+							headers: {
+								"user": "yser@mail.de",
+								"pw": "123456"
+							},
+							complete: function(jqXHR, textStatus) {
+								switch (jqXHR.status) {
+									case 404:
+										console.log(jqXHR);
+									case 500:
+										console.log(jqXHR);
+									default:
+
+										try {
+											var o = $.parseJSON(jqXHR.responseText);
+											console.log(jqXHR.responseText);
+											console.log(o.consumerKey);
+											console.log(o.consumerSecret);
+											consumerKey = o.consumerKey;
+											consumerSecret = o.consumerSecret;
+											var saveData = new Object();
+											saveData.loggedIn = true;
+											saveData.consumerKey = o.consumerKey;
+											saveData.consumerSecret = o.consumerSecret;
+											setCookie("paperfly", JSON.stringify(saveData), 1);
+										} catch (e) {
+											console.log(jqXHR.responseText);
+											console.log(e);
+										}
+
+								}
+							}
+						});
+					}
+					function getCookie(cname)
+					{
+						var name = cname + "=";
+						var ca = document.cookie.split(';');
+						for (var i = 0; ca.length > i; i++)
+						{
+							var c = ca[i].trim();
+							if (c.indexOf(name) == 0)
+								return c.substring(name.length, c.length);
+						}
+						return "";
+					}
+					function setCookie(cname, cvalue, exdays)
+					{
+						var d = new Date();
+						d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+						var expires = "expires=" + d.toGMTString();
+						document.cookie = cname + "=" + cvalue + "; " + expires;
+					}
+					function s4() {
+						return Math.floor((1 + Math.random()) * 0x10000)
+								.toString(16)
+								.substring(1);
+					}
+					function guid() {
+						return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+								s4() + '-' + s4() + s4() + s4();
 					}
 			</script>
 		</h:body>
