@@ -168,10 +168,37 @@ public class MyAccountResource {
 	public Response changeStatus(@PathParam("status") String newStatus, @Context HttpServletRequest request, @Context SecurityContext sc) {
 		Response resp;
 		try {
-			Account myAccount = accountService.getAccountByUsername(sc.getUserPrincipal().getName());
+			Account myAccount = accountService.getAccountByMail(sc.getUserPrincipal().getName());
 			myAccount.setStatus(Status.valueOf(newStatus));
 			AccountDTO editedAccount = PaperFlyRestService.toDTOMapper.mapAccount(accountService.editAccount(myAccount));
 			resp = Response.ok(editedAccount).build();
+		} catch (Exception e) {
+			LOG.log(this.getClass().getName(), Level.SEVERE, "Exception: {0}", e.getMessage());
+			resp = Response.status(500).build();
+		}
+		return resp;
+	}
+
+	/**
+	 * [TODO LARGE DESC]
+	 *
+	 * @title Change Online-Status
+	 * @summary This operation will change the Online-Status.
+	 * @param newStatus The new status of the account.
+	 * @param request
+	 * @param sc
+	 * @return The account with the modified status.
+	 */
+	@GET
+	@Path("get")
+	@Produces(PaperFlyRestService.JSON_MEDIA_TYPE)
+	@ReturnType("de.fhb.paperfly.server.rest.v1.dto.AccountDTO")
+	public Response getAccount(@Context HttpServletRequest request, @Context SecurityContext sc) {
+		Response resp;
+		try {
+			Account myAccount = accountService.getAccountByMail(sc.getUserPrincipal().getName());
+			AccountDTO account = PaperFlyRestService.toDTOMapper.mapAccount(myAccount);
+			resp = Response.ok(account).build();
 		} catch (Exception e) {
 			LOG.log(this.getClass().getName(), Level.SEVERE, "Exception: {0}", e.getMessage());
 			resp = Response.status(500).build();
