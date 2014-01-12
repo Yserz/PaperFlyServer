@@ -31,6 +31,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -67,7 +68,12 @@ public class AuthResource {
 		Response resp;
 		try {
 			request.logout();
+			HttpSession session = request.getSession(true);
 			request.login(request.getHeader("user"), request.getHeader("pw"));
+
+//			String sessionID = request.changeSessionId();
+//			System.out.println("sessionID: " + sessionID);
+			System.out.println("SessionID: " + session.getId());
 			MultivaluedMap<String, String> roles = new MultivaluedMapImpl();
 
 			if (request.isUserInRole("ADMINISTRATOR")) {
