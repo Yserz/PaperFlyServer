@@ -19,7 +19,11 @@ package de.fhb.paperfly.server.rest.v1.service.resources.auth;
 import com.qmino.miredot.annotations.ReturnType;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 import com.sun.jersey.oauth.server.spi.OAuthProvider;
+import de.fhb.paperfly.server.account.entity.Account;
+import de.fhb.paperfly.server.account.entity.Status;
+import de.fhb.paperfly.server.account.service.AccountServiceLocal;
 import de.fhb.paperfly.server.logging.service.LoggingServiceLocal;
+import de.fhb.paperfly.server.rest.v1.dto.AccountDTO;
 import de.fhb.paperfly.server.rest.v1.dto.output.TokenDTO;
 import de.fhb.paperfly.server.rest.v1.dto.output.ErrorDTO;
 import de.fhb.paperfly.server.rest.v1.service.PaperFlyRestService;
@@ -39,6 +43,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 
 /**
  *
@@ -50,6 +55,8 @@ public class AuthResource {
 
 	@EJB
 	public LoggingServiceLocal LOG;
+	@EJB
+	private AccountServiceLocal accountService;
 
 	/**
 	 * [TODO LARGE DESC]
@@ -64,7 +71,7 @@ public class AuthResource {
 	@Path("login")
 	@Produces(PaperFlyRestService.JSON_MEDIA_TYPE)
 	@ReturnType("de.fhb.paperfly.server.rest.v1.dto.output.TokenDTO")
-	public Response login(@Context HttpServletRequest request, @Context OAuthProvider provider) {
+	public Response login(@Context HttpServletRequest request, @Context OAuthProvider provider, @Context SecurityContext sc) {
 		System.out.println("LOGIN...");
 		Response resp;
 		try {
@@ -109,6 +116,11 @@ public class AuthResource {
 
 			System.out.println("Successfully logged in!");
 			System.out.println("User: " + request.getUserPrincipal());
+
+			Account myAccount = accountService.getAccountByMail(sc.getUserPrincipal().getName());
+			myAccount.setStatus(Status.ONLINE);
+			accountService.editAccount(myAccount);
+
 			resp = Response.ok(new TokenDTO(c.getKey(), c.getSecret())).build();
 		} catch (Exception e) {
 			LOG.log(this.getClass().getName(), Level.SEVERE, "Exception: {0}", e.getMessage());
@@ -128,10 +140,19 @@ public class AuthResource {
 	@GET
 	@Path("logout")
 	@Produces(PaperFlyRestService.JSON_MEDIA_TYPE)
-	public Response logout(@Context HttpServletRequest request) throws ServletException {
+	public Response logout(@Context HttpServletRequest request, @Context SecurityContext sc) throws ServletException {
 		System.out.println("LOGOUT...");
 		Response resp;
+
+		Account myAccount = accountService.getAccountByMail(sc.getUserPrincipal().getName());
+		myAccount.setStatus(Status.OFFLINE);
+		accountService.editAccount(myAccount);
+
+		request.getSession(false).invalidate();
 		request.logout();
+
+
+
 		resp = Response.ok().build();
 		return resp;
 	}

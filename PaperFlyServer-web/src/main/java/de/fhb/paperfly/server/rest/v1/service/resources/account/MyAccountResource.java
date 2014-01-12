@@ -78,7 +78,7 @@ public class MyAccountResource {
 	public Response editAccount(AccountDTO account, @Context HttpServletRequest request, @Context SecurityContext sc) {
 		Response resp;
 		try {
-			Account myAccount = accountService.getAccountByUsername(sc.getUserPrincipal().getName());
+			Account myAccount = accountService.getAccountByMail(sc.getUserPrincipal().getName());
 			myAccount.setFirstName(account.getFirstName());
 			myAccount.setLastName(account.getLastName());
 
@@ -109,7 +109,7 @@ public class MyAccountResource {
 	public Response addFriend(@PathParam("friendsUsername") String friendsUsername, @Context HttpServletRequest request, @Context SecurityContext sc) {
 		Response resp;
 		try {
-			Account myAccount = accountService.getAccountByUsername(sc.getUserPrincipal().getName());
+			Account myAccount = accountService.getAccountByMail(sc.getUserPrincipal().getName());
 			Account friendsAccount = accountService.getAccountByUsername(friendsUsername);
 			myAccount.getFriendList().add(friendsAccount);
 			AccountDTO editedAccount = PaperFlyRestService.toDTOMapper.mapAccount(accountService.editAccount(myAccount));
@@ -139,7 +139,7 @@ public class MyAccountResource {
 	public Response removeFriend(@PathParam("friendsUsername") String friendsUsername, @Context HttpServletRequest request, @Context SecurityContext sc) {
 		Response resp;
 		try {
-			Account myAccount = accountService.getAccountByUsername(sc.getUserPrincipal().getName());
+			Account myAccount = accountService.getAccountByMail(sc.getUserPrincipal().getName());
 			Account friendsAccount = accountService.getAccountByUsername(friendsUsername);
 			myAccount.getFriendList().remove(friendsAccount);
 			AccountDTO editedAccount = PaperFlyRestService.toDTOMapper.mapAccount(accountService.editAccount(myAccount));
