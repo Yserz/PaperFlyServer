@@ -148,10 +148,10 @@ public class AuthResource {
 		myAccount.setStatus(Status.OFFLINE);
 		accountService.editAccount(myAccount);
 
-		request.getSession(false).invalidate();
+		if (request.getSession(false) != null) {
+			request.getSession(false).invalidate();
+		}
 		request.logout();
-
-
 
 		resp = Response.ok().build();
 		return resp;

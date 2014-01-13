@@ -43,6 +43,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 
 /**
+ * https://svn.java.net/svn/jersey~svn/trunk/jersey/contribs/jersey-oauth/
  *
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */

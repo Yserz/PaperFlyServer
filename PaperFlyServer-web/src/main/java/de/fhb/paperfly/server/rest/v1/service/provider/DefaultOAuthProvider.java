@@ -35,6 +35,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.Provider;
 
 /**
+ * https://svn.java.net/svn/jersey~svn/trunk/jersey/contribs/jersey-oauth/
  *
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */

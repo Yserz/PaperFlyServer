@@ -55,6 +55,7 @@
 //import javax.ws.rs.core.Response;
 //
 ///**
+// * https://svn.java.net/svn/jersey~svn/trunk/jersey/contribs/jersey-oauth/
 // *
 // * @author Michael Koppen <michael.koppen@googlemail.com>
 // */
