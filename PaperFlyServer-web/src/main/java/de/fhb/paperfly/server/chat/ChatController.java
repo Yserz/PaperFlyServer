@@ -6,68 +6,84 @@ package de.fhb.paperfly.server.chat;
 
 import de.fhb.paperfly.server.account.entity.Account;
 import de.fhb.paperfly.server.account.service.AccountServiceLocal;
+import de.fhb.paperfly.server.logging.interceptor.WebServiceLoggerInterceptor;
 import de.fhb.paperfly.server.room.entity.Room;
 import de.fhb.paperfly.server.room.service.RoomServiceLocal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.websocket.Session;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
+import javax.interceptor.Interceptors;
 
 /**
  *
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */
-@Stateless
+@Singleton
+@Startup
+@Interceptors({WebServiceLoggerInterceptor.class})
 public class ChatController {
 
 	@EJB
 	private RoomServiceLocal roomService;
 	@EJB
 	private AccountServiceLocal accountService;
-	private Map<String, PaperFlyChat> chats;
+	private Map<String, Set<String>> chats;
 
 	public ChatController() {
 		chats = new HashMap<>();
 	}
 
-	public void addChat(String room, PaperFlyChat chat) {
-		chats.put(room, chat);
+	public void addChat(String room) {
+		chats.put(room, new HashSet<String>());
 	}
 
 	public void removeChat(String room) {
 		chats.remove(room);
 	}
 
+	public void addUserToChat(String room, String user) {
+		chats.get(room).add(user);
+	}
+
+	public void removeUserFromChat(String room, String user) {
+		chats.get(room).remove(user);
+	}
+
 	public List<Account> getUsersInRoom(Room room) {
+		System.out.println("Room: " + room);
 		List<Account> accountList = new ArrayList<>();
-		for (Session session : chats.get(room.getName()).getSessions()) {
-			if (session.getUserPrincipal() != null) {
-				accountList.add(accountService.getAccountByMail(session.getUserPrincipal().getName()));
+		System.out.println("Chat: " + chats.get(room.getName()));
+		if (chats.get(room.getName()) != null) {
+			for (String user : chats.get(room.getName())) {
+				accountList.add(accountService.getAccountByMail(user));
+
 			}
 		}
 		return accountList;
 	}
 
 	public Room locateAccount(String mail) {
-		for (Map.Entry<String, PaperFlyChat> chatEntry : chats.entrySet()) {
-			for (Session session : chatEntry.getValue().getSessions()) {
-				if (session.getUserPrincipal() != null && session.getUserPrincipal().getName().equals(mail)) {
-					return roomService.getRoomByRoomName(chatEntry.getKey());
-				}
+		for (Map.Entry<String, Set<String>> chatEntry : chats.entrySet()) {
+			chatEntry.getValue().contains(mail);
+			Room room = roomService.getRoomByRoomName(chatEntry.getKey());
+			if (room.getCoordinate().getLatitude() != 0 && room.getCoordinate().getLonglitutde() != 0) {
+				return room;
 			}
 		}
 		return null;
 	}
 
-	public Map<String, PaperFlyChat> getChats() {
+	public Map<String, Set<String>> getChats() {
 		return chats;
 	}
 
-	public void setChats(Map<String, PaperFlyChat> chats) {
+	public void setChats(Map<String, Set<String>> chats) {
 		this.chats = chats;
 	}
 }

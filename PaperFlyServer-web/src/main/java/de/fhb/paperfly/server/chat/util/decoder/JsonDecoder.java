@@ -24,14 +24,12 @@ public class JsonDecoder implements Decoder.Text<Message> {
 
 	private static final Logger LOG = Logger.getLogger(JsonDecoder.class.getName());
 	private Gson gson;
-	private Map<String, Object> userProperties;
 
 	@Override
 	public Message decode(String s) throws DecodeException {
 		try {
 			LOG.log(Level.INFO, "JsonDecoder decode");
 			Message msg = gson.fromJson(s, Message.class);
-			msg.setEmail((String) userProperties.get("email"));
 			return msg;
 		} catch (Exception ex) {
 			Logger.getLogger(JsonDecoder.class.getName()).log(Level.SEVERE, null, ex);
@@ -50,7 +48,6 @@ public class JsonDecoder implements Decoder.Text<Message> {
 	public void init(EndpointConfig config) {
 		LOG.log(Level.INFO, "Init JsonDecoder");
 		gson = new Gson();
-		userProperties = config.getUserProperties();
 	}
 
 	@Override

@@ -22,6 +22,7 @@ import com.sun.jersey.oauth.server.spi.OAuthProvider;
 import de.fhb.paperfly.server.account.entity.Account;
 import de.fhb.paperfly.server.account.entity.Status;
 import de.fhb.paperfly.server.account.service.AccountServiceLocal;
+import de.fhb.paperfly.server.logging.interceptor.WebServiceLoggerInterceptor;
 import de.fhb.paperfly.server.logging.service.LoggingServiceLocal;
 import de.fhb.paperfly.server.rest.v1.dto.AccountDTO;
 import de.fhb.paperfly.server.rest.v1.dto.input.RegisterAccountDTO;
@@ -33,6 +34,7 @@ import java.util.List;
 import java.util.logging.Level;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -53,6 +55,7 @@ import javax.ws.rs.core.SecurityContext;
  */
 @Stateless
 //@Path("myaccount/")
+@Interceptors({WebServiceLoggerInterceptor.class})
 public class MyAccountResource {
 
 	@EJB

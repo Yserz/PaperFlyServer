@@ -22,6 +22,7 @@ import com.sun.jersey.oauth.server.spi.OAuthProvider;
 import de.fhb.paperfly.server.account.entity.Account;
 import de.fhb.paperfly.server.account.entity.Status;
 import de.fhb.paperfly.server.account.service.AccountServiceLocal;
+import de.fhb.paperfly.server.logging.interceptor.WebServiceLoggerInterceptor;
 import de.fhb.paperfly.server.logging.service.LoggingServiceLocal;
 import de.fhb.paperfly.server.rest.v1.dto.AccountDTO;
 import de.fhb.paperfly.server.rest.v1.dto.output.TokenDTO;
@@ -33,6 +34,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
 import javax.servlet.ServletException;
 import javax.servlet.SessionTrackingMode;
 import javax.servlet.http.HttpServletRequest;
@@ -51,6 +53,7 @@ import javax.ws.rs.core.SecurityContext;
  */
 @Stateless
 //@Path("auth/")
+@Interceptors({WebServiceLoggerInterceptor.class})
 public class AuthResource {
 
 	@EJB

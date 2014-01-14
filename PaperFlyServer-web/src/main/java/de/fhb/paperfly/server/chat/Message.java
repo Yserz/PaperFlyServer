@@ -25,8 +25,7 @@ import lombok.ToString;
 //@AllArgsConstructor
 public class Message {
 
-	@Transient
-	private String email;
+	private String username;
 	private MessageType type;
 	private Date sendTime;
 	@Transient
@@ -36,7 +35,8 @@ public class Message {
 	public Message() {
 	}
 
-	public Message(String body) {
+	public Message(String username, String body) {
 		this.body = body;
+		this.username = username;
 	}
 }

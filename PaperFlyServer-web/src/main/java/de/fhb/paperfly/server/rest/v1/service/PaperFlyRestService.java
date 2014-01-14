@@ -38,6 +38,7 @@ import javax.ws.rs.core.SecurityContext;
  */
 @Path("/v1")
 @Singleton
+//@Interceptors({WebServiceLoggerInterceptor.class})
 public class PaperFlyRestService {
 
 	@EJB
