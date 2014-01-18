@@ -20,6 +20,7 @@ import com.qmino.miredot.annotations.ReturnType;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 import com.sun.jersey.oauth.server.spi.OAuthProvider;
 import de.fhb.paperfly.server.account.entity.Account;
+import de.fhb.paperfly.server.account.entity.Status;
 import de.fhb.paperfly.server.account.service.AccountServiceLocal;
 import de.fhb.paperfly.server.logging.interceptor.WebServiceLoggerInterceptor;
 import de.fhb.paperfly.server.logging.service.LoggingServiceLocal;
@@ -30,11 +31,13 @@ import de.fhb.paperfly.server.rest.v1.dto.output.ErrorDTO;
 import de.fhb.paperfly.server.rest.v1.service.PaperFlyRestService;
 import de.fhb.paperfly.server.rest.v1.service.provider.DefaultOAuthProvider;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -85,22 +88,44 @@ public class AccountResource {
 		try {
 			AccountDTO acc = PaperFlyRestService.toDTOMapper.mapAccount(accountService.register(account.getFirstName(), account.getLastName(), account.getUsername(), account.getEmail(), account.getPassword(), account.getPasswordRpt()));
 			request.login(account.getEmail(), account.getPassword());
+
+			HttpSession session = request.getSession(false);
+			if (session != null) {
+				session.setAttribute("mail", request.getUserPrincipal().toString());
+			}
+
 			MultivaluedMap<String, String> roles = new MultivaluedMapImpl();
 
 			if (request.isUserInRole("ADMINISTRATOR")) {
-				System.out.println("User is in role ADMINISTRATOR");
+				LOG.log(this.getClass().getName(), Level.INFO, "User is in role ADMINISTRATOR");
 				roles.add("roles", "ADMINISTRATOR");
 			}
 			if (request.isUserInRole("USER")) {
-				System.out.println("User is in role USER");
+				LOG.log(this.getClass().getName(), Level.INFO, "User is in role USER");
 				roles.add("roles", "USER");
 			}
 			if (request.isUserInRole("ANONYMOUS")) {
-				System.out.println("User is in role ANONYMOUS");
+				LOG.log(this.getClass().getName(), Level.INFO, "User is in role ANONYMOUS");
 				roles.add("roles", "ANONYMOUS");
 			}
 			DefaultOAuthProvider.Consumer c = ((DefaultOAuthProvider) provider).registerConsumer(request.getUserPrincipal().toString(), request.getUserPrincipal(), roles);
+			LOG.log(this.getClass().getName(), Level.INFO, "Consumer Owner: " + c.getOwner());
+			LOG.log(this.getClass().getName(), Level.INFO, "Consumer Secret: " + c.getSecret());
+			LOG.log(this.getClass().getName(), Level.INFO, "Consumer Key: " + c.getKey());
+			LOG.log(this.getClass().getName(), Level.INFO, "Consumer Principal: " + c.getPrincipal());
 
+
+			String consumerKey = "";
+			String callbackURL = "";
+			Map<String, List<String>> attributes = null;
+//			OAuthToken oauthtoken = provider.newRequestToken(consumerKey, callbackURL, attributes);
+
+			LOG.log(this.getClass().getName(), Level.INFO, "Successfully logged in!");
+			LOG.log(this.getClass().getName(), Level.INFO, "User: " + request.getUserPrincipal());
+
+			Account myAccount = accountService.getAccountByMail(acc.getEmail());
+			myAccount.setStatus(Status.ONLINE);
+			accountService.editAccount(myAccount);
 			resp = Response.ok(new TokenDTO(c.getKey(), c.getSecret())).build();
 		} catch (Exception e) {
 			LOG.log(this.getClass().getName(), Level.SEVERE, "Exception: {0}", e.getMessage());

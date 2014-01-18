@@ -111,7 +111,7 @@ public class LoggingService implements LoggingServiceLocal, LoggingServiceLocalA
 		return tempLogger;
 	}
 
-	@Schedule(second = "0", minute = "*/5", hour = "*")
+	@Schedule(second = "0", minute = "*/15", hour = "*")
 	private void cleanUp() {
 		showLoggers();
 	}

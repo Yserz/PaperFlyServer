@@ -56,6 +56,7 @@ public class WebServiceLoggerInterceptor {
 
 		if (context.getParameters() != null) {
 			for (Object object : context.getParameters()) {
+
 				if (object != null) {
 					count++;
 					LOG.log(context.getMethod().getDeclaringClass().getName(), Level.INFO, " -       Param {0}: ({1}) {2}", new Object[]{count, getPureClassName(object.getClass()), object});
@@ -63,9 +64,10 @@ public class WebServiceLoggerInterceptor {
 					count++;
 					LOG.log(context.getMethod().getDeclaringClass().getName(), Level.INFO, " -       Param {0}: ({1}) {2}", new Object[]{count, "", object});
 				}
+
+
 			}
 		}
-
 		return context.proceed();
 	}
 

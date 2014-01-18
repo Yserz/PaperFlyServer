@@ -7,8 +7,10 @@ package de.fhb.paperfly.server.rest.v1.service.listener;
 import de.fhb.paperfly.server.account.entity.Account;
 import de.fhb.paperfly.server.account.entity.Status;
 import de.fhb.paperfly.server.account.service.AccountServiceLocal;
+import de.fhb.paperfly.server.logging.service.LoggingServiceLocal;
 import de.fhb.paperfly.server.rest.v1.dto.AccountDTO;
 import de.fhb.paperfly.server.rest.v1.service.PaperFlyRestService;
+import java.util.logging.Level;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.servlet.annotation.WebListener;
@@ -24,24 +26,38 @@ public class SessionListener implements HttpSessionListener {
 
 	@EJB
 	private AccountServiceLocal accountService;
+	@EJB
+	private LoggingServiceLocal LOG;
 
 	@Override
 	public void sessionCreated(HttpSessionEvent se) {
-		System.out.println("Session '" + se.getSession().getId() + "' created!");
+		try {
+			LOG.log(this.getClass().getName(), Level.INFO, "Session '" + se.getSession().getId() + "' created!");
+
+		} catch (Exception e) {
+		}
+		LOG.log(this.getClass().getName(), Level.INFO, "Session created!");
 	}
 
 	@Override
 	public void sessionDestroyed(HttpSessionEvent se) {
 		try {
-			System.out.println("isNewSession: " + se.getSession().isNew());
-			System.out.println("Session '" + se.getSession().getId() + "'!");
+			LOG.log(this.getClass().getName(), Level.INFO, "isNewSession: " + se.getSession().isNew());
+			LOG.log(this.getClass().getName(), Level.INFO, "Session '" + se.getSession().getId() + "'!");
 			String mail = (String) se.getSession().getAttribute("mail");
-			Account myAccount = accountService.getAccountByMail(mail);
-			myAccount.setStatus(Status.OFFLINE);
-			accountService.editAccount(myAccount);
+			if (mail != null) {
+				Account myAccount = accountService.getAccountByMail(mail);
+				myAccount.setStatus(Status.OFFLINE);
+				accountService.editAccount(myAccount);
+
+			} else {
+				throw new Exception("User already logged out!");
+			}
+
+			LOG.log(this.getClass().getName(), Level.INFO, "Session '" + se.getSession().getId() + "'destroyed!");
 		} catch (Exception e) {
-			System.out.println("Error on setting Account as OFFLINE!");
+			LOG.log(this.getClass().getName(), Level.SEVERE, "Error on setting Account as OFFLINE!", e);
 		}
-		System.out.println("Session '" + se.getSession().getId() + "'destroyed!");
+		LOG.log(this.getClass().getName(), Level.INFO, "Session destroyed!");
 	}
 }

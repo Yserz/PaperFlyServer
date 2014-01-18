@@ -22,5 +22,5 @@ package de.fhb.paperfly.server.chat;
  */
 public enum MessageType {
 
-	TEXT;
+	TEXT, ERROR;
 }

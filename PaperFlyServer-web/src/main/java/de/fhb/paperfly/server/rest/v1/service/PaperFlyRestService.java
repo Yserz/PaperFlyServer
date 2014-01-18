@@ -75,7 +75,6 @@ public class PaperFlyRestService {
 	@GET
 	@Path("ping")
 	public String ping(@Context SecurityContext sc) {
-		System.out.println("AuthenticationScheme: " + sc.getAuthenticationScheme());
 		return "alive";
 	}
 

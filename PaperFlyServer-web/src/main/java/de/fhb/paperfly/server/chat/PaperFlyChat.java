@@ -4,6 +4,8 @@ import de.fhb.paperfly.server.account.service.AccountServiceLocal;
 import de.fhb.paperfly.server.chat.util.decoder.JsonDecoder;
 import de.fhb.paperfly.server.chat.util.encoder.JsonEncoder;
 import de.fhb.paperfly.server.logging.interceptor.WebServiceLoggerInterceptor;
+import de.fhb.paperfly.server.logging.service.LoggingService;
+import de.fhb.paperfly.server.logging.service.LoggingServiceLocal;
 import de.fhb.paperfly.server.room.entity.Room;
 import de.fhb.paperfly.server.room.service.RoomServiceLocal;
 import java.io.IOException;
@@ -46,15 +48,17 @@ public class PaperFlyChat {
 	private AccountServiceLocal accountService;
 	@EJB
 	private ChatController controller;
+	@EJB
+	private LoggingServiceLocal LOG;
 	private Room room;
-	private static final Logger LOG = Logger.getLogger(PaperFlyChat.class.getName());
 
 	public PaperFlyChat() {
 	}
 
 	@OnOpen
-	public void open(Session session, EndpointConfig conf, @PathParam("room-name") String roomName) throws EncodeException {
+	public void open(Session session, EndpointConfig conf, @PathParam("room-name") String roomName) throws EncodeException, Exception {
 		session.getContainer().setDefaultMaxSessionIdleTimeout(1800000l);/*30m*/
+		LOG.log(this.getClass().getName(), Level.INFO, "Opening connection...");
 		System.out.println("Opening connection...");
 
 		try {
@@ -65,23 +69,24 @@ public class PaperFlyChat {
 				if (!controller.getChats().containsKey(roomName)) {
 					Room room = roomService.getRoomByRoomName(roomName);
 					if (room == null) {
-						System.out.println("CREATING ROOM " + roomName);
+						LOG.log(this.getClass().getName(), Level.INFO, "CREATING ROOM " + roomName);
 						setRoom(roomService.createRoom(new Room(null, roomName, null, null)));
 					} else {
 						setRoom(room);
 					}
-					System.out.println("ADDING CHAT " + roomName);
+					LOG.log(this.getClass().getName(), Level.INFO, "ADDING CHAT " + roomName);
 					controller.addChat(roomName);
 				}
-				System.out.println("ADDING USER " + session.getUserPrincipal().getName() + " TO CHAT " + roomName);
+				LOG.log(this.getClass().getName(), Level.INFO, "ADDING USER " + session.getUserPrincipal().getName() + " TO CHAT " + roomName);
 				controller.addUserToChat(roomName, session.getUserPrincipal().getName());
 			} else {
-				LOG.log(Level.SEVERE, "User is not Authorized!");
-				session.getBasicRemote().sendObject(new Message(null, "You are not Authorized!"));
-				session.close();
+				LOG.log(this.getClass().getName(), Level.SEVERE, "User is not Authorized!");
+//				session.getBasicRemote().sendObject(new Message(null, "You are not Authorized!"));
+				throw new Exception("You are not Authorized!");
+
 			}
 		} catch (IOException ex) {
-			LOG.log(Level.SEVERE, null, ex);
+			LOG.log(this.getClass().getName(), Level.SEVERE, "Could not open connection to websocket!", ex);
 		}
 	}
 
@@ -94,35 +99,36 @@ public class PaperFlyChat {
 				}
 			}
 		} catch (IOException ex) {
-			LOG.log(Level.SEVERE, null, ex);
+			LOG.log(this.getClass().getName(), Level.SEVERE, null, ex);
 		}
 	}
 
 	@OnMessage
 	public void binaryMessage(Session session, ByteBuffer msg) {
-		System.out.println("Binary message: " + msg.toString());
+		LOG.log(this.getClass().getName(), Level.INFO, "Binary message: " + msg.toString());
 	}
 
 	@OnMessage
 	public void pongMessage(Session session, PongMessage msg) {
-		System.out.println("Pong message: "
+		LOG.log(this.getClass().getName(), Level.INFO, "Pong message: "
 				+ msg.getApplicationData().toString());
 	}
 
 	@OnError
 	public void error(Session session, Throwable error) throws IOException, EncodeException {
-		System.out.println("Catching Error...");
-		System.out.println("ERROR: " + error.getLocalizedMessage());
-		LOG.log(Level.SEVERE, error.getLocalizedMessage());
-		session.getBasicRemote().sendObject(new Message(null, error.getLocalizedMessage()));
-
+		LOG.log(this.getClass().getName(), Level.INFO, "Catching Error...");
+		LOG.log(this.getClass().getName(), Level.SEVERE, "ERROR: " + error.getLocalizedMessage());
+		LOG.log(this.getClass().getName(), Level.SEVERE, error.getLocalizedMessage());
+		session.getBasicRemote().sendObject(new Message(400, error.getLocalizedMessage()));
+		session.close();
 	}
 
 	@OnClose
 	public void close(Session session, CloseReason reason) {
+		LOG.log(this.getClass().getName(), Level.INFO, "Closing connection...");
 		System.out.println("Closing connection...");
 		try {
-			System.out.println("REMOVING USER " + session.getUserPrincipal().getName() + " FROM CHAT " + getRoom().getName());
+			LOG.log(this.getClass().getName(), Level.INFO, "REMOVING USER " + session.getUserPrincipal().getName() + " FROM CHAT " + getRoom().getName());
 			controller.removeUserFromChat(getRoom().getName(), session.getUserPrincipal().getName());
 
 //			if (controller.getChats().get(getRoom().getName()).isEmpty() && !getRoom().getName().equalsIgnoreCase("global")) {
@@ -131,7 +137,7 @@ public class PaperFlyChat {
 //			}
 			session.close(reason);
 		} catch (IOException ex) {
-			LOG.log(Level.SEVERE, null, ex);
+			LOG.log(this.getClass().getName(), Level.SEVERE, null, ex);
 		}
 	}
 

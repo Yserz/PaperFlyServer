@@ -26,6 +26,7 @@ import lombok.ToString;
 public class Message {
 
 	private String username;
+	private int code;
 	private MessageType type;
 	private Date sendTime;
 	@Transient
@@ -37,6 +38,14 @@ public class Message {
 
 	public Message(String username, String body) {
 		this.body = body;
+		this.code = 200;
 		this.username = username;
+		this.type = MessageType.TEXT;
+	}
+
+	public Message(int code, String body) {
+		this.body = body;
+		this.code = code;
+		this.type = MessageType.ERROR;
 	}
 }

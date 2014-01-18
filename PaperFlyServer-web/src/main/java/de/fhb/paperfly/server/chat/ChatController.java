@@ -7,6 +7,7 @@ package de.fhb.paperfly.server.chat;
 import de.fhb.paperfly.server.account.entity.Account;
 import de.fhb.paperfly.server.account.service.AccountServiceLocal;
 import de.fhb.paperfly.server.logging.interceptor.WebServiceLoggerInterceptor;
+import de.fhb.paperfly.server.logging.service.LoggingServiceLocal;
 import de.fhb.paperfly.server.room.entity.Room;
 import de.fhb.paperfly.server.room.service.RoomServiceLocal;
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
@@ -33,6 +35,8 @@ public class ChatController {
 	private RoomServiceLocal roomService;
 	@EJB
 	private AccountServiceLocal accountService;
+	@EJB
+	private LoggingServiceLocal LOG;
 	private Map<String, Set<String>> chats;
 
 	public ChatController() {
@@ -56,9 +60,9 @@ public class ChatController {
 	}
 
 	public List<Account> getUsersInRoom(Room room) {
-		System.out.println("Room: " + room);
+		LOG.log(this.getClass().getName(), Level.INFO, "Room: " + room);
 		List<Account> accountList = new ArrayList<>();
-		System.out.println("Chat: " + chats.get(room.getName()));
+		LOG.log(this.getClass().getName(), Level.INFO, "Chat: " + chats.get(room.getName()));
 		if (chats.get(room.getName()) != null) {
 			for (String user : chats.get(room.getName())) {
 				accountList.add(accountService.getAccountByMail(user));

@@ -76,12 +76,20 @@ public class AuthResource {
 	@Produces(PaperFlyRestService.JSON_MEDIA_TYPE)
 	@ReturnType("de.fhb.paperfly.server.rest.v1.dto.output.TokenDTO")
 	public Response login(@Context HttpServletRequest request, @Context OAuthProvider provider, @Context SecurityContext sc) {
-		System.out.println("LOGIN...");
+		LOG.log(this.getClass().getName(), Level.INFO, "LOGIN...");
 		Response resp;
 		try {
+//			request.logout();
+			HttpSession session = request.getSession(true);
+			System.out.println("isSession new?: " + session.isNew());
+			System.out.println("trackingmodes");
+			for (SessionTrackingMode object : session.getServletContext().getEffectiveSessionTrackingModes()) {
+				System.out.println("trackingmode: " + object);
+			}
+
 			request.login(request.getHeader("user"), request.getHeader("pw"));
 
-			HttpSession session = request.getSession(false);
+			session = request.getSession(false);
 			if (session != null) {
 				session.setAttribute("mail", request.getUserPrincipal().toString());
 			}
@@ -89,22 +97,22 @@ public class AuthResource {
 			MultivaluedMap<String, String> roles = new MultivaluedMapImpl();
 
 			if (request.isUserInRole("ADMINISTRATOR")) {
-				System.out.println("User is in role ADMINISTRATOR");
+				LOG.log(this.getClass().getName(), Level.INFO, "User is in role ADMINISTRATOR");
 				roles.add("roles", "ADMINISTRATOR");
 			}
 			if (request.isUserInRole("USER")) {
-				System.out.println("User is in role USER");
+				LOG.log(this.getClass().getName(), Level.INFO, "User is in role USER");
 				roles.add("roles", "USER");
 			}
 			if (request.isUserInRole("ANONYMOUS")) {
-				System.out.println("User is in role ANONYMOUS");
+				LOG.log(this.getClass().getName(), Level.INFO, "User is in role ANONYMOUS");
 				roles.add("roles", "ANONYMOUS");
 			}
 			DefaultOAuthProvider.Consumer c = ((DefaultOAuthProvider) provider).registerConsumer(request.getUserPrincipal().toString(), request.getUserPrincipal(), roles);
-			System.out.println("Consumer Owner: " + c.getOwner());
-			System.out.println("Consumer Secret: " + c.getSecret());
-			System.out.println("Consumer Key: " + c.getKey());
-			System.out.println("Consumer Principal: " + c.getPrincipal());
+			LOG.log(this.getClass().getName(), Level.INFO, "Consumer Owner: " + c.getOwner());
+			LOG.log(this.getClass().getName(), Level.INFO, "Consumer Secret: " + c.getSecret());
+			LOG.log(this.getClass().getName(), Level.INFO, "Consumer Key: " + c.getKey());
+			LOG.log(this.getClass().getName(), Level.INFO, "Consumer Principal: " + c.getPrincipal());
 
 
 			String consumerKey = "";
@@ -112,8 +120,8 @@ public class AuthResource {
 			Map<String, List<String>> attributes = null;
 //			OAuthToken oauthtoken = provider.newRequestToken(consumerKey, callbackURL, attributes);
 
-			System.out.println("Successfully logged in!");
-			System.out.println("User: " + request.getUserPrincipal());
+			LOG.log(this.getClass().getName(), Level.INFO, "Successfully logged in!");
+			LOG.log(this.getClass().getName(), Level.INFO, "User: " + request.getUserPrincipal());
 
 			Account myAccount = accountService.getAccountByMail(sc.getUserPrincipal().getName());
 			myAccount.setStatus(Status.ONLINE);
@@ -139,7 +147,7 @@ public class AuthResource {
 	@Path("logout")
 	@Produces(PaperFlyRestService.JSON_MEDIA_TYPE)
 	public Response logout(@Context HttpServletRequest request, @Context SecurityContext sc) throws ServletException {
-		System.out.println("LOGOUT...");
+		LOG.log(this.getClass().getName(), Level.INFO, "LOGOUT...");
 		Response resp;
 
 		Account myAccount = accountService.getAccountByMail(sc.getUserPrincipal().getName());
