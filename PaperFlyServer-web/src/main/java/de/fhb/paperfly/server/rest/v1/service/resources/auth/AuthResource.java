@@ -29,6 +29,7 @@ import de.fhb.paperfly.server.rest.v1.dto.output.TokenDTO;
 import de.fhb.paperfly.server.rest.v1.dto.output.ErrorDTO;
 import de.fhb.paperfly.server.rest.v1.service.PaperFlyRestService;
 import de.fhb.paperfly.server.rest.v1.service.provider.DefaultOAuthProvider;
+import java.util.EventListener;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -78,19 +79,13 @@ public class AuthResource {
 		System.out.println("LOGIN...");
 		Response resp;
 		try {
-//			request.logout();
-			HttpSession session = request.getSession(true);
-			System.out.println("isSession new?: " + session.isNew());
-			System.out.println("trackingmodes");
-			for (SessionTrackingMode object : session.getServletContext().getEffectiveSessionTrackingModes()) {
-				System.out.println("trackingmode: " + object);
-			}
-
 			request.login(request.getHeader("user"), request.getHeader("pw"));
 
-//			String sessionID = request.changeSessionId();
-//			System.out.println("sessionID: " + sessionID);
-			System.out.println("SessionID: " + session.getId());
+			HttpSession session = request.getSession(false);
+			if (session != null) {
+				session.setAttribute("mail", request.getUserPrincipal().toString());
+			}
+
 			MultivaluedMap<String, String> roles = new MultivaluedMapImpl();
 
 			if (request.isUserInRole("ADMINISTRATOR")) {

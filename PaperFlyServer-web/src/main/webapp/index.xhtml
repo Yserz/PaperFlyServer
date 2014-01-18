@@ -70,7 +70,7 @@
 //					});
 					console.log(":::WEBSOCKET")
 					var webSocket =
-							new WebSocket("ws://" + adress + "/PaperFlyServer-web/ws/chat/global");
+							new WebSocket("ws://" + adress + "/PaperFlyServer-web/ws/chat/Global");
 					webSocket.onerror = function(event) {
 						onError(event);
 					};
@@ -178,25 +178,25 @@
 
 					function logout() {
 						console.log(":::LOGOUT");
-						$.ajax({
-							type: "GET",
-							dataType: "json",
-							url: "http://" + adress + "/PaperFlyServer-web/rest/v1/auth/logout",
-							async: false,
-//							headers: {
-//								"Authorization": "OAuth"
-//							},
-							complete: function(jqXHR, textStatus) {
-								switch (jqXHR.status) {
-									case 404:
-										console.log(jqXHR);
-									case 500:
-										console.log(jqXHR);
-									default:
-										console.log(jqXHR.responseText);
-								}
-							}
-						});
+//						$.ajax({
+//							type: "GET",
+//							dataType: "json",
+//							url: "http://" + adress + "/PaperFlyServer-web/rest/v1/auth/logout",
+//							async: false,
+////							headers: {
+////								"Authorization": "OAuth"
+////							},
+//							complete: function(jqXHR, textStatus) {
+//								switch (jqXHR.status) {
+//									case 404:
+//										console.log(jqXHR);
+//									case 500:
+//										console.log(jqXHR);
+//									default:
+//										console.log(jqXHR.responseText);
+//								}
+//							}
+//						});
 						document.cookie = "paperfly=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
 						document.getElementById('messages').innerHTML
 								= 'Successfully logged out!';
@@ -234,7 +234,7 @@
 											saveData.loggedIn = true;
 											saveData.consumerKey = o.consumerKey;
 											saveData.consumerSecret = o.consumerSecret;
-											setCookie("paperfly", JSON.stringify(saveData), 1);
+											setCookie("paperfly", JSON.stringify(saveData), 0.001);
 										} catch (e) {
 											console.log(jqXHR.responseText);
 											console.log(e);

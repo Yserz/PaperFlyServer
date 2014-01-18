@@ -72,7 +72,11 @@ public class ChatController {
 		for (Map.Entry<String, Set<String>> chatEntry : chats.entrySet()) {
 			chatEntry.getValue().contains(mail);
 			Room room = roomService.getRoomByRoomName(chatEntry.getKey());
-			if (room.getCoordinate().getLatitude() != 0 && room.getCoordinate().getLonglitutde() != 0) {
+
+			if (room != null
+					&& room.getCoordinate() != null
+					&& room.getCoordinate().getLatitude() != 0
+					&& room.getCoordinate().getLonglitutde() != 0) {
 				return room;
 			}
 		}

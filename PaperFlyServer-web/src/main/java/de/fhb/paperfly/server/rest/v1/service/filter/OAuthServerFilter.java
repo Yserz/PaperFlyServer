@@ -226,11 +226,9 @@ public class OAuthServerFilter implements ContainerRequestFilter {
 			secrets.tokenSecret(accessToken.getSecret());
 			sc = new OAuthSecurityContext(accessToken, request.isSecure());
 		}
-		System.out.println("WEST:::::::::::::::::::::::::::::::::::::::::::::::::::::");
 		if (!verifySignature(osr, params, secrets)) {
 			throw newUnauthorizedException();
 		}
-		System.out.println("TEST:::::::::::::::::::::::::::::::::::::::::::::::::::::");
 		if (!nonces.verify(nonceKey, timestamp, nonce)) {
 			throw newUnauthorizedException();
 		}
@@ -282,11 +280,8 @@ public class OAuthServerFilter implements ContainerRequestFilter {
 	private static boolean verifySignature(OAuthServerRequest osr,
 			OAuthParameters params, OAuthSecrets secrets) {
 		try {
-			System.out.println("BLI:::::::::::::::::::::::::::::::::::::::::::::::::::::");
 			return OAuthSignature.verify(osr, params, secrets);
 		} catch (OAuthSignatureException ose) {
-			System.out.println("BLAAAA:::::::::::::::::::::::::::::::::::::::::::::::::::::");
-			ose.printStackTrace();
 			throw newBadRequestException();
 		}
 	}
@@ -298,21 +293,4 @@ public class OAuthServerFilter implements ContainerRequestFilter {
 	private OAuthException newUnauthorizedException() throws OAuthException {
 		return new OAuthException(Response.Status.UNAUTHORIZED, wwwAuthenticateHeader);
 	}
-//	@Override
-//	public ContainerRequest filter(ContainerRequest req) {
-//		OAuthServerRequest oauthRequest = new OAuthServerRequest(req);
-//		OAuthParameters params = new OAuthParameters();
-//		params.readRequest(oauthRequest);
-//		OAuthSecrets secrets = new OAuthSecrets().consumerSecret("secret");
-//		try {
-//			if (!OAuthSignature.verify(oauthRequest, params, secrets)) {
-//				throw new WebApplicationException(401);
-//			}
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			throw new WebApplicationException(401);
-//		}
-//
-//		return req;
-//	}
 }
