@@ -48,25 +48,24 @@ public class ToDTOMapper {
 		dto.setCreated(e.getCreated());
 		dto.setLastModified(e.getLastModified());
 		dto.setStatus(Status.valueOf(e.getStatus().name()));
-		dto.setFriendList(mapAccountListDept(e.getFriendList(), dept));
+		dto.setFriendListUsernames(e.getFriendListUsernames());
 
 //		dto.setEnabled(e.isEnabled());
 
 		return dto;
 	}
 
-	private List<AccountDTO> mapAccountListDept(List<Account> eList, int dept) {
-		if (checkDept(dept)) {
-			return null;
-		}
-		List<AccountDTO> dtoList = new ArrayList<AccountDTO>();
-		for (Account e : eList) {
-			dtoList.add(mapAccountDept(e, dept));
-		}
-
-		return dtoList;
-	}
-
+//	private List<AccountDTO> mapAccountListDept(List<Account> eList, int dept) {
+//		if (checkDept(dept)) {
+//			return null;
+//		}
+//		List<AccountDTO> dtoList = new ArrayList<AccountDTO>();
+//		for (Account e : eList) {
+//			dtoList.add(mapAccountDept(e, dept));
+//		}
+//
+//		return dtoList;
+//	}
 	private RoomDTO mapRoomDept(Room e, int dept) {
 		if (checkDept(dept)) {
 			return null;

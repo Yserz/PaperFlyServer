@@ -30,6 +30,8 @@ import de.fhb.paperfly.server.rest.v1.dto.output.TokenDTO;
 import de.fhb.paperfly.server.rest.v1.dto.output.ErrorDTO;
 import de.fhb.paperfly.server.rest.v1.service.PaperFlyRestService;
 import de.fhb.paperfly.server.rest.v1.service.provider.DefaultOAuthProvider;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
 import javax.ejb.EJB;
@@ -114,7 +116,11 @@ public class MyAccountResource {
 		try {
 			Account myAccount = accountService.getAccountByMail(sc.getUserPrincipal().getName());
 			Account friendsAccount = accountService.getAccountByUsername(friendsUsername);
-			myAccount.getFriendList().add(friendsAccount);
+			if (myAccount.getFriendListUsernames() == null) {
+				myAccount.setFriendListUsernames(new HashSet<String>());
+			}
+			myAccount.getFriendListUsernames().add(friendsAccount.getUsername());
+
 			AccountDTO editedAccount = PaperFlyRestService.toDTOMapper.mapAccount(accountService.editAccount(myAccount));
 			resp = Response.ok(editedAccount).build();
 		} catch (Exception e) {
@@ -144,7 +150,10 @@ public class MyAccountResource {
 		try {
 			Account myAccount = accountService.getAccountByMail(sc.getUserPrincipal().getName());
 			Account friendsAccount = accountService.getAccountByUsername(friendsUsername);
-			myAccount.getFriendList().remove(friendsAccount);
+			if (myAccount.getFriendListUsernames() == null) {
+				myAccount.setFriendListUsernames(new HashSet<String>());
+			}
+			myAccount.getFriendListUsernames().remove(friendsAccount.getUsername());
 			AccountDTO editedAccount = PaperFlyRestService.toDTOMapper.mapAccount(accountService.editAccount(myAccount));
 			resp = Response.ok(editedAccount).build();
 		} catch (Exception e) {
@@ -202,6 +211,39 @@ public class MyAccountResource {
 			Account myAccount = accountService.getAccountByMail(sc.getUserPrincipal().getName());
 			AccountDTO account = PaperFlyRestService.toDTOMapper.mapAccount(myAccount);
 			resp = Response.ok(account).build();
+		} catch (Exception e) {
+			LOG.log(this.getClass().getName(), Level.SEVERE, "Exception: {0}", e.getMessage());
+			resp = Response.status(500).build();
+		}
+		return resp;
+	}
+
+	/**
+	 * [TODO LARGE DESC]
+	 *
+	 * @title Change Online-Status
+	 * @summary This operation will change the Online-Status.
+	 * @param newStatus The new status of the account.
+	 * @param request
+	 * @param sc
+	 * @return The account with the modified status.
+	 */
+	@GET
+	@Path("friendlist")
+	@Produces(PaperFlyRestService.JSON_MEDIA_TYPE)
+	@ReturnType("java.util.List<de.fhb.paperfly.server.rest.v1.dto.AccountDTO>")
+	public Response getFriendListAccounts(@Context HttpServletRequest request, @Context SecurityContext sc) {
+		Response resp;
+		try {
+			Account myAccount = accountService.getAccountByMail(sc.getUserPrincipal().getName());
+			List<AccountDTO> friendList = new ArrayList<>();
+			if (myAccount.getFriendListUsernames() != null) {
+				for (String friendsUsername : myAccount.getFriendListUsernames()) {
+					friendList.add(PaperFlyRestService.toDTOMapper.mapAccount(accountService.getAccountByUsername(friendsUsername)));
+				}
+			}
+
+			resp = Response.ok(friendList).build();
 		} catch (Exception e) {
 			LOG.log(this.getClass().getName(), Level.SEVERE, "Exception: {0}", e.getMessage());
 			resp = Response.status(500).build();

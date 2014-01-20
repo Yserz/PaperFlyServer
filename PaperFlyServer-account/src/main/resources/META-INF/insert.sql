@@ -13,18 +13,6 @@ INSERT INTO `ACCOUNT` VALUES ('friend5db@mail.de','2013-10-30 11:09:26',1,'John'
 /*!40000 ALTER TABLE `ACCOUNT` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Dumping data for table `ACCOUNT_ACCOUNT`
---
-
-LOCK TABLES `ACCOUNT_ACCOUNT` WRITE;
-/*!40000 ALTER TABLE `ACCOUNT_ACCOUNT` DISABLE KEYS */;
-INSERT INTO `ACCOUNT_ACCOUNT` VALUES ('mail@mail.de','salaxy@mail.de');
-INSERT INTO `ACCOUNT_ACCOUNT` VALUES ('mail@mail.de','kaain@mail.de');
-INSERT INTO `ACCOUNT_ACCOUNT` VALUES ('mail@mail.de','yser@mail.de');
-INSERT INTO `ACCOUNT_ACCOUNT` VALUES ('mail@mail.de','friend5db@mail.de');
-/*!40000 ALTER TABLE `ACCOUNT_ACCOUNT` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Dumping data for table `CREDENTIAL`

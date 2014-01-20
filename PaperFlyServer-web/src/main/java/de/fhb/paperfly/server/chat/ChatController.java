@@ -17,10 +17,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.interceptor.Interceptors;
+import javax.websocket.Endpoint;
+import javax.websocket.server.ServerApplicationConfig;
+import javax.websocket.server.ServerEndpointConfig;
 
 /**
  *
@@ -41,6 +45,11 @@ public class ChatController {
 
 	public ChatController() {
 		chats = new HashMap<>();
+
+	}
+
+	@PostConstruct
+	private void init() {
 	}
 
 	public void addChat(String room) {

@@ -17,7 +17,8 @@
 package de.fhb.paperfly.server.account.entity;
 
 import de.fhb.paperfly.server.base.entity.BaseEntity;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -58,7 +59,8 @@ public class Account extends BaseEntity {
 	@NotNull
 	@Size(min = 1, max = 255)
 	private String firstName;
-	@OneToMany
-	private List<Account> friendList;
+//	@OneToMany
+	@ElementCollection
+	private Set<String> friendListUsernames = new HashSet<>();
 	private Status status;
 }

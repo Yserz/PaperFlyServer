@@ -17,10 +17,12 @@
 package de.fhb.paperfly.server.logging.interceptor;
 
 import de.fhb.paperfly.server.logging.service.LoggingServiceLocal;
+import java.lang.annotation.Annotation;
 import java.util.logging.Level;
 import javax.ejb.EJB;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.InvocationContext;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * This Interceptor should be invoked in every session-bean-service-class and is
@@ -47,27 +49,35 @@ public class WebServiceLoggerInterceptor {
 	 */
 	@AroundInvoke
 	public Object logCall(InvocationContext context) throws Exception {
-		int count = 0;
 		// EJB will not be accessable if the Interceptor is called from outside of the backend-module
+
 
 		LOG.log(context.getMethod().getDeclaringClass().getName(), Level.INFO, "---------------------------------------------------------");
 		LOG.log(context.getMethod().getDeclaringClass().getName(), Level.INFO, " + Class: {0}", getPureClassName(context.getMethod().getDeclaringClass()));
 		LOG.log(context.getMethod().getDeclaringClass().getName(), Level.INFO, " -    Method: {0}", context.getMethod().getName());
 
 		if (context.getParameters() != null) {
-			for (Object object : context.getParameters()) {
+			Annotation[][] annos = context.getMethod().getParameterAnnotations();
+			Object[] params = context.getParameters();
+			for (int i = 0; i < annos.length; i++) {
 
-				if (object != null) {
-					count++;
-					LOG.log(context.getMethod().getDeclaringClass().getName(), Level.INFO, " -       Param {0}: ({1}) {2}", new Object[]{count, getPureClassName(object.getClass()), object});
-				} else {
-					count++;
-					LOG.log(context.getMethod().getDeclaringClass().getName(), Level.INFO, " -       Param {0}: ({1}) {2}", new Object[]{count, "", object});
+				for (int j = 0; j < annos[i].length; j++) {
+					Annotation annotation = annos[i][j];
+					System.out.println("Annotation for Param " + (i + 1) + ": " + annotation.annotationType());
 				}
 
-
+				if (params[i] != null) {
+					if (!params[i].toString().contains("org.apache.catalina.connector.RequestFacade")) {
+						LOG.log(context.getMethod().getDeclaringClass().getName(), Level.INFO, " -       Param {0}: ({1}) {2}", new Object[]{i + 1, getPureClassName(params[i].getClass()), params[i]});
+					} else {
+						LOG.log(context.getMethod().getDeclaringClass().getName(), Level.INFO, " -       Param {0}: ({1}) {2}", new Object[]{i + 1, "RequestFacade", "org.apache.catalina.connector.RequestFacade"});
+					}
+				} else {
+					LOG.log(context.getMethod().getDeclaringClass().getName(), Level.INFO, " -       Param {0}: ({1}) {2}", new Object[]{i + 1, "", params[i]});
+				}
 			}
 		}
+
 		return context.proceed();
 	}
 
@@ -79,13 +89,13 @@ public class WebServiceLoggerInterceptor {
 	 */
 	private String getPureClassName(Class klasse) {
 		String temp = "";
+		String packetname = "";
 
 		String classNameWithPackage = klasse.getName();
-		String packetname = "";
+
 		if (klasse.getPackage() != null) {
 			packetname = klasse.getPackage().getName();
 		}
-
 
 		temp = packetname.replaceAll("package ", "");
 
