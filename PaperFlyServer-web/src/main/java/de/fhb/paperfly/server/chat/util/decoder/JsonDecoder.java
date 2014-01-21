@@ -17,6 +17,8 @@ import javax.websocket.Decoder;
 import javax.websocket.EndpointConfig;
 
 /**
+ * This is a websocket decoder. It will try to decode all incoming Messages to a
+ * Message of type {@link de.fhb.paperfly.server.chat.Message}.
  *
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */

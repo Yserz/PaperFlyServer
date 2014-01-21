@@ -32,7 +32,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.SecurityContext;
 
 /**
- * Address: http://localhost:8080/PaperFlyServer-web/rest/v1
+ * This class represents the REST-Endpoint of the application. It routes to the
+ * specific REST-Resources. Address:
+ * http://localhost:8080/PaperFlyServer-web/rest/v1
  *
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */

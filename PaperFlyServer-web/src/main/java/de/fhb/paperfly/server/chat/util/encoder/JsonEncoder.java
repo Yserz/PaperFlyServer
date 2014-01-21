@@ -9,6 +9,8 @@ import javax.websocket.Encoder;
 import javax.websocket.EndpointConfig;
 
 /**
+ * This is a websocket encoder. It will try to encode all outgoing Messages to a
+ * JSON-Message.
  *
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */

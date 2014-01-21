@@ -19,7 +19,8 @@ import javax.websocket.MessageHandler;
 import javax.websocket.Session;
 
 /**
- * Address: http://localhost:8080/PaperFlyServer-web/ws/chat/global
+ * This class represents a websocket endpoint for every room. Example address:
+ * http://localhost:8080/PaperFlyServer-web/ws/chat/global
  *
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */
@@ -40,20 +41,25 @@ public class PaperFlyRoomEndpoint extends Endpoint {
 	public PaperFlyRoomEndpoint() {
 	}
 
+	/**
+	 * This method is invoked if a connection to the websocket endpoint is
+	 * etablished. The room is filtered out of the request URI.
+	 *
+	 * @param session The session of the account whos connecting to the
+	 * endpoint.
+	 * @param conf The configuration of the websocket endpoint.
+	 */
 	@Override
 	public void onOpen(final Session session, EndpointConfig conf) {
 		session.getContainer().setDefaultMaxSessionIdleTimeout(1800000l);/*30m*/
-		System.out.println("request URI of session: " + session.getRequestURI().toString());
 		LOG.log(this.getClass().getName(), Level.INFO, "Opening connection...");
-		System.out.println("Opening connection...");
-
+		LOG.log(this.getClass().getName(), Level.INFO, "Request URI of session: " + session.getRequestURI().toString());
 		String roomName = getRoomName(session.getRequestURI().toString());
 
 		try {
 			if (session.getUserPrincipal() != null) {
 				try {
 					session.getBasicRemote().sendObject(new Message(null, "Hello " + accountService.getAccountByMail(session.getUserPrincipal().getName()).getUsername() + ", you are in the chat-room \"" + roomName + "\""));
-					// May implement a fallback with client sended username
 				} catch (EncodeException ex) {
 					Logger.getLogger(PaperFlyRoomEndpoint.class.getName()).log(Level.SEVERE, null, ex);
 				}
@@ -61,8 +67,7 @@ public class PaperFlyRoomEndpoint extends Endpoint {
 				if (!controller.getChats().containsKey(roomName)) {
 					Room room = roomService.getRoomByRoomName(roomName);
 					if (room == null) {
-						LOG.log(this.getClass().getName(), Level.INFO, "CREATING ROOM " + roomName);
-						setRoom(roomService.createRoom(new Room(null, roomName, null, null)));
+						throw new RuntimeException("Theres no valid room given!");
 					} else {
 						setRoom(room);
 					}
@@ -73,9 +78,7 @@ public class PaperFlyRoomEndpoint extends Endpoint {
 				controller.addUserToChat(roomName, session.getUserPrincipal().getName());
 			} else {
 				LOG.log(this.getClass().getName(), Level.SEVERE, "User is not Authorized!");
-//				session.getBasicRemote().sendObject(new Message(null, "You are not Authorized!"));
 				throw new RuntimeException("You are not Authorized!");
-
 			}
 		} catch (IOException ex) {
 			LOG.log(this.getClass().getName(), Level.SEVERE, "Could not open connection to websocket!", ex);
@@ -86,8 +89,6 @@ public class PaperFlyRoomEndpoint extends Endpoint {
 			public void onMessage(Message msg) {
 				try {
 					for (Session sess : session.getOpenSessions()) {
-
-						System.out.println("request URI of session: " + sess.getRequestURI().toString());
 						if (sess.isOpen()) {
 							try {
 								sess.getBasicRemote().sendObject(new Message(accountService.getAccountByMail(session.getUserPrincipal().getName()).getUsername(), msg.getBody()));
@@ -104,11 +105,17 @@ public class PaperFlyRoomEndpoint extends Endpoint {
 
 	}
 
+	/**
+	 * This method is called if any exception is raised by the endpoint. If
+	 * possible a message is send to the client with a specific error-message.
+	 *
+	 * @param session The session of the account whos connecting to the
+	 * endpoint.
+	 * @param error The error thrown by the endpoint.
+	 */
 	@Override
 	public void onError(Session session, Throwable error) {
-
 		LOG.log(this.getClass().getName(), Level.INFO, "Catching Error...");
-		LOG.log(this.getClass().getName(), Level.SEVERE, "ERROR: " + error.getLocalizedMessage());
 		LOG.log(this.getClass().getName(), Level.SEVERE, error.getLocalizedMessage());
 		try {
 			session.getBasicRemote().sendObject(new Message(400, error.getLocalizedMessage()));
@@ -118,10 +125,18 @@ public class PaperFlyRoomEndpoint extends Endpoint {
 		}
 	}
 
+	/**
+	 * This method is called if the connection to the endpoint is closed. The
+	 * account will be deleted from the user-chat-list and the session will be
+	 * closed.
+	 *
+	 * @param session The session of the account whos connecting to the
+	 * endpoint.
+	 * @param reason The closereason.
+	 */
 	@Override
 	public void onClose(Session session, CloseReason reason) {
 		LOG.log(this.getClass().getName(), Level.INFO, "Closing connection...");
-		System.out.println("Closing connection...");
 		try {
 			LOG.log(this.getClass().getName(), Level.INFO, "REMOVING USER " + session.getUserPrincipal().getName() + " FROM CHAT " + getRoom().getName());
 			controller.removeUserFromChat(getRoom().getName(), session.getUserPrincipal().getName());
@@ -140,10 +155,15 @@ public class PaperFlyRoomEndpoint extends Endpoint {
 		this.room = room;
 	}
 
+	/**
+	 * Gets the roomname out of a URI-String.
+	 *
+	 * @param URI The URI-String to parse.
+	 * @return The parsed roomname.
+	 */
 	private String getRoomName(String URI) {
 		int indexOfLastSlash = URI.lastIndexOf("/") + 1;
 		int indexOfLastSign = URI.length();
-
 
 		return URI.subSequence(indexOfLastSlash, indexOfLastSign).toString();
 	}

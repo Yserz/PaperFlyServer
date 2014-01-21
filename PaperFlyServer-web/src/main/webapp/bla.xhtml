@@ -44,37 +44,22 @@
 					var webSocket =
 							new WebSocket("ws://" + adress + "/PaperFlyServer-web/ws/chat/Audimax");
 					webSocket.onerror = function(event) {
-						onError(event);
-					};
-					webSocket.onopen = function(event) {
-						onOpen(event);
-					};
-					webSocket.onmessage = function(event) {
-						onMessage(event);
-					};
-//					webSocket.onclose = function(event) {
-//						onClose(event);
-//					};
-//					function onClose(event) {
-//						logout();
-//
-//					}
-					function onMessage(event) {
-						document.getElementById('messages').innerHTML
-								+= '<br />' + $.parseJSON(event.data).body;
-					}
-
-					function onOpen(event) {
-						document.getElementById('messages').innerHTML
-								= 'Connection established';
-					}
-
-					function onError(event) {
 						console.log(JSON.stringify(event));
 						console.log(event);
 						alert(event);
-					}
-
+					};
+					webSocket.onopen = function(event) {
+						document.getElementById('messages').innerHTML
+								= 'Connection established';
+					};
+					webSocket.onmessage = function(event) {
+						var json = $.parseJSON(event.data);
+						document.getElementById('messages').innerHTML
+								+= '<br />' + json.username + ': ' + json.body;
+					};
+					webSocket.onclose = function(event) {
+						logout();
+					};
 					function send() {
 						var msg = document.getElementById('msg').value;
 //						alert(JSON.stringify({text: msg}));
@@ -82,7 +67,7 @@
 								{
 									body: msg
 								}
-						) + "\n");
+						));
 						document.getElementById('msg').value = '';
 
 						return false;
@@ -184,6 +169,12 @@
 						return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
 								s4() + '-' + s4() + s4() + s4();
 					}
+
+					window.onbeforeunload = function() {
+//						webSocket.onclose = function() {
+//						};
+						webSocket.close();
+					};
 			</script>
 		</h:body>
 	</f:view>

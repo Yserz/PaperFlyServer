@@ -14,6 +14,13 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
+ * This class is representing a message over websockets.
+ * {@link de.fhb.paperfly.server.chat.util.decoder.JsonDecoder} and
+ * {@link de.fhb.paperfly.server.chat.util.encoder.JsonEncoder} will parse the
+ * message to a JSON. The type of a message can be
+ * {@link de.fhb.paperfly.server.chat.MessageType}.TEXT or
+ * {@link de.fhb.paperfly.server.chat.MessageType}.ERROR if an error-code is
+ * given.
  *
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */

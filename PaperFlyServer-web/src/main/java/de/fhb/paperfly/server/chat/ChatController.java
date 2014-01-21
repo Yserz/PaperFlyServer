@@ -27,6 +27,7 @@ import javax.websocket.server.ServerApplicationConfig;
 import javax.websocket.server.ServerEndpointConfig;
 
 /**
+ * This class is for handling all chats and thier containing/connected accounts.
  *
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */
@@ -68,6 +69,12 @@ public class ChatController {
 		chats.get(room).remove(user);
 	}
 
+	/**
+	 * This method gets all accounts in one room.
+	 *
+	 * @param room The room to scan.
+	 * @return A list of accounts in a room.
+	 */
 	public List<Account> getUsersInRoom(Room room) {
 		LOG.log(this.getClass().getName(), Level.INFO, "Room: " + room);
 		List<Account> accountList = new ArrayList<>();
@@ -81,6 +88,14 @@ public class ChatController {
 		return accountList;
 	}
 
+	/**
+	 * Locates an account in a room by the accounts email-adress. Only rooms
+	 * with valid(not null or both coordinates are zero) coordinates will be
+	 * returned.
+	 *
+	 * @param mail The mail of the account.
+	 * @return The room the account is in or null.
+	 */
 	public Room locateAccount(String mail) {
 		for (Map.Entry<String, Set<String>> chatEntry : chats.entrySet()) {
 			chatEntry.getValue().contains(mail);
@@ -88,8 +103,8 @@ public class ChatController {
 
 			if (room != null
 					&& room.getCoordinate() != null
-					&& room.getCoordinate().getLatitude() != 0
-					&& room.getCoordinate().getLonglitutde() != 0) {
+					&& (room.getCoordinate().getLatitude() != 0
+					&& room.getCoordinate().getLonglitutde() != 0)) {
 				return room;
 			}
 		}

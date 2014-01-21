@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.ejb.Stateless;
 import javax.websocket.Decoder;
 import javax.websocket.Encoder;
 import javax.websocket.Endpoint;
@@ -18,6 +17,9 @@ import javax.websocket.server.ServerApplicationConfig;
 import javax.websocket.server.ServerEndpointConfig;
 
 /**
+ * This class implements a marker-interface
+ * {@link javax.websocket.server.ServerApplicationConfig} to create all
+ * websocket endpoints for every room at deploy-time.
  *
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */
