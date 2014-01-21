@@ -80,53 +80,54 @@ public class AccountResource {
 	 */
 	@PUT
 	@Path("register")
-	@Produces(PaperFlyRestService.JSON_MEDIA_TYPE)
+//	@Produces(PaperFlyRestService.JSON_MEDIA_TYPE)
 	@Consumes(PaperFlyRestService.JSON_MEDIA_TYPE)
-	@ReturnType("de.fhb.paperfly.server.rest.v1.dto.output.TokenDTO")
+//	@ReturnType("de.fhb.paperfly.server.rest.v1.dto.output.TokenDTO")
 	public Response register(RegisterAccountDTO account, @Context HttpServletRequest request, @Context OAuthProvider provider) {
 		Response resp;
 		try {
 			AccountDTO acc = PaperFlyRestService.toDTOMapper.mapAccount(accountService.register(account.getFirstName(), account.getLastName(), account.getUsername(), account.getEmail(), account.getPassword(), account.getPasswordRpt()));
-			request.login(account.getEmail(), account.getPassword());
-
-			HttpSession session = request.getSession(false);
-			if (session != null) {
-				session.setAttribute("mail", request.getUserPrincipal().toString());
-			}
-
-			MultivaluedMap<String, String> roles = new MultivaluedMapImpl();
-
-			if (request.isUserInRole("ADMINISTRATOR")) {
-				LOG.log(this.getClass().getName(), Level.INFO, "User is in role ADMINISTRATOR");
-				roles.add("roles", "ADMINISTRATOR");
-			}
-			if (request.isUserInRole("USER")) {
-				LOG.log(this.getClass().getName(), Level.INFO, "User is in role USER");
-				roles.add("roles", "USER");
-			}
-			if (request.isUserInRole("ANONYMOUS")) {
-				LOG.log(this.getClass().getName(), Level.INFO, "User is in role ANONYMOUS");
-				roles.add("roles", "ANONYMOUS");
-			}
-			DefaultOAuthProvider.Consumer c = ((DefaultOAuthProvider) provider).registerConsumer(request.getUserPrincipal().toString(), request.getUserPrincipal(), roles);
-			LOG.log(this.getClass().getName(), Level.INFO, "Consumer Owner: " + c.getOwner());
-			LOG.log(this.getClass().getName(), Level.INFO, "Consumer Secret: " + c.getSecret());
-			LOG.log(this.getClass().getName(), Level.INFO, "Consumer Key: " + c.getKey());
-			LOG.log(this.getClass().getName(), Level.INFO, "Consumer Principal: " + c.getPrincipal());
-
-
-			String consumerKey = "";
-			String callbackURL = "";
-			Map<String, List<String>> attributes = null;
-//			OAuthToken oauthtoken = provider.newRequestToken(consumerKey, callbackURL, attributes);
-
-			LOG.log(this.getClass().getName(), Level.INFO, "Successfully logged in!");
-			LOG.log(this.getClass().getName(), Level.INFO, "User: " + request.getUserPrincipal());
-
-			Account myAccount = accountService.getAccountByMail(acc.getEmail());
-			myAccount.setStatus(Status.ONLINE);
-			accountService.editAccount(myAccount);
-			resp = Response.ok(new TokenDTO(c.getKey(), c.getSecret())).build();
+//			request.login(account.getEmail(), account.getPassword());
+//
+//			HttpSession session = request.getSession(false);
+//			if (session != null) {
+//				session.setAttribute("mail", request.getUserPrincipal().toString());
+//			}
+//
+//			MultivaluedMap<String, String> roles = new MultivaluedMapImpl();
+//
+//			if (request.isUserInRole("ADMINISTRATOR")) {
+//				LOG.log(this.getClass().getName(), Level.INFO, "User is in role ADMINISTRATOR");
+//				roles.add("roles", "ADMINISTRATOR");
+//			}
+//			if (request.isUserInRole("USER")) {
+//				LOG.log(this.getClass().getName(), Level.INFO, "User is in role USER");
+//				roles.add("roles", "USER");
+//			}
+//			if (request.isUserInRole("ANONYMOUS")) {
+//				LOG.log(this.getClass().getName(), Level.INFO, "User is in role ANONYMOUS");
+//				roles.add("roles", "ANONYMOUS");
+//			}
+//			DefaultOAuthProvider.Consumer c = ((DefaultOAuthProvider) provider).registerConsumer(request.getUserPrincipal().toString(), request.getUserPrincipal(), roles);
+//			LOG.log(this.getClass().getName(), Level.INFO, "Consumer Owner: " + c.getOwner());
+//			LOG.log(this.getClass().getName(), Level.INFO, "Consumer Secret: " + c.getSecret());
+//			LOG.log(this.getClass().getName(), Level.INFO, "Consumer Key: " + c.getKey());
+//			LOG.log(this.getClass().getName(), Level.INFO, "Consumer Principal: " + c.getPrincipal());
+//
+//
+//			String consumerKey = "";
+//			String callbackURL = "";
+//			Map<String, List<String>> attributes = null;
+////			OAuthToken oauthtoken = provider.newRequestToken(consumerKey, callbackURL, attributes);
+//
+//			LOG.log(this.getClass().getName(), Level.INFO, "Successfully logged in!");
+//			LOG.log(this.getClass().getName(), Level.INFO, "User: " + request.getUserPrincipal());
+//
+//			Account myAccount = accountService.getAccountByMail(acc.getEmail());
+//			myAccount.setStatus(Status.ONLINE);
+//			accountService.editAccount(myAccount);
+//			resp = Response.ok(new TokenDTO(c.getKey(), c.getSecret())).build();
+			resp = Response.ok().build();
 		} catch (Exception e) {
 			LOG.log(this.getClass().getName(), Level.SEVERE, "Exception: {0}", e.getMessage());
 			resp = Response.status(500).build();
