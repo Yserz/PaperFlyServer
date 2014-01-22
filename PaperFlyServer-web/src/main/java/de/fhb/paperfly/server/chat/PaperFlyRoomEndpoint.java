@@ -6,6 +6,8 @@ import de.fhb.paperfly.server.logging.service.LoggingServiceLocal;
 import de.fhb.paperfly.server.room.entity.Room;
 import de.fhb.paperfly.server.room.service.RoomServiceLocal;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -37,8 +39,11 @@ public class PaperFlyRoomEndpoint extends Endpoint {
 	@EJB
 	private LoggingServiceLocal LOG;
 	private Room room;
+	private final int latestMessagesLength = 10;
+	private LimitedQueue<Message> latestMessages;
 
 	public PaperFlyRoomEndpoint() {
+		latestMessages = new LimitedQueue<>(latestMessagesLength);
 	}
 
 	/**
@@ -60,6 +65,16 @@ public class PaperFlyRoomEndpoint extends Endpoint {
 			if (session.getUserPrincipal() != null) {
 				try {
 					session.getBasicRemote().sendObject(new Message(null, "Hello " + accountService.getAccountByMail(session.getUserPrincipal().getName()).getUsername() + ", you are in the chat-room \"" + roomName + "\""));
+					// show latest messages in this chat
+					String temp = "";
+					for (Object m : latestMessages) {
+						if (m != null) {
+							session.getBasicRemote().sendObject((Message) m);
+							temp += "m: " + ((Message) m).toString() + "\n";
+						}
+					}
+					System.out.println(temp);
+
 				} catch (EncodeException ex) {
 					Logger.getLogger(PaperFlyRoomEndpoint.class.getName()).log(Level.SEVERE, null, ex);
 				}
@@ -91,7 +106,12 @@ public class PaperFlyRoomEndpoint extends Endpoint {
 					for (Session sess : session.getOpenSessions()) {
 						if (sess.isOpen()) {
 							try {
-								sess.getBasicRemote().sendObject(new Message(accountService.getAccountByMail(session.getUserPrincipal().getName()).getUsername(), msg.getBody()));
+								String username = accountService.getAccountByMail(session.getUserPrincipal().getName()).getUsername();
+								sess.getBasicRemote().sendObject(new Message(username, msg.getBody()));
+								synchronized (latestMessages) {
+									latestMessages.add(new Message(username, msg.getBody()));
+									System.out.println("Messages:\n" + latestMessages);
+								}
 							} catch (EncodeException ex) {
 								Logger.getLogger(PaperFlyRoomEndpoint.class.getName()).log(Level.SEVERE, null, ex);
 							}
