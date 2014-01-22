@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 import javax.annotation.PostConstruct;
@@ -69,6 +70,12 @@ public class ChatController {
 		chats.get(room).remove(user);
 	}
 
+	public void removeUserFromAllChats(String user) {
+		for (Entry<String, Set<String>> entry : chats.entrySet()) {
+			chats.get(entry.getKey()).remove(user);
+		}
+	}
+
 	/**
 	 * This method gets all accounts in one room.
 	 *
@@ -98,9 +105,10 @@ public class ChatController {
 	 */
 	public Room locateAccount(String mail) {
 		for (Map.Entry<String, Set<String>> chatEntry : chats.entrySet()) {
-			chatEntry.getValue().contains(mail);
-			Room room = roomService.getRoomByRoomName(chatEntry.getKey());
-
+			Room room = null;
+			if (chatEntry.getValue().contains(mail)) {
+				room = roomService.getRoomByRoomName(chatEntry.getKey());
+			}
 			if (room != null
 					&& room.getCoordinate() != null
 					&& (room.getCoordinate().getLatitude() != 0

@@ -7,6 +7,7 @@ package de.fhb.paperfly.server.rest.v1.service.listener;
 import de.fhb.paperfly.server.account.entity.Account;
 import de.fhb.paperfly.server.account.entity.Status;
 import de.fhb.paperfly.server.account.service.AccountServiceLocal;
+import de.fhb.paperfly.server.chat.ChatController;
 import de.fhb.paperfly.server.logging.service.LoggingServiceLocal;
 import de.fhb.paperfly.server.rest.v1.dto.AccountDTO;
 import de.fhb.paperfly.server.rest.v1.service.PaperFlyRestService;
@@ -27,6 +28,8 @@ public class SessionListener implements HttpSessionListener {
 	@EJB
 	private AccountServiceLocal accountService;
 	@EJB
+	private ChatController chatController;
+	@EJB
 	private LoggingServiceLocal LOG;
 
 	@Override
@@ -46,6 +49,8 @@ public class SessionListener implements HttpSessionListener {
 			LOG.log(this.getClass().getName(), Level.INFO, "Session '" + se.getSession().getId() + "'!");
 			String mail = (String) se.getSession().getAttribute("mail");
 			if (mail != null) {
+				chatController.removeUserFromAllChats(mail);
+
 				Account myAccount = accountService.getAccountByMail(mail);
 				myAccount.setStatus(Status.OFFLINE);
 				accountService.editAccount(myAccount);

@@ -22,6 +22,7 @@ import com.sun.jersey.oauth.server.spi.OAuthProvider;
 import de.fhb.paperfly.server.account.entity.Account;
 import de.fhb.paperfly.server.account.entity.Status;
 import de.fhb.paperfly.server.account.service.AccountServiceLocal;
+import de.fhb.paperfly.server.chat.ChatController;
 import de.fhb.paperfly.server.logging.interceptor.WebServiceLoggerInterceptor;
 import de.fhb.paperfly.server.logging.service.LoggingServiceLocal;
 import de.fhb.paperfly.server.rest.v1.dto.AccountDTO;
@@ -61,6 +62,8 @@ public class AuthResource {
 	public LoggingServiceLocal LOG;
 	@EJB
 	private AccountServiceLocal accountService;
+	@EJB
+	private ChatController chatController;
 
 	/**
 	 * [TODO LARGE DESC]
@@ -149,6 +152,8 @@ public class AuthResource {
 	public Response logout(@Context HttpServletRequest request, @Context SecurityContext sc) throws ServletException {
 		LOG.log(this.getClass().getName(), Level.INFO, "LOGOUT...");
 		Response resp;
+
+		chatController.removeUserFromAllChats(sc.getUserPrincipal().getName());
 
 		Account myAccount = accountService.getAccountByMail(sc.getUserPrincipal().getName());
 		myAccount.setStatus(Status.OFFLINE);

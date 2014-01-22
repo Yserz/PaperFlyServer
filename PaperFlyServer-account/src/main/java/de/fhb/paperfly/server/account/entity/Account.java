@@ -59,7 +59,6 @@ public class Account extends BaseEntity {
 	@NotNull
 	@Size(min = 1, max = 255)
 	private String firstName;
-//	@OneToMany
 	@ElementCollection
 	private Set<String> friendListUsernames = new HashSet<>();
 	private Status status;

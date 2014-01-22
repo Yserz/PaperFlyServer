@@ -136,11 +136,20 @@ public class PaperFlyRoomEndpoint extends Endpoint {
 	 */
 	@Override
 	public void onClose(Session session, CloseReason reason) {
-		LOG.log(this.getClass().getName(), Level.INFO, "Closing connection...");
-		try {
-			LOG.log(this.getClass().getName(), Level.INFO, "REMOVING USER " + session.getUserPrincipal().getName() + " FROM CHAT " + getRoom().getName());
-			controller.removeUserFromChat(getRoom().getName(), session.getUserPrincipal().getName());
 
+		try {
+			LOG.log(this.getClass().getName(), Level.INFO, "Closing connection...");
+			LOG.log(this.getClass().getName(), Level.INFO,
+					"REMOVING USER " + session.getUserPrincipal().getName()
+					+ " FROM CHAT " + getRoom().getName());
+			controller.removeUserFromChat(
+					getRoom().getName(),
+					session.getUserPrincipal().getName());
+
+		} catch (NullPointerException npe) {
+			LOG.log(this.getClass().getName(), Level.SEVERE, null, npe);
+		}
+		try {
 			session.close(reason);
 		} catch (IOException ex) {
 			LOG.log(this.getClass().getName(), Level.SEVERE, null, ex);
