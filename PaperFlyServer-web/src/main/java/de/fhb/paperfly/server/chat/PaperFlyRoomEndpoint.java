@@ -107,9 +107,12 @@ public class PaperFlyRoomEndpoint extends Endpoint {
 						if (sess.isOpen()) {
 							try {
 								String username = accountService.getAccountByMail(session.getUserPrincipal().getName()).getUsername();
-								sess.getBasicRemote().sendObject(new Message(username, msg.getBody()));
+								msg.setUsername(username);
+								System.out.println("##################################");
+								System.out.println("######### Incoming Message: " + msg);
+								sess.getBasicRemote().sendObject(msg);
 								synchronized (latestMessages) {
-									latestMessages.add(new Message(username, msg.getBody()));
+									latestMessages.add(msg);
 									System.out.println("Messages:\n" + latestMessages);
 								}
 							} catch (EncodeException ex) {
