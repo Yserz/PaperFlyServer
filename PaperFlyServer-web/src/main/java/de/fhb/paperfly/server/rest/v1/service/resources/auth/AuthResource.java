@@ -25,15 +25,17 @@ import de.fhb.paperfly.server.account.service.AccountServiceLocal;
 import de.fhb.paperfly.server.chat.ChatController;
 import de.fhb.paperfly.server.logging.interceptor.WebServiceLoggerInterceptor;
 import de.fhb.paperfly.server.logging.service.LoggingServiceLocal;
-import de.fhb.paperfly.server.rest.v1.dto.AccountDTO;
 import de.fhb.paperfly.server.rest.v1.dto.output.TokenDTO;
-import de.fhb.paperfly.server.rest.v1.dto.output.ErrorDTO;
 import de.fhb.paperfly.server.rest.v1.service.PaperFlyRestService;
 import de.fhb.paperfly.server.rest.v1.service.provider.DefaultOAuthProvider;
-import java.util.EventListener;
+import java.security.spec.KeySpec;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.DESKeySpec;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
@@ -48,6 +50,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+import sun.misc.BASE64Decoder;
 
 /**
  *
@@ -89,8 +92,13 @@ public class AuthResource {
 			for (SessionTrackingMode object : session.getServletContext().getEffectiveSessionTrackingModes()) {
 				System.out.println("trackingmode: " + object);
 			}
+			String cred = request.getHeader("cred");
+			cred = decrypt(cred);
+			String username = cred.split(":")[0];
+			String password = cred.split(":")[1];
 
-			request.login(request.getHeader("user"), request.getHeader("pw"));
+			request.login(username, password);
+
 
 			session = request.getSession(false);
 			if (session != null) {
@@ -166,5 +174,56 @@ public class AuthResource {
 
 		resp = Response.ok().build();
 		return resp;
+	}
+
+	/**
+	 * decrypt password and username for login.
+	 *
+	 * http://sanjaal.com/java/186/java-encryption/tutorial-java-des-encryption-and-decryption/
+	 *
+	 * @param crypted
+	 * @return decrypted string
+	 */
+	private String decrypt(String crypted) {
+		String decryptedText = null;
+		try {
+			String UNICODE_FORMAT = "UTF8";
+			String DES_ENCRYPTION_SCHEME = "DES";
+
+			String myEncryptionKey = "HansPeter";
+			byte[] keyAsBytes = myEncryptionKey.getBytes(UNICODE_FORMAT);
+			KeySpec myKeySpec = new DESKeySpec(keyAsBytes);
+
+
+			Cipher cipher = Cipher.getInstance(DES_ENCRYPTION_SCHEME);
+			SecretKeyFactory mySecretKeyFactory = SecretKeyFactory.getInstance(DES_ENCRYPTION_SCHEME);
+			SecretKey key = mySecretKeyFactory.generateSecret(myKeySpec);
+
+
+			cipher.init(Cipher.DECRYPT_MODE, key);
+			BASE64Decoder base64decoder = new BASE64Decoder();
+			byte[] encryptedText = base64decoder.decodeBuffer(crypted);
+			byte[] plainText = cipher.doFinal(encryptedText);
+			decryptedText = bytes2String(plainText);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return decryptedText;
+	}
+
+	/**
+	 * converts bytes to a string.
+	 *
+	 * http://sanjaal.com/java/186/java-encryption/tutorial-java-des-encryption-and-decryption/
+	 *
+	 * @param bytes
+	 * @return the string
+	 */
+	private String bytes2String(byte[] bytes) {
+		StringBuffer stringBuffer = new StringBuffer();
+		for (int i = 0; i < bytes.length; i++) {
+			stringBuffer.append((char) bytes[i]);
+		}
+		return stringBuffer.toString();
 	}
 }
