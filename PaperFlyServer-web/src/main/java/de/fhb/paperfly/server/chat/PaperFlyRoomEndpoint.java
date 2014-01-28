@@ -7,11 +7,15 @@ import de.fhb.paperfly.server.room.entity.Room;
 import de.fhb.paperfly.server.room.service.RoomServiceLocal;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
+import javax.ejb.Stateful;
 import javax.ejb.Stateless;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Named;
 import javax.interceptor.Interceptors;
 import javax.websocket.CloseReason;
 import javax.websocket.EncodeException;
@@ -39,11 +43,8 @@ public class PaperFlyRoomEndpoint extends Endpoint {
 	@EJB
 	private LoggingServiceLocal LOG;
 	private Room room;
-	private final int latestMessagesLength = 10;
-	private LimitedQueue<Message> latestMessages;
 
 	public PaperFlyRoomEndpoint() {
-		latestMessages = new LimitedQueue<>(latestMessagesLength);
 	}
 
 	/**
@@ -64,17 +65,20 @@ public class PaperFlyRoomEndpoint extends Endpoint {
 		try {
 			if (session.getUserPrincipal() != null) {
 				try {
-					session.getBasicRemote().sendObject(new Message(null, "Hello " + accountService.getAccountByMail(session.getUserPrincipal().getName()).getUsername() + ", you are in the chat-room \"" + roomName + "\""));
-					// show latest messages in this chat
-					String temp = "";
-					for (Object m : latestMessages) {
-						if (m != null) {
-							session.getBasicRemote().sendObject((Message) m);
-							temp += "m: " + ((Message) m).toString() + "\n";
+					Message hello = new Message(null, "Hello " + accountService.getAccountByMail(session.getUserPrincipal().getName()).getUsername() + ", you are in the chat-room \"" + roomName + "\"");
+					hello.setType(MessageType.SYSTEM);
+					session.getBasicRemote().sendObject(hello);
+					for (Session sess : session.getOpenSessions()) {
+						if (sess.isOpen()) {
+							String username = accountService.getAccountByMail(session.getUserPrincipal().getName()).getUsername();
+							Message msg = new Message();
+							msg.setType(MessageType.SYSTEM);
+							msg.setCode(200);
+							msg.setSendTime(new Date());
+							msg.setBody(username + " joined the room " + roomName);
+							sess.getBasicRemote().sendObject(msg);
 						}
 					}
-					System.out.println(temp);
-
 				} catch (EncodeException ex) {
 					Logger.getLogger(PaperFlyRoomEndpoint.class.getName()).log(Level.SEVERE, null, ex);
 				}
@@ -111,10 +115,6 @@ public class PaperFlyRoomEndpoint extends Endpoint {
 								System.out.println("##################################");
 								System.out.println("######### Incoming Message: " + msg);
 								sess.getBasicRemote().sendObject(msg);
-								synchronized (latestMessages) {
-									latestMessages.add(msg);
-									System.out.println("Messages:\n" + latestMessages);
-								}
 							} catch (EncodeException ex) {
 								Logger.getLogger(PaperFlyRoomEndpoint.class.getName()).log(Level.SEVERE, null, ex);
 							}
@@ -162,6 +162,21 @@ public class PaperFlyRoomEndpoint extends Endpoint {
 
 		try {
 			LOG.log(this.getClass().getName(), Level.INFO, "Closing connection...");
+			for (Session sess : session.getOpenSessions()) {
+				if (sess.isOpen()) {
+					try {
+						String username = accountService.getAccountByMail(session.getUserPrincipal().getName()).getUsername();
+						Message msg = new Message();
+						msg.setType(MessageType.SYSTEM);
+						msg.setCode(200);
+						msg.setSendTime(new Date());
+						msg.setBody(username + " left the room " + room.getName());
+						sess.getBasicRemote().sendObject(msg);
+					} catch (EncodeException | IOException ex) {
+						Logger.getLogger(PaperFlyRoomEndpoint.class.getName()).log(Level.SEVERE, null, ex);
+					}
+				}
+			}
 			LOG.log(this.getClass().getName(), Level.INFO,
 					"REMOVING USER " + session.getUserPrincipal().getName()
 					+ " FROM CHAT " + getRoom().getName());

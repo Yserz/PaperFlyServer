@@ -7,6 +7,9 @@ package de.fhb.paperfly.server.chat;
 import java.util.LinkedList;
 
 /**
+ * This special list saves a fixed amount of elements. If an additional element
+ * will be added the oldest one will be removed. This class is for a feature in
+ * the future, its not implemented yet.
  *
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */

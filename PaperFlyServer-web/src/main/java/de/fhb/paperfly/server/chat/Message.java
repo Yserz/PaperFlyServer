@@ -41,6 +41,7 @@ public class Message {
 	private String body;
 
 	public Message() {
+		this.code = 200;
 	}
 
 	public Message(String username, String body) {
