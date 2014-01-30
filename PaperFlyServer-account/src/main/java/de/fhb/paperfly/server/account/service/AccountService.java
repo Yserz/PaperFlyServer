@@ -62,6 +62,7 @@ public class AccountService implements AccountServiceLocal, AccountServiceLocalA
 
 	@PostConstruct
 	private void init() {
+		LOG.setLoggerLoggingLevel(this.getClass().getName(), Level.SEVERE);
 	}
 
 	@Override

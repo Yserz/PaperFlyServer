@@ -1,7 +1,12 @@
 package de.fhb.paperfly.server.base.repository;
 
 import de.fhb.paperfly.server.logging.interceptor.RepositoryLoggerInterceptor;
+import de.fhb.paperfly.server.logging.service.LoggingServiceLocal;
 import java.util.List;
+import java.util.logging.Level;
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -18,10 +23,16 @@ import javax.persistence.criteria.Root;
 @Interceptors(RepositoryLoggerInterceptor.class)
 public abstract class AbstractRepository<T> {
 
+	@EJB
+	protected LoggingServiceLocal LOG;
 	private Class<T> entityClass;
 
 	public AbstractRepository(Class<T> entityClass) {
 		this.entityClass = entityClass;
+	}
+
+	@PostConstruct
+	private void init() {
 	}
 
 	public abstract EntityManager getEntityManager();

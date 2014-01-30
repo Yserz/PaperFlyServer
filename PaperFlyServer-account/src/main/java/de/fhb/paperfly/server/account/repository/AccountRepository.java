@@ -42,8 +42,6 @@ import javax.persistence.TypedQuery;
 @Stateless
 public class AccountRepository extends AbstractRepository<Account> {
 
-	@EJB
-	private LoggingServiceLocal LOG;
 	@PersistenceContext(unitName = Settings.PERSISTENCE_UNIT_NAME)
 	private EntityManager em;
 
@@ -53,6 +51,8 @@ public class AccountRepository extends AbstractRepository<Account> {
 
 	@PostConstruct
 	private void init() {
+		LOG.setLoggerLoggingLevel(this.getClass().getName(), Level.SEVERE);
+		LOG.setLoggerLoggingLevel(super.getClass().getName(), Level.SEVERE);
 	}
 
 	@Override

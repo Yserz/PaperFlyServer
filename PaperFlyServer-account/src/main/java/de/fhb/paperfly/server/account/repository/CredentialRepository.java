@@ -21,6 +21,7 @@ import de.fhb.paperfly.server.base.repository.AbstractRepository;
 import de.fhb.paperfly.server.logging.interceptor.RepositoryLoggerInterceptor;
 import de.fhb.paperfly.server.logging.service.LoggingServiceLocal;
 import de.fhb.paperfly.server.util.Settings;
+import java.util.logging.Level;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -37,8 +38,6 @@ import javax.persistence.PersistenceContext;
 @Stateless
 public class CredentialRepository extends AbstractRepository<Credential> {
 
-	@EJB
-	private LoggingServiceLocal LOG;
 	@PersistenceContext(unitName = Settings.PERSISTENCE_UNIT_NAME)
 	private EntityManager em;
 
@@ -48,6 +47,8 @@ public class CredentialRepository extends AbstractRepository<Credential> {
 
 	@PostConstruct
 	private void init() {
+		LOG.setLoggerLoggingLevel(this.getClass().getName(), Level.SEVERE);
+		LOG.setLoggerLoggingLevel(super.getClass().getName(), Level.SEVERE);
 	}
 
 	@Override

@@ -22,6 +22,7 @@ import de.fhb.paperfly.server.room.entity.Coordinate;
 import de.fhb.paperfly.server.room.entity.Room;
 import de.fhb.paperfly.server.room.respository.RoomRepository;
 import java.util.List;
+import java.util.logging.Level;
 import javax.annotation.PostConstruct;
 import javax.ejb.*;
 import javax.interceptor.Interceptors;
@@ -48,6 +49,7 @@ public class RoomService implements RoomServiceLocal {
 
 	@PostConstruct
 	private void init() {
+		LOG.setLoggerLoggingLevel(this.getClass().getName(), Level.SEVERE);
 	}
 
 	@Override

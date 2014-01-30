@@ -40,8 +40,6 @@ import javax.persistence.PersistenceContext;
 @Stateless
 public class RoomRepository extends AbstractRepository<Room> {
 
-	@EJB
-	private LoggingServiceLocal LOG;
 	@PersistenceContext(unitName = Settings.PERSISTENCE_UNIT_NAME)
 	private EntityManager em;
 
@@ -51,6 +49,8 @@ public class RoomRepository extends AbstractRepository<Room> {
 
 	@PostConstruct
 	private void init() {
+		LOG.setLoggerLoggingLevel(this.getClass().getName(), Level.SEVERE);
+		LOG.setLoggerLoggingLevel(super.getClass().getName(), Level.SEVERE);
 	}
 
 	@Override

@@ -116,7 +116,7 @@ public class PaperFlyRoomEndpoint extends Endpoint {
 								System.out.println("######### Incoming Message: " + msg);
 								sess.getBasicRemote().sendObject(msg);
 							} catch (EncodeException ex) {
-								Logger.getLogger(PaperFlyRoomEndpoint.class.getName()).log(Level.SEVERE, null, ex);
+								LOG.log(this.getClass().getName(), Level.SEVERE, "ERROR: ", ex);
 							}
 						}
 					}
@@ -144,7 +144,7 @@ public class PaperFlyRoomEndpoint extends Endpoint {
 			session.getBasicRemote().sendObject(new Message(400, error.getLocalizedMessage()));
 			session.close();
 		} catch (IOException | EncodeException ex) {
-			Logger.getLogger(PaperFlyRoomEndpoint.class.getName()).log(Level.SEVERE, null, ex);
+			LOG.log(this.getClass().getName(), Level.SEVERE, "ERROR: ", ex);
 		}
 	}
 
@@ -163,6 +163,7 @@ public class PaperFlyRoomEndpoint extends Endpoint {
 		try {
 			LOG.log(this.getClass().getName(), Level.INFO, "Closing connection...");
 			for (Session sess : session.getOpenSessions()) {
+				System.out.println("open session");
 				if (sess.isOpen()) {
 					try {
 						String username = accountService.getAccountByMail(session.getUserPrincipal().getName()).getUsername();
@@ -172,8 +173,9 @@ public class PaperFlyRoomEndpoint extends Endpoint {
 						msg.setSendTime(new Date());
 						msg.setBody(username + " left the room " + room.getName());
 						sess.getBasicRemote().sendObject(msg);
+						System.out.println("##### SENDING MESSAGE!!!");
 					} catch (EncodeException | IOException ex) {
-						Logger.getLogger(PaperFlyRoomEndpoint.class.getName()).log(Level.SEVERE, null, ex);
+						LOG.log(this.getClass().getName(), Level.SEVERE, "ERROR(Principal is null): " + ex);
 					}
 				}
 			}

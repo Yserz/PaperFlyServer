@@ -97,6 +97,9 @@ public class AuthResource {
 			String username = cred.split(":")[0];
 			String password = cred.split(":")[1];
 
+			System.out.println("Username: " + username);
+			System.out.println("Password: " + password);
+
 			request.login(username, password);
 
 
@@ -161,16 +164,17 @@ public class AuthResource {
 		LOG.log(this.getClass().getName(), Level.INFO, "LOGOUT...");
 		Response resp;
 
-		chatController.removeUserFromAllChats(sc.getUserPrincipal().getName());
+//		chatController.removeUserFromAllChats(sc.getUserPrincipal().getName());
+//
+//		Account myAccount = accountService.getAccountByMail(sc.getUserPrincipal().getName());
+//		myAccount.setStatus(Status.OFFLINE);
+//		accountService.editAccount(myAccount);
 
-		Account myAccount = accountService.getAccountByMail(sc.getUserPrincipal().getName());
-		myAccount.setStatus(Status.OFFLINE);
-		accountService.editAccount(myAccount);
 
+		request.logout();
 		if (request.getSession(false) != null) {
 			request.getSession(false).invalidate();
 		}
-		request.logout();
 
 		resp = Response.ok().build();
 		return resp;
