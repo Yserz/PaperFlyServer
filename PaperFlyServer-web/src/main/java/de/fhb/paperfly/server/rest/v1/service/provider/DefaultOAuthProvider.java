@@ -31,6 +31,9 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import javax.ejb.Singleton;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.Provider;
 
@@ -40,6 +43,7 @@ import javax.ws.rs.ext.Provider;
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */
 @Provider
+@RequestScoped
 public class DefaultOAuthProvider implements OAuthProvider {
 
 	private static final ConcurrentHashMap<String, Consumer> consumerByConsumerKey = new ConcurrentHashMap<String, Consumer>();
@@ -49,6 +53,10 @@ public class DefaultOAuthProvider implements OAuthProvider {
 
 	@Override
 	public Consumer getConsumer(String consumerKey) {
+		return consumerByConsumerKey.get(consumerKey);
+	}
+
+	public Consumer removeConsumer(String consumerKey) {
 		return consumerByConsumerKey.get(consumerKey);
 	}
 

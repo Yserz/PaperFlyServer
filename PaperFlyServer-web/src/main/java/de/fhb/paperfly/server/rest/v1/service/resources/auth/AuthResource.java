@@ -173,7 +173,10 @@ public class AuthResource {
 
 		request.logout();
 		if (request.getSession(false) != null) {
+
 			request.getSession(false).invalidate();
+		} else {
+			LOG.log(this.getClass().getName(), Level.INFO, "Session was Null!");
 		}
 
 		resp = Response.ok().build();

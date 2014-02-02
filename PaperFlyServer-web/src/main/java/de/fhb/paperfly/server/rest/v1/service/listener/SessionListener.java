@@ -11,9 +11,11 @@ import de.fhb.paperfly.server.chat.ChatController;
 import de.fhb.paperfly.server.logging.service.LoggingServiceLocal;
 import de.fhb.paperfly.server.rest.v1.dto.AccountDTO;
 import de.fhb.paperfly.server.rest.v1.service.PaperFlyRestService;
+import de.fhb.paperfly.server.rest.v1.service.provider.DefaultOAuthProvider;
 import java.util.logging.Level;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.servlet.annotation.WebListener;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
@@ -31,6 +33,8 @@ public class SessionListener implements HttpSessionListener {
 	private ChatController chatController;
 	@EJB
 	private LoggingServiceLocal LOG;
+	@Inject
+	private DefaultOAuthProvider oauthProvider;
 
 	@Override
 	public void sessionCreated(HttpSessionEvent se) {
@@ -54,6 +58,12 @@ public class SessionListener implements HttpSessionListener {
 				Account myAccount = accountService.getAccountByMail(mail);
 				myAccount.setStatus(Status.OFFLINE);
 				accountService.editAccount(myAccount);
+
+				LOG.log(this.getClass().getName(), Level.INFO, "Removing OAuth Consumer " + mail);
+				oauthProvider.removeConsumer(mail);
+				if (oauthProvider.getConsumer(mail) == null) {
+					LOG.log(this.getClass().getName(), Level.INFO, "Successfully removed Consumer '" + mail);
+				}
 
 			} else {
 				throw new Exception("User already logged out!");
