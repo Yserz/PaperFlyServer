@@ -33,10 +33,12 @@ public class KeySingleton {
 	}
 
 	public synchronized DefaultOAuthProvider.Consumer getConsumer(String consumerKey) {
-		System.out.println("getConsumer:");
+		StringBuilder log = new StringBuilder("");
+		log.append("getConsumer:").append("\n");
 		for (Map.Entry<String, DefaultOAuthProvider.Consumer> entry : consumerByConsumerKey.entrySet()) {
-			System.out.println(entry.getKey() + " : " + entry.getValue().getPrincipal());
+			log.append(entry.getKey()).append(" : ").append(entry.getValue().getPrincipal()).append("\n");
 		}
+		System.out.println(log.toString());
 		return consumerByConsumerKey.get(consumerKey);
 	}
 
@@ -55,10 +57,12 @@ public class KeySingleton {
 	}
 
 	public synchronized DefaultOAuthProvider.Consumer removeConsumer(String consumerKey) {
-		System.out.println("removeConsumer:");
+		StringBuilder log = new StringBuilder("");
+		log.append("removeConsumer:").append("\n");
 		for (Map.Entry<String, DefaultOAuthProvider.Consumer> entry : consumerByConsumerKey.entrySet()) {
-			System.out.println(entry.getKey() + " : " + entry.getValue().getPrincipal());
+			log.append(entry.getKey()).append(" : ").append(entry.getValue().getPrincipal()).append("\n");
 		}
+		System.out.println(log.toString());
 		return consumerByConsumerKey.remove(consumerKey);
 	}
 

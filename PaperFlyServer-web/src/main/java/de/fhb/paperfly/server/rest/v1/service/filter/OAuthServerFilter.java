@@ -136,20 +136,23 @@ public class OAuthServerFilter implements ContainerRequestFilter {
 
 	@Override
 	public ContainerRequest filter(ContainerRequest request) {
-		System.out.println("Calling OAuthFilter");
+		StringBuilder log = new StringBuilder("");
+		log.append("Calling OAuthFilter").append("\n");
 
 
-		System.out.println("path: " + request.getPath());
+		log.append("path: ").append(request.getPath()).append("\n");
 
 		// do not filter if the request path matches pattern to ignore
 		if (match(ignorePathPattern, request.getPath())) {
-			System.out.println("...Requested path is irgnored because of configured ignorePattern");
+			log.append("...Requested path is irgnored because of configured ignorePattern").append("\n");
+			System.out.println(log.toString());
 			return request;
 		}
 
 		String authHeader = request.getHeaderValue(OAuthParameters.AUTHORIZATION_HEADER);
 		if (authHeader == null || !authHeader.toUpperCase().startsWith(OAuthParameters.SCHEME.toUpperCase())) {
-			System.out.println("...No OAuth Header found");
+			log.append("...No OAuth Header found").append("\n");
+			System.out.println(log.toString());
 			throw new WebApplicationException(newUnauthorizedException().toResponse());
 //			return request;
 		}
@@ -162,26 +165,31 @@ public class OAuthServerFilter implements ContainerRequestFilter {
 			sc = getSecurityContext(request);
 		} catch (OAuthException e) {
 			if (optional) {
+				System.out.println(log.toString());
 				return request;
 			} else {
-				System.out.println("...OAuth failed");
+				log.append("...OAuth failed").append("\n");
+				System.out.println(log.toString());
 				throw new WebApplicationException(e.toResponse());
 			}
 		}
-		System.out.println("...setting OAuth securityContext");
+		log.append("...setting OAuth securityContext").append("\n");
 		request.setSecurityContext(sc);
 
+		System.out.println(log.toString());
 		return request;
 	}
 
 	private OAuthSecurityContext getSecurityContext(ContainerRequest request) throws OAuthException {
-		System.out.println("...getSecurityContext");
+		StringBuilder log = new StringBuilder("");
+		log.append("...getSecurityContext").append("\n");
 		OAuthServerRequest osr = new OAuthServerRequest(request);
 		OAuthParameters params = new OAuthParameters().readRequest(osr);
 
 		// apparently not signed with any OAuth parameters; unauthorized
 		if (params.size() == 0) {
-			System.out.println("...no OAuth parameters");
+			log.append("...no OAuth parameters").append("\n");
+			System.out.println(log.toString());
 			throw newUnauthorizedException();
 		}
 
@@ -198,7 +206,8 @@ public class OAuthServerFilter implements ContainerRequestFilter {
 		// retrieve secret for consumer key
 		OAuthConsumer consumer = provider.getConsumer(consumerKey);
 		if (consumer == null) {
-			System.out.println("...no OAuth consumer found");
+			log.append("...no OAuth consumer found").append("\n");
+			System.out.println(log.toString());
 			throw newUnauthorizedException();
 		}
 
@@ -209,6 +218,7 @@ public class OAuthServerFilter implements ContainerRequestFilter {
 		if (token == null) {
 
 			if (consumer.getPrincipal() == null) {
+				System.out.println(log.toString());
 				throw newUnauthorizedException();
 			}
 			nonceKey = "c:" + consumerKey;
@@ -218,11 +228,13 @@ public class OAuthServerFilter implements ContainerRequestFilter {
 
 			OAuthToken accessToken = provider.getAccessToken(token);
 			if (accessToken == null) {
+				System.out.println(log.toString());
 				throw newUnauthorizedException();
 			}
 
 			OAuthConsumer atConsumer = accessToken.getConsumer();
 			if (atConsumer == null || !consumerKey.equals(atConsumer.getKey())) {
+				System.out.println(log.toString());
 				throw newUnauthorizedException();
 			}
 
@@ -231,9 +243,11 @@ public class OAuthServerFilter implements ContainerRequestFilter {
 			sc = new OAuthSecurityContext(accessToken, request.isSecure());
 		}
 		if (!verifySignature(osr, params, secrets)) {
+			System.out.println(log.toString());
 			throw newUnauthorizedException();
 		}
 		if (!nonces.verify(nonceKey, timestamp, nonce)) {
+			System.out.println(log.toString());
 			throw newUnauthorizedException();
 		}
 

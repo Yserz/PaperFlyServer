@@ -137,6 +137,7 @@ public class PaperFlyRoomEndpoint extends Endpoint {
 				LOG.log(this.getClass().getName(), Level.INFO, log.toString());
 			}
 		});
+		LOG.log(this.getClass().getName(), Level.INFO, log.toString());
 
 	}
 

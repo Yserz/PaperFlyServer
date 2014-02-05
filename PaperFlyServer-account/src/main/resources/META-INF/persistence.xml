@@ -39,7 +39,7 @@
 			<!--
 		Log JPA Statements
 			-->
-			<!--<property name="eclipselink.logging.level" value="FINE"/>-->
+			<property name="eclipselink.logging.level" value="SEVERE"/>
 			<!--
 		Log values of parameters in query
 			-->
