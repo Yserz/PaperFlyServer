@@ -36,7 +36,7 @@ import javax.interceptor.Interceptors;
 @Startup
 @TransactionManagement(TransactionManagementType.CONTAINER)
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
-@Interceptors({ServiceLoggerInterceptor.class})
+//@Interceptors({ServiceLoggerInterceptor.class})
 public class RoomService implements RoomServiceLocal {
 
 	@EJB

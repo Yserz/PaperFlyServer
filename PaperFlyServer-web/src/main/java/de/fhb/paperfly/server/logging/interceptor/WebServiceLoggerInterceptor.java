@@ -50,11 +50,11 @@ public class WebServiceLoggerInterceptor {
 	@AroundInvoke
 	public Object logCall(InvocationContext context) throws Exception {
 		// EJB will not be accessable if the Interceptor is called from outside of the backend-module
+		StringBuilder log = new StringBuilder("---------------------------------------------------------\n");
 
 
-		LOG.log(context.getMethod().getDeclaringClass().getName(), Level.INFO, "---------------------------------------------------------");
-		LOG.log(context.getMethod().getDeclaringClass().getName(), Level.INFO, " + Class: {0}", getPureClassName(context.getMethod().getDeclaringClass()));
-		LOG.log(context.getMethod().getDeclaringClass().getName(), Level.INFO, " -    Method: {0}", context.getMethod().getName());
+		log.append(" + Class: ").append(getPureClassName(context.getMethod().getDeclaringClass())).append("\n");
+		log.append(" -    Method: ").append(context.getMethod().getName()).append("\n");
 
 		if (context.getParameters() != null) {
 			Annotation[][] annos = context.getMethod().getParameterAnnotations();
@@ -63,21 +63,22 @@ public class WebServiceLoggerInterceptor {
 
 				for (int j = 0; j < annos[i].length; j++) {
 					Annotation annotation = annos[i][j];
-					System.out.println("Annotation for Param " + (i + 1) + ": " + annotation.annotationType());
+					log.append(" -       Annotation for Param ").append(i + 1).append(": ").append(annotation.annotationType()).append("\n");
 				}
 
 				if (params[i] != null) {
 					if (!params[i].toString().contains("org.apache.catalina.connector.RequestFacade")) {
-						LOG.log(context.getMethod().getDeclaringClass().getName(), Level.INFO, " -       Param {0}: ({1}) {2}", new Object[]{i + 1, getPureClassName(params[i].getClass()), params[i]});
+						log.append(" -       Param ").append(i + 1).append(": (").append(getPureClassName(params[i].getClass())).append(") ").append(params[i]).append("\n");
 					} else {
-						LOG.log(context.getMethod().getDeclaringClass().getName(), Level.INFO, " -       Param {0}: ({1}) {2}", new Object[]{i + 1, "RequestFacade", "org.apache.catalina.connector.RequestFacade"});
+						log.append(" -       Param ").append(i + 1).append(": (" + "RequestFacade" + ") " + "org.apache.catalina.connector.RequestFacade").append("\n");
 					}
 				} else {
-					LOG.log(context.getMethod().getDeclaringClass().getName(), Level.INFO, " -       Param {0}: ({1}) {2}", new Object[]{i + 1, "", params[i]});
+					log.append(" -       Param ").append(i + 1).append(": () ").append(params[i]).append("\n");
 				}
 			}
 		}
 
+		LOG.log(context.getMethod().getDeclaringClass().getName(), Level.INFO, log.toString());
 		return context.proceed();
 	}
 

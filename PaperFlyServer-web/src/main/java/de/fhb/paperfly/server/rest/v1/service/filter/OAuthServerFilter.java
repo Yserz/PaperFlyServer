@@ -35,9 +35,12 @@ import com.sun.jersey.spi.container.ContainerRequest;
 import com.sun.jersey.spi.container.ContainerRequestFilter;
 import de.fhb.paperfly.server.rest.v1.service.context.OAuthSecurityContext;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
@@ -137,6 +140,7 @@ public class OAuthServerFilter implements ContainerRequestFilter {
 
 
 		System.out.println("path: " + request.getPath());
+
 		// do not filter if the request path matches pattern to ignore
 		if (match(ignorePathPattern, request.getPath())) {
 			System.out.println("...Requested path is irgnored because of configured ignorePattern");

@@ -24,13 +24,11 @@ import javax.websocket.EndpointConfig;
  */
 public class JsonDecoder implements Decoder.Text<Message> {
 
-	private static final Logger LOG = Logger.getLogger(JsonDecoder.class.getName());
 	private Gson gson;
 
 	@Override
 	public Message decode(String s) throws DecodeException {
 		try {
-			LOG.log(Level.INFO, "JsonDecoder decode");
 			Message msg = gson.fromJson(s, Message.class);
 			return msg;
 		} catch (Exception ex) {
@@ -41,20 +39,17 @@ public class JsonDecoder implements Decoder.Text<Message> {
 
 	@Override
 	public boolean willDecode(String s) {
-		LOG.log(Level.INFO, "JsonDecoder willDecode");
 		boolean canDecode = true;
 		return canDecode;
 	}
 
 	@Override
 	public void init(EndpointConfig config) {
-		LOG.log(Level.INFO, "Init JsonDecoder");
 		gson = new Gson();
 	}
 
 	@Override
 	public void destroy() {
-		LOG.log(Level.INFO, "Destroying JsonDecoder");
 		gson = null;
 	}
 }

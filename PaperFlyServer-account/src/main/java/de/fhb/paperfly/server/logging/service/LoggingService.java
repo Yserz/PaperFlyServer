@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
+import javax.ejb.Startup;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.ejb.TransactionManagement;
@@ -20,6 +21,7 @@ import javax.ejb.TransactionManagementType;
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */
 @Singleton
+@Startup
 @TransactionManagement(TransactionManagementType.CONTAINER)
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class LoggingService implements LoggingServiceLocal, LoggingServiceLocalAdmin {
@@ -36,7 +38,7 @@ public class LoggingService implements LoggingServiceLocal, LoggingServiceLocalA
 	@PostConstruct
 	private void init() {
 		LOG = this.getLogger(this.getClass().getName());
-		setAllLoggerLoggingLevel(globalLoggingLevel);
+//		setAllLoggerLoggingLevel(globalLoggingLevel);
 	}
 
 	@Override

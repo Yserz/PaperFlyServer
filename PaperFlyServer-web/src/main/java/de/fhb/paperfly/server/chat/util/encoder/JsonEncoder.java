@@ -16,24 +16,20 @@ import javax.websocket.EndpointConfig;
  */
 public class JsonEncoder implements Encoder.Text<Message> {
 
-	private static final Logger LOG = Logger.getLogger(JsonEncoder.class.getName());
 	private Gson gson;
 
 	@Override
 	public String encode(Message msg) throws EncodeException {
-		LOG.log(Level.INFO, "JsonEncoder encode");
 		return gson.toJson(msg);
 	}
 
 	@Override
 	public void init(EndpointConfig config) {
-		LOG.log(Level.INFO, "Init JsonEncoder");
 		gson = new Gson();
 	}
 
 	@Override
 	public void destroy() {
-		LOG.log(Level.INFO, "Destroying JsonEncoder");
 		gson = null;
 	}
 }

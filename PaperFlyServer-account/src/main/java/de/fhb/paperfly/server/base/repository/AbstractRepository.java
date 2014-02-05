@@ -20,7 +20,7 @@ import javax.persistence.criteria.Root;
  *
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */
-@Interceptors(RepositoryLoggerInterceptor.class)
+//@Interceptors(RepositoryLoggerInterceptor.class)
 public abstract class AbstractRepository<T> {
 
 	@EJB

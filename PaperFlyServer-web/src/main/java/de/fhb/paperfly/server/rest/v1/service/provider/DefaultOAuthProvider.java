@@ -20,6 +20,7 @@ import com.sun.jersey.core.util.MultivaluedMapImpl;
 import com.sun.jersey.oauth.server.spi.OAuthConsumer;
 import com.sun.jersey.oauth.server.spi.OAuthProvider;
 import com.sun.jersey.oauth.server.spi.OAuthToken;
+import java.io.Serializable;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,9 +32,9 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.ejb.Singleton;
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Inject;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.Provider;
 
@@ -43,21 +44,15 @@ import javax.ws.rs.ext.Provider;
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */
 @Provider
-@RequestScoped
 public class DefaultOAuthProvider implements OAuthProvider {
-
-	private static final ConcurrentHashMap<String, Consumer> consumerByConsumerKey = new ConcurrentHashMap<String, Consumer>();
-	private static final ConcurrentHashMap<String, Token> accessTokenByTokenString = new ConcurrentHashMap<String, Token>();
-	private static final ConcurrentHashMap<String, Token> requestTokenByTokenString = new ConcurrentHashMap<String, Token>();
-	private static final ConcurrentHashMap<String, String> verifierByTokenString = new ConcurrentHashMap<String, String>();
 
 	@Override
 	public Consumer getConsumer(String consumerKey) {
-		return consumerByConsumerKey.get(consumerKey);
+		return KeySingleton.getInstance().getConsumer(consumerKey);
 	}
 
 	public Consumer removeConsumer(String consumerKey) {
-		return consumerByConsumerKey.get(consumerKey);
+		return KeySingleton.getInstance().removeConsumer(consumerKey);
 	}
 
 	/**
@@ -72,7 +67,7 @@ public class DefaultOAuthProvider implements OAuthProvider {
 	 */
 	public Consumer registerConsumer(String owner, Principal principal, MultivaluedMap<String, String> attributes) {
 		Consumer c = new Consumer(newUUIDString(), newUUIDString(), owner, principal, attributes);
-		consumerByConsumerKey.put(c.getKey(), c);
+		KeySingleton.getInstance().consumerByConsumerKey.put(c.getKey(), c);
 		return c;
 	}
 
@@ -85,7 +80,7 @@ public class DefaultOAuthProvider implements OAuthProvider {
 	 */
 	public Set<Consumer> getConsumers(String owner) {
 		Set<Consumer> result = new HashSet<Consumer>();
-		for (Consumer consumer : consumerByConsumerKey.values()) {
+		for (Consumer consumer : KeySingleton.getInstance().consumerByConsumerKey.values()) {
 			if (consumer.getOwner().equals(owner)) {
 				result.add(consumer);
 			}
@@ -103,7 +98,7 @@ public class DefaultOAuthProvider implements OAuthProvider {
 	 */
 	public Set<Token> getAccessTokens(String principalName) {
 		Set<Token> tokens = new HashSet<Token>();
-		for (Token token : accessTokenByTokenString.values()) {
+		for (Token token : KeySingleton.getInstance().accessTokenByTokenString.values()) {
 			if (principalName.equals(token.getPrincipal().getName())) {
 				tokens.add(token);
 			}
@@ -123,9 +118,9 @@ public class DefaultOAuthProvider implements OAuthProvider {
 	 */
 	public String authorizeToken(Token token, Principal userPrincipal, Set<String> roles) {
 		Token authorized = token.authorize(userPrincipal, roles);
-		requestTokenByTokenString.put(token.getToken(), authorized);
+		KeySingleton.getInstance().requestTokenByTokenString.put(token.getToken(), authorized);
 		String verifier = newUUIDString();
-		verifierByTokenString.put(token.getToken(), verifier);
+		KeySingleton.getInstance().verifierByTokenString.put(token.getToken(), verifier);
 		return verifier;
 	}
 
@@ -140,7 +135,7 @@ public class DefaultOAuthProvider implements OAuthProvider {
 	public void revokeAccessToken(String token, String principalName) {
 		Token t = (Token) getAccessToken(token);
 		if (t != null && t.getPrincipal().getName().equals(principalName)) {
-			accessTokenByTokenString.remove(token);
+			KeySingleton.getInstance().accessTokenByTokenString.remove(token);
 		}
 	}
 
@@ -157,33 +152,33 @@ public class DefaultOAuthProvider implements OAuthProvider {
 
 	@Override
 	public Token getRequestToken(String token) {
-		return requestTokenByTokenString.get(token);
+		return KeySingleton.getInstance().requestTokenByTokenString.get(token);
 	}
 
 	@Override
 	public OAuthToken newRequestToken(String consumerKey, String callbackUrl, Map<String, List<String>> attributes) {
 		Token rt = new Token(newUUIDString(), newUUIDString(), consumerKey, callbackUrl, attributes);
-		requestTokenByTokenString.put(rt.getToken(), rt);
+		KeySingleton.getInstance().requestTokenByTokenString.put(rt.getToken(), rt);
 		return rt;
 	}
 
 	@Override
 	public OAuthToken newAccessToken(OAuthToken requestToken, String verifier) {
-		if (verifier == null || !verifier.equals(verifierByTokenString.remove(requestToken.getToken()))) {
+		if (verifier == null || !verifier.equals(KeySingleton.getInstance().verifierByTokenString.remove(requestToken.getToken()))) {
 			return null;
 		}
-		Token token = requestToken == null ? null : requestTokenByTokenString.remove(requestToken.getToken());
+		Token token = requestToken == null ? null : KeySingleton.getInstance().requestTokenByTokenString.remove(requestToken.getToken());
 		if (token == null) {
 			return null;
 		}
 		Token at = new Token(newUUIDString(), newUUIDString(), token);
-		accessTokenByTokenString.put(at.getToken(), at);
+		KeySingleton.getInstance().accessTokenByTokenString.put(at.getToken(), at);
 		return at;
 	}
 
 	@Override
 	public OAuthToken getAccessToken(String token) {
-		return accessTokenByTokenString.get(token);
+		return KeySingleton.getInstance().accessTokenByTokenString.get(token);
 	}
 
 	/**

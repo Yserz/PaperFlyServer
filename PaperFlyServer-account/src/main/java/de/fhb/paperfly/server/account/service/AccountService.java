@@ -47,7 +47,7 @@ import javax.validation.ValidatorFactory;
 @Startup
 @TransactionManagement(TransactionManagementType.CONTAINER)
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
-@Interceptors({ServiceLoggerInterceptor.class})
+//@Interceptors({ServiceLoggerInterceptor.class})
 public class AccountService implements AccountServiceLocal, AccountServiceLocalAdmin {
 
 	@EJB

@@ -38,6 +38,7 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.interceptor.Interceptors;
 import javax.servlet.ServletException;
 import javax.servlet.SessionTrackingMode;
@@ -103,10 +104,9 @@ public class AuthResource {
 			request.login(username, password);
 
 
-			session = request.getSession(false);
-			if (session != null) {
-				session.setAttribute("mail", request.getUserPrincipal().toString());
-			}
+			session = request.getSession(true);
+			System.out.println("isSession new?: " + session.isNew());
+			session.setAttribute("mail", request.getUserPrincipal().toString());
 
 			MultivaluedMap<String, String> roles = new MultivaluedMapImpl();
 

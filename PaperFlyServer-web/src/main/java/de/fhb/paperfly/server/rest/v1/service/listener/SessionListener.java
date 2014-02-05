@@ -9,13 +9,9 @@ import de.fhb.paperfly.server.account.entity.Status;
 import de.fhb.paperfly.server.account.service.AccountServiceLocal;
 import de.fhb.paperfly.server.chat.ChatController;
 import de.fhb.paperfly.server.logging.service.LoggingServiceLocal;
-import de.fhb.paperfly.server.rest.v1.dto.AccountDTO;
-import de.fhb.paperfly.server.rest.v1.service.PaperFlyRestService;
-import de.fhb.paperfly.server.rest.v1.service.provider.DefaultOAuthProvider;
+import de.fhb.paperfly.server.rest.v1.service.provider.KeySingleton;
 import java.util.logging.Level;
 import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
 import javax.servlet.annotation.WebListener;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
@@ -33,8 +29,6 @@ public class SessionListener implements HttpSessionListener {
 	private ChatController chatController;
 	@EJB
 	private LoggingServiceLocal LOG;
-	@Inject
-	private DefaultOAuthProvider oauthProvider;
 
 	@Override
 	public void sessionCreated(HttpSessionEvent se) {
@@ -49,7 +43,6 @@ public class SessionListener implements HttpSessionListener {
 	@Override
 	public void sessionDestroyed(HttpSessionEvent se) {
 		try {
-			LOG.log(this.getClass().getName(), Level.INFO, "isNewSession: " + se.getSession().isNew());
 			LOG.log(this.getClass().getName(), Level.INFO, "Session '" + se.getSession().getId() + "'!");
 			String mail = (String) se.getSession().getAttribute("mail");
 			if (mail != null) {
@@ -60,8 +53,8 @@ public class SessionListener implements HttpSessionListener {
 				accountService.editAccount(myAccount);
 
 				LOG.log(this.getClass().getName(), Level.INFO, "Removing OAuth Consumer " + mail);
-				oauthProvider.removeConsumer(mail);
-				if (oauthProvider.getConsumer(mail) == null) {
+				KeySingleton.getInstance().removeConsumerByMail(mail);
+				if (KeySingleton.getInstance().getConsumerByMail(mail) == null) {
 					LOG.log(this.getClass().getName(), Level.INFO, "Successfully removed Consumer '" + mail);
 				}
 
@@ -72,6 +65,8 @@ public class SessionListener implements HttpSessionListener {
 			LOG.log(this.getClass().getName(), Level.INFO, "Session '" + se.getSession().getId() + "'destroyed!");
 		} catch (Exception e) {
 			LOG.log(this.getClass().getName(), Level.SEVERE, "Error on setting Account as OFFLINE!", e);
+			e.printStackTrace();
+			System.out.println("" + e.getMessage());
 		}
 		LOG.log(this.getClass().getName(), Level.INFO, "Session destroyed!");
 	}

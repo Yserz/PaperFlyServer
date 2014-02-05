@@ -83,7 +83,6 @@ public class ChatController {
 	 * @return A list of accounts in a room.
 	 */
 	public List<Account> getUsersInRoom(Room room) {
-		LOG.log(this.getClass().getName(), Level.INFO, "Room: " + room);
 		List<Account> accountList = new ArrayList<>();
 		LOG.log(this.getClass().getName(), Level.INFO, "Chat: " + chats.get(room.getName()));
 		if (chats.get(room.getName()) != null) {

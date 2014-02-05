@@ -57,9 +57,10 @@ public class PaperFlyRoomEndpoint extends Endpoint {
 	 */
 	@Override
 	public void onOpen(final Session session, EndpointConfig conf) {
-		session.getContainer().setDefaultMaxSessionIdleTimeout(1800000l);/*30m*/
-		LOG.log(this.getClass().getName(), Level.INFO, "Opening connection...");
-		LOG.log(this.getClass().getName(), Level.INFO, "Request URI of session: " + session.getRequestURI().toString());
+//		session.getContainer().setDefaultMaxSessionIdleTimeout(1800000l);/*30m*/
+		session.getContainer().setDefaultMaxSessionIdleTimeout(180000l);/*3m*/
+		StringBuilder log = new StringBuilder("");
+		log.append("Opening connection...").append("\n");
 		String roomName = getRoomName(session.getRequestURI().toString());
 
 		try {
@@ -75,6 +76,7 @@ public class PaperFlyRoomEndpoint extends Endpoint {
 							msg.setType(MessageType.SYSTEM);
 							msg.setCode(200);
 							msg.setSendTime(new Date());
+							log.append(username).append(" joined the room ").append(roomName).append("\n");
 							msg.setBody(username + " joined the room " + roomName);
 							sess.getBasicRemote().sendObject(msg);
 						}
@@ -90,39 +92,49 @@ public class PaperFlyRoomEndpoint extends Endpoint {
 					} else {
 						setRoom(room);
 					}
-					LOG.log(this.getClass().getName(), Level.INFO, "ADDING CHAT " + roomName);
+					log.append("ADDING CHAT ").append(roomName).append("\n");
 					controller.addChat(roomName);
 				}
-				LOG.log(this.getClass().getName(), Level.INFO, "ADDING USER " + session.getUserPrincipal().getName() + " TO CHAT " + roomName);
+				log.append("ADDING USER ").append(session.getUserPrincipal().getName()).append(" TO CHAT ").append(roomName).append("\n");
 				controller.addUserToChat(roomName, session.getUserPrincipal().getName());
 			} else {
-				LOG.log(this.getClass().getName(), Level.SEVERE, "User is not Authorized!");
+				log.append("User is not Authorized!").append("\n");
+				LOG.log(this.getClass().getName(), Level.INFO, log.toString());
+				log = new StringBuilder("");
 				throw new RuntimeException("You are not Authorized!");
 			}
 		} catch (IOException ex) {
+			LOG.log(this.getClass().getName(), Level.INFO, log.toString());
+			log = new StringBuilder("");
 			LOG.log(this.getClass().getName(), Level.SEVERE, "Could not open connection to websocket!", ex);
 		}
 
 		session.addMessageHandler(new MessageHandler.Whole<Message>() {
 			@Override
 			public void onMessage(Message msg) {
+				StringBuilder log = new StringBuilder("");
 				try {
 					for (Session sess : session.getOpenSessions()) {
 						if (sess.isOpen()) {
 							try {
 								String username = accountService.getAccountByMail(session.getUserPrincipal().getName()).getUsername();
 								msg.setUsername(username);
-								System.out.println("##################################");
-								System.out.println("######### Incoming Message: " + msg);
+								log.append("##################################").append("\n");
+								log.append("######### Incoming Message: ").append(msg).append("\n");
 								sess.getBasicRemote().sendObject(msg);
 							} catch (EncodeException ex) {
+								LOG.log(this.getClass().getName(), Level.INFO, log.toString());
+								log = new StringBuilder("");
 								LOG.log(this.getClass().getName(), Level.SEVERE, "ERROR: ", ex);
 							}
 						}
 					}
 				} catch (IOException ex) {
+					LOG.log(this.getClass().getName(), Level.INFO, log.toString());
+					log = new StringBuilder("");
 					LOG.log(this.getClass().getName(), Level.SEVERE, null, ex);
 				}
+				LOG.log(this.getClass().getName(), Level.INFO, log.toString());
 			}
 		});
 
@@ -138,14 +150,16 @@ public class PaperFlyRoomEndpoint extends Endpoint {
 	 */
 	@Override
 	public void onError(Session session, Throwable error) {
-		LOG.log(this.getClass().getName(), Level.INFO, "Catching Error...");
-		LOG.log(this.getClass().getName(), Level.SEVERE, error.getLocalizedMessage());
+		StringBuilder log = new StringBuilder("");
+		log.append("Catching Error...").append("\n");
+		log.append(error.getLocalizedMessage()).append("\n");
 		try {
 			session.getBasicRemote().sendObject(new Message(400, error.getLocalizedMessage()));
 			session.close();
 		} catch (IOException | EncodeException ex) {
 			LOG.log(this.getClass().getName(), Level.SEVERE, "ERROR: ", ex);
 		}
+		LOG.log(this.getClass().getName(), Level.INFO, log.toString());
 	}
 
 	/**
@@ -160,10 +174,10 @@ public class PaperFlyRoomEndpoint extends Endpoint {
 	@Override
 	public void onClose(Session session, CloseReason reason) {
 
+		StringBuilder log = new StringBuilder("");
 		try {
-			LOG.log(this.getClass().getName(), Level.INFO, "Closing connection...");
+			log.append("Closing connection...").append("\n");
 			for (Session sess : session.getOpenSessions()) {
-				System.out.println("open session");
 				if (sess.isOpen()) {
 					try {
 						String username = accountService.getAccountByMail(session.getUserPrincipal().getName()).getUsername();
@@ -171,29 +185,35 @@ public class PaperFlyRoomEndpoint extends Endpoint {
 						msg.setType(MessageType.SYSTEM);
 						msg.setCode(200);
 						msg.setSendTime(new Date());
+						log.append(username).append(" left the room ").append(room.getName()).append("\n");
 						msg.setBody(username + " left the room " + room.getName());
 						sess.getBasicRemote().sendObject(msg);
-						System.out.println("##### SENDING MESSAGE!!!");
 					} catch (EncodeException | IOException ex) {
+						LOG.log(this.getClass().getName(), Level.INFO, log.toString());
+						log = new StringBuilder("");
 						LOG.log(this.getClass().getName(), Level.SEVERE, "ERROR(Principal is null): " + ex);
 					}
 				}
 			}
-			LOG.log(this.getClass().getName(), Level.INFO,
-					"REMOVING USER " + session.getUserPrincipal().getName()
-					+ " FROM CHAT " + getRoom().getName());
+			log.append("REMOVING USER ").append(session.getUserPrincipal().getName()).append(" FROM CHAT ").append(getRoom().getName()).append("\n");
 			controller.removeUserFromChat(
 					getRoom().getName(),
 					session.getUserPrincipal().getName());
 
 		} catch (NullPointerException npe) {
+			LOG.log(this.getClass().getName(), Level.INFO, log.toString());
+			log = new StringBuilder("");
 			LOG.log(this.getClass().getName(), Level.SEVERE, null, npe);
 		}
 		try {
 			session.close(reason);
 		} catch (IOException ex) {
+			LOG.log(this.getClass().getName(), Level.INFO, log.toString());
+			log = new StringBuilder("");
 			LOG.log(this.getClass().getName(), Level.SEVERE, null, ex);
 		}
+		LOG.log(this.getClass().getName(), Level.INFO, log.toString());
+
 	}
 
 	public Room getRoom() {
