@@ -60,7 +60,7 @@ import javax.ws.rs.core.SecurityContext;
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */
 @Stateless
-@Path("account/")
+//@Path("account/")
 @Interceptors({WebServiceLoggerInterceptor.class})
 public class AccountResource {
 

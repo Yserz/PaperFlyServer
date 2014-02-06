@@ -58,7 +58,7 @@ import sun.misc.BASE64Decoder;
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */
 @Stateless
-@Path("auth/")
+//@Path("auth/")
 @Interceptors({WebServiceLoggerInterceptor.class})
 public class AuthResource {
 

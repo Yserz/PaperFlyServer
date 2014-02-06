@@ -50,7 +50,7 @@ import javax.ws.rs.core.Response;
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */
 @Stateless
-@Path("room/")
+//@Path("room/")
 @Interceptors({WebServiceLoggerInterceptor.class})
 public class RoomResource {
 
