@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 import javax.ejb.Local;
 
 /**
+ * Local Interface for LoggingServices.
  *
  * @author MacYser
  */

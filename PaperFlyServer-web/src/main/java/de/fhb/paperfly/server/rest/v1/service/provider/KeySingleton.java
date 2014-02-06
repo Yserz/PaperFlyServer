@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * This class saves all consumer keys. Consumer keys are used for
+ * authentification on the system.
  *
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */
@@ -23,6 +25,11 @@ public class KeySingleton {
 	private KeySingleton() {
 	}
 
+	/**
+	 * Gets the instance of the singleton class.
+	 *
+	 * @return
+	 */
 	public static KeySingleton getInstance() {
 		return Holder.INSTANCE;
 	}
@@ -32,6 +39,12 @@ public class KeySingleton {
 		private static final KeySingleton INSTANCE = new KeySingleton();
 	}
 
+	/**
+	 * Gets a consumer by the consumerkey.
+	 *
+	 * @param consumerKey
+	 * @return Consumer
+	 */
 	public synchronized DefaultOAuthProvider.Consumer getConsumer(String consumerKey) {
 		StringBuilder log = new StringBuilder("");
 		log.append("getConsumer:").append("\n");
@@ -42,6 +55,12 @@ public class KeySingleton {
 		return consumerByConsumerKey.get(consumerKey);
 	}
 
+	/**
+	 * Gets the Consumer by mail.
+	 *
+	 * @param mail
+	 * @return Consumer
+	 */
 	public synchronized DefaultOAuthProvider.Consumer getConsumerByMail(String mail) {
 
 		String key = "";
@@ -56,6 +75,12 @@ public class KeySingleton {
 		return getConsumer(key);
 	}
 
+	/**
+	 * Removes a consumer by the consumer key.
+	 *
+	 * @param consumerKey
+	 * @return removed consumer
+	 */
 	public synchronized DefaultOAuthProvider.Consumer removeConsumer(String consumerKey) {
 		StringBuilder log = new StringBuilder("");
 		log.append("removeConsumer:").append("\n");
@@ -66,6 +91,12 @@ public class KeySingleton {
 		return consumerByConsumerKey.remove(consumerKey);
 	}
 
+	/**
+	 * Removes a consumer by mail.
+	 *
+	 * @param mail
+	 * @return removed consumer
+	 */
 	public synchronized DefaultOAuthProvider.Consumer removeConsumerByMail(String mail) {
 		String key = "";
 		for (Map.Entry<String, Consumer> entry : consumerByConsumerKey.entrySet()) {

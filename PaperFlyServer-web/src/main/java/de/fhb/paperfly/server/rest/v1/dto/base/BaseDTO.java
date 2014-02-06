@@ -27,6 +27,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
+ * The Base class for mapped entities.
  *
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */

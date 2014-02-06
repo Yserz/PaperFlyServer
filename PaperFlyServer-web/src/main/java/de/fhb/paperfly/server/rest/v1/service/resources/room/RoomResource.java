@@ -32,6 +32,10 @@ import java.util.List;
 import java.util.logging.Level;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.ejb.TransactionManagement;
+import javax.ejb.TransactionManagementType;
 import javax.interceptor.Interceptors;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
@@ -46,7 +50,7 @@ import javax.ws.rs.core.Response;
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */
 @Stateless
-//@Path("room/")
+@Path("room/")
 @Interceptors({WebServiceLoggerInterceptor.class})
 public class RoomResource {
 
@@ -60,7 +64,7 @@ public class RoomResource {
 	public LoggingServiceLocal LOG;
 
 	/**
-	 * [TODO LARGE DESC]
+	 * Method to locate an account in a room.
 	 *
 	 * @title Locate an Account
 	 * @summary Locates an Account if it's in any.
@@ -91,7 +95,7 @@ public class RoomResource {
 	}
 
 	/**
-	 * [TODO LARGE DESC]
+	 * Method to get all account in a room.
 	 *
 	 * @title Get all Accounts in a Room
 	 * @summary Gets all account located in the given room.
@@ -121,7 +125,7 @@ public class RoomResource {
 	}
 
 	/**
-	 * [TODO LARGE DESC]
+	 * Method to get a list of all rooms
 	 *
 	 * @title Get all Rooms
 	 * @summary Gets all rooms.
@@ -146,7 +150,7 @@ public class RoomResource {
 	}
 
 	/**
-	 * [TODO LARGE DESC]
+	 * Method to get a room by his ID.
 	 *
 	 * @title Get a Room
 	 * @summary Gets a room.

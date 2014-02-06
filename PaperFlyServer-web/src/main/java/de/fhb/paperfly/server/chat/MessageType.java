@@ -17,7 +17,8 @@
 package de.fhb.paperfly.server.chat;
 
 /**
- *
+ * different existing message types
+ * 
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */
 public enum MessageType {

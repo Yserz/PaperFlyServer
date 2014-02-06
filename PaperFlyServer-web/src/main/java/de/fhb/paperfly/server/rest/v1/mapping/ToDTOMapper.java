@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Maps Entities to DTOs.
  *
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */
@@ -55,17 +56,6 @@ public class ToDTOMapper {
 		return dto;
 	}
 
-//	private List<AccountDTO> mapAccountListDept(List<Account> eList, int dept) {
-//		if (checkDept(dept)) {
-//			return null;
-//		}
-//		List<AccountDTO> dtoList = new ArrayList<AccountDTO>();
-//		for (Account e : eList) {
-//			dtoList.add(mapAccountDept(e, dept));
-//		}
-//
-//		return dtoList;
-//	}
 	private RoomDTO mapRoomDept(Room e, int dept) {
 		if (checkDept(dept)) {
 			return null;
@@ -86,10 +76,23 @@ public class ToDTOMapper {
 		return mapAccountDept(e, 2);
 	}
 
+	/**
+	 * map account with depth
+	 *
+	 * @param e
+	 * @param depth
+	 * @return
+	 */
 	public AccountDTO mapAccountWithDepth(Account e, int depth) {
 		return mapAccountDept(e, depth);
 	}
 
+	/**
+	 * map account list
+	 *
+	 * @param eList
+	 * @return
+	 */
 	public List<AccountDTO> mapAccountList(List<Account> eList) {
 
 		List<AccountDTO> dtoList = new ArrayList<AccountDTO>();
@@ -100,6 +103,13 @@ public class ToDTOMapper {
 		return dtoList;
 	}
 
+	/**
+	 * map account list with depth
+	 *
+	 * @param eList
+	 * @param depth
+	 * @return
+	 */
 	public List<AccountDTO> mapAccountListWithDepth(List<Account> eList, int depth) {
 
 		List<AccountDTO> dtoList = new ArrayList<AccountDTO>();
@@ -110,10 +120,22 @@ public class ToDTOMapper {
 		return dtoList;
 	}
 
+	/**
+	 * map room
+	 *
+	 * @param e
+	 * @return
+	 */
 	public RoomDTO mapRoom(Room e) {
 		return mapRoomDept(e, 1);
 	}
 
+	/**
+	 * map room list
+	 *
+	 * @param eList
+	 * @return
+	 */
 	public List<RoomDTO> mapRoomList(List<Room> eList) {
 
 		List<RoomDTO> dtoList = new ArrayList<RoomDTO>();

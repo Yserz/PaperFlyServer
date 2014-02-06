@@ -44,6 +44,12 @@ public class Message {
 		this.code = 200;
 	}
 
+	/**
+	 * set message params
+	 *
+	 * @param username
+	 * @param body
+	 */
 	public Message(String username, String body) {
 		this.body = body;
 		this.code = 200;
@@ -51,6 +57,12 @@ public class Message {
 		this.type = MessageType.TEXT;
 	}
 
+	/**
+	 * set message params
+	 *
+	 * @param username
+	 * @param body
+	 */
 	public Message(int code, String body) {
 		this.body = body;
 		this.code = code;

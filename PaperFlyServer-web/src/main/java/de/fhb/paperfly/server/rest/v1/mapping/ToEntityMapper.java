@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Maps DTOs to entities.
  *
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */
@@ -66,6 +67,12 @@ public class ToEntityMapper {
 		return mapAccountDept(dto, 1);
 	}
 
+	/**
+	 * mapp account list
+	 *
+	 * @param dtoList
+	 * @return
+	 */
 	public List<Account> mapAccountList(List<AccountDTO> dtoList) {
 
 		List<Account> eList = new ArrayList<Account>();

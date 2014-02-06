@@ -5,8 +5,9 @@ import java.util.logging.Logger;
 import javax.ejb.Local;
 
 /**
+ * Local Admin Interface for LoggingServices.
  *
- * @author MacYser
+ * @author Michael Koppen
  */
 @Local
 public interface LoggingServiceLocalAdmin {

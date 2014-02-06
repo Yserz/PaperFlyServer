@@ -25,6 +25,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
+ * Represents mapped credentials.
  *
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */

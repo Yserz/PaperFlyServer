@@ -30,6 +30,11 @@ public class LimitedQueue<E> extends LinkedList<E> {
 		return added;
 	}
 
+	/**
+	 * set queue limit
+	 *
+	 * @param limit
+	 */
 	public void setLimit(int limit) {
 		while (this.limit > limit) {
 			super.remove();
@@ -37,6 +42,10 @@ public class LimitedQueue<E> extends LinkedList<E> {
 		this.limit = limit;
 	}
 
+	/**
+	 * get queue limit
+	 *
+	 */
 	public int getLimit() {
 		return limit;
 	}

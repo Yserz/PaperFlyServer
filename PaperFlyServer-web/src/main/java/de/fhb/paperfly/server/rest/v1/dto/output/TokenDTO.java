@@ -24,6 +24,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
+ * Represents a mapped token.
  *
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */

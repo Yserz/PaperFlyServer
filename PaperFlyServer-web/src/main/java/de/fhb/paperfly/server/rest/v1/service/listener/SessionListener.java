@@ -12,11 +12,14 @@ import de.fhb.paperfly.server.logging.service.LoggingServiceLocal;
 import de.fhb.paperfly.server.rest.v1.service.provider.KeySingleton;
 import java.util.logging.Level;
 import javax.ejb.EJB;
+
 import javax.servlet.annotation.WebListener;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
 /**
+ * This is a listener to clean up the system if a session expires or manualle
+ * invalidates.
  *
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */
@@ -32,12 +35,7 @@ public class SessionListener implements HttpSessionListener {
 
 	@Override
 	public void sessionCreated(HttpSessionEvent se) {
-		try {
-			LOG.log(this.getClass().getName(), Level.INFO, "Session '" + se.getSession().getId() + "' created!");
-
-		} catch (Exception e) {
-		}
-		LOG.log(this.getClass().getName(), Level.INFO, "Session created!");
+		LOG.log(this.getClass().getName(), Level.INFO, "########## Session created!");
 	}
 
 	@Override

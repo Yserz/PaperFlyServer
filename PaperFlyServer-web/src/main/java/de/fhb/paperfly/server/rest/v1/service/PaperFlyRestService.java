@@ -26,6 +26,10 @@ import de.fhb.paperfly.server.rest.v1.service.resources.room.RoomResource;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.ejb.TransactionManagement;
+import javax.ejb.TransactionManagementType;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
@@ -68,7 +72,7 @@ public class PaperFlyRestService {
 	}
 
 	/**
-	 * [TODO LARGE DESC]
+	 * Method to ping the service.
 	 *
 	 * @title Ping the Service
 	 * @summary Pings the Service to test if it is online.

@@ -118,10 +118,18 @@ public class ChatController {
 		return null;
 	}
 
+	/**
+	 * get chat map
+	 * @return 
+	 */
 	public Map<String, Set<String>> getChats() {
 		return chats;
 	}
 
+	/**
+	 * set chat map
+	 * @param chats 
+	 */
 	public void setChats(Map<String, Set<String>> chats) {
 		this.chats = chats;
 	}

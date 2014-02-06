@@ -36,6 +36,10 @@ import java.util.List;
 import java.util.logging.Level;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.ejb.TransactionManagement;
+import javax.ejb.TransactionManagementType;
 import javax.interceptor.Interceptors;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -56,7 +60,7 @@ import javax.ws.rs.core.SecurityContext;
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */
 @Stateless
-//@Path("myaccount/")
+@Path("myaccount/")
 @Interceptors({WebServiceLoggerInterceptor.class})
 public class MyAccountResource {
 
@@ -66,13 +70,12 @@ public class MyAccountResource {
 	private AccountServiceLocal accountService;
 
 	/**
-	 * [TODO LARGE DESC]
+	 * Method to edit an account.
 	 *
 	 * @title Edit my Account
 	 * @summary Modifies the account of the actual logged in user.
 	 * @param account The account with the new data. </br>(ATM only firstname
 	 * and lastname will be edited)
-	 * @param request
 	 * @return The edited account.
 	 */
 	@POST
@@ -97,14 +100,12 @@ public class MyAccountResource {
 	}
 
 	/**
-	 * [TODO LARGE DESC]
+	 * Method to add a friend to an account.
 	 *
 	 * @title Add a Friend
 	 * @summary This operation will add another account to the friendlist of the
 	 * actual account.
 	 * @param friendsUsername The exact username of the account to add.
-	 * @param request
-	 * @param sc
 	 * @return The account with the modified friendlist.
 	 */
 	@POST
@@ -131,14 +132,12 @@ public class MyAccountResource {
 	}
 
 	/**
-	 * [TODO LARGE DESC]
+	 * Method to remove a friend from an account.
 	 *
 	 * @title Remove a Friend
 	 * @summary This operation will remove another account from the friendlist
 	 * of the actual account.
-	 * @param friendsUsername
-	 * @param request
-	 * @param sc
+	 * @param friendsUsername the friends username
 	 * @return The account with the modified friendlist.
 	 */
 	@DELETE
@@ -164,13 +163,11 @@ public class MyAccountResource {
 	}
 
 	/**
-	 * [TODO LARGE DESC]
+	 * Method to change the online-status of an account.
 	 *
 	 * @title Change Online-Status
 	 * @summary This operation will change the Online-Status.
 	 * @param newStatus The new status of the account.
-	 * @param request
-	 * @param sc
 	 * @return The account with the modified status.
 	 */
 	@POST
@@ -192,14 +189,9 @@ public class MyAccountResource {
 	}
 
 	/**
-	 * [TODO LARGE DESC]
-	 *
-	 * @title Change Online-Status
-	 * @summary This operation will change the Online-Status.
-	 * @param newStatus The new status of the account.
-	 * @param request
-	 * @param sc
-	 * @return The account with the modified status.
+	 * @title Get My Account
+	 * @summary This operation will get the users account
+	 * @return account of the user
 	 */
 	@GET
 	@Path("get")
@@ -219,14 +211,11 @@ public class MyAccountResource {
 	}
 
 	/**
-	 * [TODO LARGE DESC]
+	 * Gets all friends of the users account as a accountlist.
 	 *
-	 * @title Change Online-Status
-	 * @summary This operation will change the Online-Status.
-	 * @param newStatus The new status of the account.
-	 * @param request
-	 * @param sc
-	 * @return The account with the modified status.
+	 * @title Get Friends a AccountList
+	 * @summary gets all friends of the user as accountlist.
+	 * @return accountlist
 	 */
 	@GET
 	@Path("friendlist")

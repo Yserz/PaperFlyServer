@@ -58,11 +58,12 @@ public class PaperFlyRoomEndpoint extends Endpoint {
 	@Override
 	public void onOpen(final Session session, EndpointConfig conf) {
 //		session.getContainer().setDefaultMaxSessionIdleTimeout(1800000l);/*30m*/
-		session.getContainer().setDefaultMaxSessionIdleTimeout(180000l);/*3m*/
+//		session.getContainer().setDefaultMaxSessionIdleTimeout(180000l);/*3m*/
+		session.getContainer().setDefaultMaxSessionIdleTimeout(300000l);/*5m*/
 		StringBuilder log = new StringBuilder("");
 		log.append("Opening connection...").append("\n");
 		String roomName = getRoomName(session.getRequestURI().toString());
-
+		log.append("SessionID: ").append(session.getId()).append("\n");
 		try {
 			if (session.getUserPrincipal() != null) {
 				try {
@@ -217,10 +218,19 @@ public class PaperFlyRoomEndpoint extends Endpoint {
 
 	}
 
+	/**
+	 * get room
+	 * @return 
+	 */
 	public Room getRoom() {
 		return room;
 	}
 
+	/**
+	 * set room
+	 * 
+	 * @param room 
+	 */
 	private void setRoom(Room room) {
 		this.room = room;
 	}

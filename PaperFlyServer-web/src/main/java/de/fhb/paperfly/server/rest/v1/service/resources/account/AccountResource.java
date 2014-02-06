@@ -35,6 +35,10 @@ import java.util.Map;
 import java.util.logging.Level;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.ejb.TransactionManagement;
+import javax.ejb.TransactionManagementType;
 import javax.interceptor.Interceptors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -56,7 +60,7 @@ import javax.ws.rs.core.SecurityContext;
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */
 @Stateless
-//@Path("account/")
+@Path("account/")
 @Interceptors({WebServiceLoggerInterceptor.class})
 public class AccountResource {
 
@@ -67,66 +71,22 @@ public class AccountResource {
 
 	/**
 	 *
-	 * [TODO LARGE DESC]
+	 * Register a new Account
 	 *
 	 * @title Register a new Account
 	 *
 	 * @summary Registers an account in the service.
 	 *
 	 * @param account The account which will be registered.
-	 * @param request
-	 * @param provider
 	 * @return The OAuth-Token for the newly registered account.
 	 */
 	@PUT
 	@Path("register")
-//	@Produces(PaperFlyRestService.JSON_MEDIA_TYPE)
 	@Consumes(PaperFlyRestService.JSON_MEDIA_TYPE)
-//	@ReturnType("de.fhb.paperfly.server.rest.v1.dto.output.TokenDTO")
 	public Response register(RegisterAccountDTO account, @Context HttpServletRequest request, @Context OAuthProvider provider) {
 		Response resp;
 		try {
 			AccountDTO acc = PaperFlyRestService.toDTOMapper.mapAccount(accountService.register(account.getFirstName(), account.getLastName(), account.getUsername(), account.getEmail(), account.getPassword(), account.getPasswordRpt()));
-//			request.login(account.getEmail(), account.getPassword());
-//
-//			HttpSession session = request.getSession(false);
-//			if (session != null) {
-//				session.setAttribute("mail", request.getUserPrincipal().toString());
-//			}
-//
-//			MultivaluedMap<String, String> roles = new MultivaluedMapImpl();
-//
-//			if (request.isUserInRole("ADMINISTRATOR")) {
-//				LOG.log(this.getClass().getName(), Level.INFO, "User is in role ADMINISTRATOR");
-//				roles.add("roles", "ADMINISTRATOR");
-//			}
-//			if (request.isUserInRole("USER")) {
-//				LOG.log(this.getClass().getName(), Level.INFO, "User is in role USER");
-//				roles.add("roles", "USER");
-//			}
-//			if (request.isUserInRole("ANONYMOUS")) {
-//				LOG.log(this.getClass().getName(), Level.INFO, "User is in role ANONYMOUS");
-//				roles.add("roles", "ANONYMOUS");
-//			}
-//			DefaultOAuthProvider.Consumer c = ((DefaultOAuthProvider) provider).registerConsumer(request.getUserPrincipal().toString(), request.getUserPrincipal(), roles);
-//			LOG.log(this.getClass().getName(), Level.INFO, "Consumer Owner: " + c.getOwner());
-//			LOG.log(this.getClass().getName(), Level.INFO, "Consumer Secret: " + c.getSecret());
-//			LOG.log(this.getClass().getName(), Level.INFO, "Consumer Key: " + c.getKey());
-//			LOG.log(this.getClass().getName(), Level.INFO, "Consumer Principal: " + c.getPrincipal());
-//
-//
-//			String consumerKey = "";
-//			String callbackURL = "";
-//			Map<String, List<String>> attributes = null;
-////			OAuthToken oauthtoken = provider.newRequestToken(consumerKey, callbackURL, attributes);
-//
-//			LOG.log(this.getClass().getName(), Level.INFO, "Successfully logged in!");
-//			LOG.log(this.getClass().getName(), Level.INFO, "User: " + request.getUserPrincipal());
-//
-//			Account myAccount = accountService.getAccountByMail(acc.getEmail());
-//			myAccount.setStatus(Status.ONLINE);
-//			accountService.editAccount(myAccount);
-//			resp = Response.ok(new TokenDTO(c.getKey(), c.getSecret())).build();
 			resp = Response.ok().build();
 		} catch (Exception e) {
 			LOG.log(this.getClass().getName(), Level.SEVERE, "Exception: {0}", e.getMessage());
@@ -136,13 +96,11 @@ public class AccountResource {
 	}
 
 	/**
-	 * [TODO LARGE DESC]
+	 * Get an Account by username
 	 *
-	 * @title Get an Account
+	 * @title Get an Account by the username
 	 * @summary Get's an account which is registered with the given username.
 	 * @param username The username of the account to search for.
-	 * @param request
-	 * @param sc
 	 * @return The found account with the given username.
 	 */
 	@GET
@@ -162,13 +120,12 @@ public class AccountResource {
 	}
 
 	/**
-	 * [TODO LARGE DESC]
+	 * Search Accounts by the Username
 	 *
 	 * @title Search Accounts by the Username
 	 * @summary Searches an account by the given username. This function will
 	 * perform kind of 'LIKE'-Operation.
 	 * @param query The query to search for.
-	 * @param request
 	 * @return The list of accounts with a username which contains the
 	 * query-string.
 	 */

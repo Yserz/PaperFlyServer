@@ -30,6 +30,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
+ * Represents a mapped account.
  *
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */

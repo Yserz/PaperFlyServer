@@ -27,6 +27,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
+ * Represents a mapped account for registering.
  *
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */

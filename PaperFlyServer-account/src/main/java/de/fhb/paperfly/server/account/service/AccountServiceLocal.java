@@ -5,8 +5,9 @@ import java.util.List;
 import javax.ejb.Local;
 
 /**
+ * Local Interface for AccountServices.
  *
- * @author MacYser
+ * @author Michael Koppen
  */
 @Local
 public interface AccountServiceLocal {

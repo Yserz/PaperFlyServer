@@ -9,8 +9,10 @@ import javax.servlet.ServletRequestEvent;
 import javax.servlet.ServletRequestListener;
 import javax.servlet.annotation.WebListener;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /**
+ * This listener listens for new requests and touches the session.
  *
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */
@@ -25,9 +27,17 @@ public class RequestListener implements ServletRequestListener {
 	@Override
 	public void requestInitialized(ServletRequestEvent sre) {
 		try {
-			System.out.println("last session access: " + new Date(((HttpServletRequest) sre.getServletRequest()).getSession(false).getLastAccessedTime()));
+			HttpServletRequest request = (HttpServletRequest) sre.getServletRequest();
+			HttpSession session = request.getSession(false);
+			if (session != null) {
+				System.out.println("last session access: " + new Date(session.getLastAccessedTime()));
+			} else {
+				System.out.println("Session is null!");
+			}
+
 		} catch (Exception e) {
 			System.out.println("could not access session!");
+			e.printStackTrace();
 		}
 
 	}

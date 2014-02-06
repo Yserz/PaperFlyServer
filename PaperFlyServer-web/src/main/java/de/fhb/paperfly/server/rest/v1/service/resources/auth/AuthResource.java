@@ -58,7 +58,7 @@ import sun.misc.BASE64Decoder;
  * @author Michael Koppen <michael.koppen@googlemail.com>
  */
 @Stateless
-//@Path("auth/")
+@Path("auth/")
 @Interceptors({WebServiceLoggerInterceptor.class})
 public class AuthResource {
 
@@ -70,7 +70,7 @@ public class AuthResource {
 	private ChatController chatController;
 
 	/**
-	 * [TODO LARGE DESC]
+	 * Method to login a user.
 	 *
 	 * @title Login
 	 * @summary Log into the service an retrieve your OAuth-Token.
@@ -89,6 +89,7 @@ public class AuthResource {
 //			request.logout();
 			HttpSession session = request.getSession(true);
 			System.out.println("isSession new?: " + session.isNew());
+			System.out.println("SessionID: " + session.getId());
 			System.out.println("trackingmodes");
 			for (SessionTrackingMode object : session.getServletContext().getEffectiveSessionTrackingModes()) {
 				System.out.println("trackingmode: " + object);
@@ -106,6 +107,7 @@ public class AuthResource {
 
 			session = request.getSession(true);
 			System.out.println("isSession new?: " + session.isNew());
+			System.out.println("SessionID: " + session.getId());
 			session.setAttribute("mail", request.getUserPrincipal().toString());
 
 			MultivaluedMap<String, String> roles = new MultivaluedMapImpl();
@@ -141,6 +143,7 @@ public class AuthResource {
 			myAccount.setStatus(Status.ONLINE);
 			accountService.editAccount(myAccount);
 
+			System.out.println("SessionID: " + session.getId());
 			resp = Response.ok(new TokenDTO(c.getKey(), c.getSecret())).build();
 		} catch (Exception e) {
 			LOG.log(this.getClass().getName(), Level.SEVERE, "Exception: {0}", e.getMessage());
@@ -150,7 +153,7 @@ public class AuthResource {
 	}
 
 	/**
-	 * [TODO LARGE DESC]
+	 * Method to logout a user.
 	 *
 	 * @title Logout
 	 * @summary Log's out the actual user.
@@ -170,14 +173,13 @@ public class AuthResource {
 //		myAccount.setStatus(Status.OFFLINE);
 //		accountService.editAccount(myAccount);
 
-
-		request.logout();
 		if (request.getSession(false) != null) {
-
 			request.getSession(false).invalidate();
 		} else {
 			LOG.log(this.getClass().getName(), Level.INFO, "Session was Null!");
 		}
+		request.logout();
+
 
 		resp = Response.ok().build();
 		return resp;

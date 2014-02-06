@@ -66,6 +66,7 @@ public class DefaultOAuthProvider implements OAuthProvider {
 	 * @return Consumer object for the newly registered consumer.
 	 */
 	public Consumer registerConsumer(String owner, Principal principal, MultivaluedMap<String, String> attributes) {
+		KeySingleton.getInstance().removeConsumerByMail(principal.getName());
 		Consumer c = new Consumer(newUUIDString(), newUUIDString(), owner, principal, attributes);
 		KeySingleton.getInstance().consumerByConsumerKey.put(c.getKey(), c);
 		return c;
